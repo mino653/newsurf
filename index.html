@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SurfNetwork - Minecraft Server</title>
+    <meta name="description" content="Join SurfNetwork - The ultimate Minecraft server experience with custom maps, ranks, and amazing community!">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Minecraft:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="minecraft-logo">
+                <div class="block-animation">
+                    <div class="block block-1"></div>
+                    <div class="block block-2"></div>
+                    <div class="block block-3"></div>
+                    <div class="block block-4"></div>
+                </div>
+                <h1 class="loading-title">SurfNetwork</h1>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">Loading chunks...</p>
+        </div>
+    </div>
+
+    <!-- Music Player -->
+    <div id="music-player" class="music-player">
+        <div class="music-controls">
+            <button id="play-pause" class="minecraft-btn music-btn">
+                <span class="music-icon">▶</span>
+            </button>
+            <button id="next-song" class="minecraft-btn music-btn">
+                <span class="music-icon">⏭</span>
+            </button>
+            <button id="volume-toggle" class="minecraft-btn music-btn">
+                <span class="music-icon">🔊</span>
+            </button>
+        </div>
+        <div class="music-info">
+            <span id="current-song">SurfNetwork Theme</span>
+        </div>
+        <button id="close-music" class="minecraft-btn close-btn">
+            <span class="music-icon">✕</span>
+        </button>
+    </div>
+
+    <!-- Now Playing Popup -->
+    <div id="now-playing-popup" class="now-playing-popup">
+        <div class="popup-content">
+            <div class="note-icon">♪</div>
+            <div class="popup-text">
+                <span class="now-playing">Now Playing:</span>
+                <span id="popup-song-name">SurfNetwork Theme</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-block"></div>
+                <span class="logo-text">SurfNetwork</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="#features" class="nav-link">Features</a></li>
+                <li class="nav-item"><a href="#store" class="nav-link">Store</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button id="theme-toggle" class="minecraft-btn theme-toggle">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="minecraft-sky"></div>
+            <div class="floating-blocks">
+                <div class="floating-block grass"></div>
+                <div class="floating-block stone"></div>
+                <div class="floating-block diamond"></div>
+                <div class="floating-block emerald"></div>
+                <div class="floating-block gold"></div>
+                <div class="floating-block iron"></div>
+            </div>
+            <div class="particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-title-container">
+                <h1 class="hero-title">
+                    <span class="title-word">Welcome</span>
+                    <span class="title-word">to</span>
+                    <span class="title-word surf-text">SurfNetwork</span>
+                </h1>
+                <div class="title-subtitle">
+                    <span class="subtitle-text">The Ultimate Minecraft Server Experience</span>
+                </div>
+            </div>
+            
+            <div class="hero-buttons">
+                <button class="minecraft-btn btn-primary" id="copy-ip-btn">
+                    <div class="btn-icon">🌐</div>
+                    <div class="btn-text">
+                        <span class="btn-main">Copy IP</span>
+                        <span class="btn-sub">play.surfnetwork.com</span>
+                    </div>
+                </button>
+                <button class="minecraft-btn btn-secondary" onclick="scrollToSection('store')">
+                    <div class="btn-icon">🛒</div>
+                    <div class="btn-text">
+                        <span class="btn-main">Visit Store</span>
+                        <span class="btn-sub">Get Premium</span>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="server-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="online-players">127</div>
+                        <div class="stat-label">Online Players</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-content">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <div class="stat-number">4.9</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+            <span class="scroll-text">Scroll Down</span>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About SurfNetwork</h2>
+                <div class="section-subtitle">Discover what makes us special</div>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <div class="about-description">
+                        <p>SurfNetwork has been providing an exceptional Minecraft experience since 2020. Our server features custom-built maps, unique game modes, and a dedicated community of players from around the world.</p>
+                        <p>Join thousands of players who have made SurfNetwork their home for the ultimate Minecraft adventure!</p>
+                    </div>
+                    
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon">🗺️</div>
+                            <div class="feature-content">
+                                <h3>Custom Maps</h3>
+                                <p>Hand-crafted maps designed for maximum fun</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🛡️</div>
+                            <div class="feature-content">
+                                <h3>Anti-Cheat</h3>
+                                <p>Advanced protection against cheaters</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">👥</div>
+                            <div class="feature-content">
+                                <h3>Community</h3>
+                                <p>Active and friendly player community</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">⚙️</div>
+                            <div class="feature-content">
+                                <h3>Custom Plugins</h3>
+                                <p>Unique features you won't find elsewhere</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-visual">
+                    <div class="minecraft-scene">
+                        <div class="scene-block grass-block"></div>
+                        <div class="scene-block stone-block"></div>
+                        <div class="scene-block diamond-block"></div>
+                        <div class="scene-character">🧙‍♂️</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Server Features</h2>
+                <div class="section-subtitle">Everything you need for the perfect Minecraft experience</div>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="card-header">
+                        <div class="card-icon">🏄‍♂️</div>
+                        <h3>Surf Maps</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Challenge yourself on our custom surf maps with varying difficulty levels and leaderboards.</p>
+                        <ul class="feature-list">
+                            <li>50+ Unique Maps</li>
+                            <li>Difficulty Levels</li>
+                            <li>Leaderboards</li>
+                            <li>Custom Rewards</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="card-header">
+                        <div class="card-icon">👑</div>
+                        <h3>Rank System</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Unlock exclusive ranks and perks as you progress through your Minecraft journey.</p>
+                        <ul class="feature-list">
+                            <li>10+ Ranks</li>
+                            <li>Exclusive Perks</li>
+                            <li>Custom Prefixes</li>
+                            <li>Special Commands</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="card-header">
+                        <div class="card-icon">🎁</div>
+                        <h3>Daily Rewards</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Log in daily to claim exclusive rewards and boost your gameplay experience.</p>
+                        <ul class="feature-list">
+                            <li>Daily Login Bonus</li>
+                            <li>Weekly Rewards</li>
+                            <li>Monthly Events</li>
+                            <li>Special Items</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="card-header">
+                        <div class="card-icon">💬</div>
+                        <h3>Discord Integration</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Connect with our community through Discord and stay updated with server news.</p>
+                        <ul class="feature-list">
+                            <li>Live Chat</li>
+                            <li>Server Updates</li>
+                            <li>Voice Channels</li>
+                            <li>Bot Integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Store Section -->
+    <section id="store" class="store">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Server Store</h2>
+                <div class="section-subtitle">Support the server and unlock exclusive perks!</div>
+            </div>
+            
+            <div class="store-categories">
+                <button class="category-btn active" data-category="ranks">
+                    <span class="btn-icon">👑</span>
+                    <span class="btn-text">Ranks</span>
+                </button>
+                <button class="category-btn" data-category="coins">
+                    <span class="btn-icon">💰</span>
+                    <span class="btn-text">Coins</span>
+                </button>
+                <button class="category-btn" data-category="cosmetics">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Cosmetics</span>
+                </button>
+                <button class="category-btn" data-category="boosters">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text">Boosters</span>
+                </button>
+            </div>
+
+            <div class="store-grid" id="store-grid">
+                <!-- Ranks -->
+                <div class="product-card" data-category="ranks">
+                    <div class="product-badge popular">Popular</div>
+                    <div class="product-header">
+                        <div class="product-icon">👑</div>
+                        <h3>VIP Rank</h3>
+                    </div>
+                    <div class="product-price">$9.99</div>
+                    <div class="product-content">
+                        <ul class="product-features">
+                            <li>Access to VIP-only areas</li>
+                            <li>Custom chat prefix</li>
+                            <li>Priority queue</li>
+                            <li>Exclusive pets</li>
+                            <li>VIP commands</li>
+                        </ul>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="vip">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="ranks">
+                    <div class="product-header">
+                        <div class="product-icon">💎</div>
+                        <h3>MVP Rank</h3>
+                    </div>
+                    <div class="product-price">$19.99</div>
+                    <div class="product-content">
+                        <ul class="product-features">
+                            <li>All VIP features</li>
+                            <li>Fly ability</li>
+                            <li>Creative mode access</li>
+                            <li>Custom particle effects</li>
+                            <li>MVP commands</li>
+                        </ul>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="mvp">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="ranks">
+                    <div class="product-badge premium">Premium</div>
+                    <div class="product-header">
+                        <div class="product-icon">🌟</div>
+                        <h3>Elite Rank</h3>
+                    </div>
+                    <div class="product-price">$39.99</div>
+                    <div class="product-content">
+                        <ul class="product-features">
+                            <li>All MVP features</li>
+                            <li>WorldEdit access</li>
+                            <li>Custom commands</li>
+                            <li>Exclusive events</li>
+                            <li>Elite commands</li>
+                        </ul>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="elite">Purchase</button>
+                </div>
+
+                <!-- Coins -->
+                <div class="product-card" data-category="coins">
+                    <div class="product-header">
+                        <div class="product-icon">🪙</div>
+                        <h3>1000 Coins</h3>
+                    </div>
+                    <div class="product-price">$4.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Perfect for small purchases and upgrades</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="coins-1000">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="coins">
+                    <div class="product-badge best-value">Best Value</div>
+                    <div class="product-header">
+                        <div class="product-icon">💰</div>
+                        <h3>5000 Coins</h3>
+                    </div>
+                    <div class="product-price">$19.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Great value for regular players</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="coins-5000">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="coins">
+                    <div class="product-header">
+                        <div class="product-icon">💎</div>
+                        <h3>10000 Coins</h3>
+                    </div>
+                    <div class="product-price">$34.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Maximum value for power users</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="coins-10000">Purchase</button>
+                </div>
+
+                <!-- Cosmetics -->
+                <div class="product-card" data-category="cosmetics">
+                    <div class="product-header">
+                        <div class="product-icon">🌈</div>
+                        <h3>Rainbow Trail</h3>
+                    </div>
+                    <div class="product-price">$2.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Leave a colorful trail wherever you go</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="rainbow-trail">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="cosmetics">
+                    <div class="product-header">
+                        <div class="product-icon">🎆</div>
+                        <h3>Firework Cape</h3>
+                    </div>
+                    <div class="product-price">$4.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Stunning cape with firework effects</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="firework-cape">Purchase</button>
+                </div>
+
+                <!-- Boosters -->
+                <div class="product-card" data-category="boosters">
+                    <div class="product-header">
+                        <div class="product-icon">⚡</div>
+                        <h3>XP Booster</h3>
+                    </div>
+                    <div class="product-price">$7.99</div>
+                    <div class="product-content">
+                        <p class="product-description">2x XP for 7 days</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="xp-booster">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="boosters">
+                    <div class="product-header">
+                        <div class="product-icon">💰</div>
+                        <h3>Coin Booster</h3>
+                    </div>
+                    <div class="product-price">$7.99</div>
+                    <div class="product-content">
+                        <p class="product-description">2x Coins for 7 days</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="coin-booster">Purchase</button>
+                </div>
+            </div>
+
+            <div class="cart-summary" id="cart-summary" style="display: none;">
+                <div class="cart-header">
+                    <h3>Shopping Cart</h3>
+                    <div class="cart-icon">🛒</div>
+                </div>
+                <div id="cart-items" class="cart-items"></div>
+                <div class="cart-total">
+                    <div class="total-label">Total:</div>
+                    <div class="total-amount">$<span id="cart-total">0.00</span></div>
+                </div>
+                <button class="minecraft-btn checkout-btn" id="checkout-btn">Checkout</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <div class="section-subtitle">We'd love to hear from you</div>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">🌐</div>
+                        <div class="contact-content">
+                            <h4>Server IP</h4>
+                            <p>play.surfnetwork.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">💬</div>
+                        <div class="contact-content">
+                            <h4>Discord</h4>
+                            <p>Join our Discord community</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-content">
+                            <h4>Email</h4>
+                            <p>admin@surfnetwork.com</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="minecraft-btn submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="logo-block"></div>
+                        <h3>SurfNetwork</h3>
+                    </div>
+                    <p>The ultimate Minecraft server experience</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#store">Store</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">💬</a>
+                        <a href="#" class="social-link">🐦</a>
+                        <a href="#" class="social-link">📺</a>
+                        <a href="#" class="social-link">🔗</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SurfNetwork. All rights reserved. Made with ❤️ by the SurfNetwork Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
