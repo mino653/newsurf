@@ -617,5 +617,95 @@
     <!-- Scripts -->
     <script type="module" src="./js/script.js"></script>
 </body>
+    <style>
+        /* Your existing CSS variables */
+        :root {
+            --minecraft-green: #7CB342;
+            --minecraft-dark-green: #558B2F;
+            --minecraft-black: #212121;
+            --minecraft-white: #FFFFFF;
+            --minecraft-shadow: rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Scroll to top button styles */
+        .scroll-to-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 15px 20px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+        }
+
+        .scroll-to-top-btn.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-to-top-btn:hover {
+            background: var(--minecraft-dark-green);
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 0 var(--minecraft-shadow);
+        }
+
+        .scroll-to-top-btn:active {
+            transform: translateY(2px);
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+    </style>
+</head>
+<body>
+    <!-- Your page content here -->
+    <div style="height: 2000px; background: linear-gradient(45deg, #f0f0f0, #e0e0e0);">
+        <h1>Scroll down to see the button appear!</h1>
+    </div>
+    
+    <!-- Scroll to top button -->
+    <button id="scroll-to-top" class="scroll-to-top-btn">
+        <span class="scroll-icon">⬆️</span>
+        <span class="scroll-text">Top</span>
+    </button>
+
+    <script>
+        function initScrollToTop() {
+            const scrollBtn = document.getElementById('scroll-to-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.classList.add('show');
+                } else {
+                    scrollBtn.classList.remove('show');
+                }
+            });
+            
+            scrollBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initScrollToTop);
+    </script>
+</body>
+</html>
 
 </html>
+
