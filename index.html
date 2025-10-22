@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SurfNetwork - Minecraft Server</title>
+    <title>SurfNetwork </title>
     <meta name="description"
         content="Join SurfNetwork - The ultimate Minecraft server experience with custom maps, ranks, and amazing community!">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -341,6 +341,315 @@
             </div>
         </div>
     </section>
+    <!-- Admin Messages Section -->
+<section id="admin-messages" class="admin-messages">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Here's What the Admins Had to Say</h2>
+            <div class="section-subtitle">Messages from our amazing admin team</div>
+        </div>
+        
+        <div class="admin-messages-grid">
+            <div class="admin-message-card">
+                <div class="admin-avatar">
+                    <div class="steve-face">🧑‍💼</div>
+                </div>
+                <div class="admin-info">
+                    <h3 class="admin-name">Steve</h3>
+                    <span class="admin-role">Server Owner</span>
+                </div>
+                <div class="admin-message">
+                    <p>"Welcome to SurfNetwork! We've been working hard to create the ultimate Minecraft experience for all players. Join us for epic adventures, custom maps, and an amazing community!"</p>
+                    <div class="message-date">2 days ago</div>
+                </div>
+            </div>
+
+            <div class="admin-message-card">
+                <div class="admin-avatar">
+                    <div class="steve-face">🧑‍💼</div>
+                </div>
+                <div class="admin-info">
+                    <h3 class="admin-name">Alex</h3>
+                    <span class="admin-role">Head Admin</span>
+                </div>
+                <div class="admin-message">
+                    <p>"Our new surf maps are incredible! I've been testing them for weeks and they're absolutely mind-blowing. Can't wait for you all to try them out!"</p>
+                    <div class="message-date">1 week ago</div>
+                </div>
+            </div>
+
+            <div class="admin-message-card">
+                <div class="admin-avatar">
+                    <div class="steve-face">🧑‍💼</div>
+                </div>
+                <div class="admin-info">
+                    <h3 class="admin-name">Emma</h3>
+                    <span class="admin-role">Community Manager</span>
+                </div>
+                <div class="admin-message">
+                    <p>"The community here is amazing! Every day I see players helping each other, building together, and creating friendships. This is what Minecraft is all about!"</p>
+                    <div class="message-date">3 days ago</div>
+                </div>
+            </div>
+
+            <div class="admin-message-card">
+                <div class="admin-avatar">
+                    <div class="steve-face">🧑‍💼</div>
+                </div>
+                <div class="admin-info">
+                    <h3 class="admin-name">Mike</h3>
+                    <span class="admin-role">Developer</span>
+                </div>
+                <div class="admin-message">
+                    <p>"We're constantly working on new features and improvements. Your feedback helps us make SurfNetwork better every day. Keep those suggestions coming!"</p>
+                    <div class="message-date">5 days ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Admin Messages Section */
+.admin-messages {
+    background: var(--card-bg);
+    border-top: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
+    padding: 100px 0;
+}
+
+.admin-messages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.admin-message-card {
+    background: var(--minecraft-white);
+    border: 3px solid var(--minecraft-black);
+    border-radius: 0;
+    padding: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 6px 6px 0 var(--minecraft-shadow);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease forwards;
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+.admin-message-card:nth-child(1) { animation-delay: 0.1s; }
+.admin-message-card:nth-child(2) { animation-delay: 0.2s; }
+.admin-message-card:nth-child(3) { animation-delay: 0.3s; }
+.admin-message-card:nth-child(4) { animation-delay: 0.4s; }
+
+.admin-message-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(124, 179, 66, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.admin-message-card:hover::before {
+    left: 100%;
+}
+
+.admin-message-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 8px 8px 0 var(--minecraft-shadow);
+}
+
+.admin-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.steve-face {
+    width: 80px;
+    height: 80px;
+    background: var(--minecraft-green);
+    border: 3px solid var(--minecraft-black);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    box-shadow: 4px 4px 0 var(--minecraft-shadow);
+    animation: steveBounce 2s ease-in-out infinite;
+    position: relative;
+    cursor: pointer;
+}
+
+.steve-face::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: var(--minecraft-dark-green);
+    border: 2px solid var(--minecraft-black);
+    border-radius: 0;
+    z-index: -1;
+    animation: steveGlow 3s ease-in-out infinite;
+}
+
+@keyframes steveBounce {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.05) rotate(-2deg); }
+    50% { transform: scale(1.1) rotate(0deg); }
+    75% { transform: scale(1.05) rotate(2deg); }
+}
+
+@keyframes steveGlow {
+    0%, 100% { box-shadow: 0 0 0 rgba(124, 179, 66, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(124, 179, 66, 0.8); }
+}
+
+.admin-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.admin-name {
+    font-family: 'Minecraft', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--minecraft-black);
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 0 var(--minecraft-white);
+}
+
+.admin-role {
+    background: var(--minecraft-blue);
+    color: var(--minecraft-white);
+    padding: 5px 15px;
+    border: 2px solid var(--minecraft-black);
+    border-radius: 0;
+    font-family: 'Minecraft', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 2px 2px 0 var(--minecraft-shadow);
+}
+
+.admin-message {
+    text-align: center;
+}
+
+.admin-message p {
+    color: var(--minecraft-black);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    font-style: italic;
+    position: relative;
+}
+
+.admin-message p::before {
+    content: '"';
+    font-size: 2rem;
+    color: var(--minecraft-green);
+    font-family: 'Minecraft', monospace;
+    position: absolute;
+    top: -10px;
+    left: -10px;
+}
+
+.admin-message p::after {
+    content: '"';
+    font-size: 2rem;
+    color: var(--minecraft-green);
+    font-family: 'Minecraft', monospace;
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+}
+
+.message-date {
+    font-family: 'Minecraft', monospace;
+    font-size: 12px;
+    color: var(--minecraft-gray);
+    font-weight: 700;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-messages-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .admin-message-card {
+        padding: 20px;
+    }
+    
+    .steve-face {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .admin-name {
+        font-size: 1.1rem;
+    }
+}
+</style>
+
+<script>
+// Admin Messages functionality
+function initAdminMessages() {
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+            }
+        });
+    }, observerOptions);
+
+    // Observe admin message cards
+    const adminCards = document.querySelectorAll('.admin-message-card');
+    adminCards.forEach(card => {
+        card.style.animationPlayState = 'paused';
+        observer.observe(card);
+    });
+
+    // Add click effect to Steve faces
+    const steveFaces = document.querySelectorAll('.steve-face');
+    steveFaces.forEach(face => {
+        face.addEventListener('click', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'steveBounce 2s ease-in-out infinite';
+            }, 100);
+            
+            // Show fun message
+            showMessage('Steve says: "Thanks for clicking!" 🎮', 'success');
+        });
+    });
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', initAdminMessages);
+</script> </section>
 
     <!-- Store Section -->
     <section id="store" class="store">
@@ -620,6 +929,100 @@
 
     <!-- Scripts -->
     <script type="module" src="./js/script.js"></script>
+    
+    <style>
+        /* Your existing CSS variables */
+        :root {
+            --minecraft-green: #7CB342;
+            --minecraft-dark-green: #558B2F;
+            --minecraft-black: #212121;
+            --minecraft-white: #FFFFFF;
+            --minecraft-shadow: rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Scroll to top button styles */
+        .scroll-to-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 15px 20px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+        }
+
+        .scroll-to-top-btn.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-to-top-btn:hover {
+            background: var(--minecraft-dark-green);
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 0 var(--minecraft-shadow);
+        }
+
+        .scroll-to-top-btn:active {
+            transform: translateY(2px);
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+    </style>
+</head>
+<body>
+    <!-- Your page content here -->
+    <div style="height: 2000px; background: linear-gradient(45deg, #f0f0f0, #e0e0e0);">
+        <h1>Scroll down to see the button appear!</h1>
+    </div>
+    
+    <!-- Scroll to top button -->
+    <button id="scroll-to-top" class="scroll-to-top-btn">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path></svg>
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path></svg>
+    </button>
+
+    <script>
+        function initScrollToTop() {
+            const scrollBtn = document.getElementById('scroll-to-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.classList.add('show');
+                } else {
+                    scrollBtn.classList.remove('show');
+                }
+            });
+            
+            scrollBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initScrollToTop);
+    </script>
+
+
 </body>
 
 </html>
+
+
+
+
