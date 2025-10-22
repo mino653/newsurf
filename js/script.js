@@ -3,7 +3,7 @@
 import {
     getDB,
     getState,
-    setState,
+    clear,
     redirect
 } from './util.js';
 
@@ -12,15 +12,7 @@ EQuery(async function () {
     
     initLoadingScreen();
     initThemeToggle();
-    initNavigation();
-    initMusicPlayer();
-    initStore();
-    initScrollAnimations();
     initContactForm();
-    initCopyIP();
-    initParticleEffects();
-    initServerStats();
-    initMinecraftEffects();
 
     let userdata;
     getDB(state => {
@@ -92,7 +84,7 @@ EQuery(async function () {
     }
 
     getStats();
-    setInterval(getStats, 5000);
+    setInterval(getStats, 30000);
 
     async function getStats() {
         let response = await (await fetch('https://surfnetwork-api.onrender.com/get-server-stats', { method: 'post' }).catch(function () {
@@ -173,7 +165,16 @@ EQuery(async function () {
         setTimeout(() => {
             loadingScreen.addClass('hidden');
             // Start animations after loading
-            setTimeout(() => {
+            setTimeout(() => {            
+                initCopyIP();
+                initParticleEffects();
+                // initMusicPlayer();
+                initStore();
+                initScrollAnimations();
+                initNavigation();
+                initAdminMessages();
+                initServerStats();
+                initMinecraftEffects();
                 initHeroAnimations();
             }, 500);
         }, 3000);
@@ -216,6 +217,7 @@ EQuery(async function () {
         const navLinks = EQuery('.nav-link');
         const acctBtn = EQuery('#account-btn');
         const dropdownMenu = EQuery('#secondary-dropmenu');
+        const logoutBtn = EQuery('.dropdown .logout');
         let state = getState();
         let dropdown = false;
 
@@ -228,9 +230,9 @@ EQuery(async function () {
             const bars = hamburger.find('.bar');
             bars.each((index, bar) => {
                 if (hamburger.hasClass('active')) {
-                    bar.style.transform = `rotate(${index === 0 ? 45 : index === 1 ? 0 : -45}deg) translate(${index === 0 ? '5px, 5px' : index === 1 ? '0, 0' : '5px, -5px'})`;
+                    EQuery(bar).css(`transform: rotate(${index === 0 ? 45 : index === 1 ? 0 : -45}deg) translate(${index === 0 ? '5px, 5px' : index === 1 ? '0, 0' : '5px, -5px'})${index === 1 ? ' scaleX(.1)' : ''}`);
                 } else {
-                    bar.style.transform = 'none';
+                    EQuery(bar).css('transform: none');
                 }
             });
         });
@@ -245,18 +247,64 @@ EQuery(async function () {
                 setTimeout(function () {dropdownMenu.hide()}, 300);
                 acctBtn.find('span').text('keyboard_arrow_down');
             }
-        })
+        });
+
+        EQuery(document).click(function (e) {
+            let exceptions = (() => {
+                let arr = []
+                EQuery('.dropdown, .dropdown *').each((i, elt) => {
+                    arr.push(elt);
+                });
+                return arr;
+            })();
+            let navExceptions = (() => {
+                let arr = [];
+                EQuery('.nav-menu, .nav-menu *, .hamburger, .hamburger *').each((i, elt) => {
+                    arr.push(elt);
+                });
+                return arr;
+            })();
+            if (e.path) {
+                let elts = e.path;
+                for (let i = 0;i < elts.length;i++) {
+                    if (exceptions.indexOf(elts[i]) === -1) {
+                        dropdown = false;
+                        dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
+                        setTimeout(function () {dropdownMenu.hide()}, 300);
+                        acctBtn.find('span').text('keyboard_arrow_down');
+                    }
+
+                    if (navExceptions.indexOf(elts[i]) === -1) {
+                        navMenu.removeClass('active');
+                        hamburger.find('.bar').css('transform: none');
+                    }
+                    break;
+                }
+            } else {
+                if (exceptions.indexOf(e.target) === -1) {
+                    dropdown = false;
+                    dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
+                    setTimeout(function () {dropdownMenu.hide()}, 300);
+                    acctBtn.find('span').text('keyboard_arrow_down');
+                }
+                
+                if (navExceptions.indexOf(e.target) === -1) {
+                    navMenu.removeClass('active');
+                    hamburger.find('.bar').css('transform: none');
+                }
+            }
+        });
+
+        logoutBtn.click(clear);
 
         // Close mobile menu when clicking on links
-        navLinks.each((index, link) => {
-            link.addEventListener('click', function () {
-                hamburger.removeClass('active');
-                navMenu.removeClass('active');
+        navLinks.click(function () {
+            hamburger.removeClass('active');
+            navMenu.removeClass('active');
 
-                // Reset hamburger bars
-                const bars = hamburger.find('.bar');
-                bars.css('transform: none');
-            });
+            // Reset hamburger bars
+            const bars = hamburger.find('.bar');
+            bars.css('transform: none');
         });
 
         // Smooth scrolling for navigation links
@@ -300,14 +348,19 @@ EQuery(async function () {
             });
         });
 
-        console.log(state && state.userdata && state.userdata.logged_in)
-        if (state && state.userdata && state.userdata.logged_in) {
+        if (state.userdata !== undefined) {
             EQuery('[data-visibility=loggedin]').show();
             EQuery('[data-visibility=loggedout]').hide();
+            EQuery('[data-visibility=invalidemail]').hide();
         } else {
             EQuery('[data-visibility=loggedin]').hide();
             EQuery('[data-visibility=loggedout]').show();
+            EQuery('[data-visibility=invalidemail]').hide();
         }
+
+        if (state.confirm_email == false) {
+            EQuery('[data-visibility=invalidemail]').show();
+        } 
     }
 
     // Music Player functionality
@@ -427,10 +480,8 @@ EQuery(async function () {
 
         // Track any interaction with music player
         const musicPlayerElements = musicPlayer.find('button');
-        musicPlayerElements.each((index, element) => {
-            element.addEventListener('click', resetAutoHideTimer);
-            element.addEventListener('mouseenter', resetAutoHideTimer);
-        });
+        musicPlayerElements.click(resetAutoHideTimer);
+        musicPlayerElements.mouseenter(resetAutoHideTimer);
 
         // Update current song display
         function updateCurrentSong() {
@@ -446,6 +497,8 @@ EQuery(async function () {
                 nowPlayingPopup.removeClass('show');
             }, 3000);
         }
+
+        musicPlayer.css('visibility: visible');
 
         // Initialize
         updateCurrentSong();
@@ -610,7 +663,9 @@ EQuery(async function () {
         const observer = new IntersectionObserver(function (entries) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    EQuery(entry.target).addClass('visible');
+                    EQuery(entry.target).addClass('visible').css('transform:translateY(0px)');
+                } else {
+                    EQuery(entry.target).removeClass('visible').css('transform:translateY(50px)');
                 }
             });
         }, observerOptions);
@@ -708,7 +763,7 @@ EQuery(async function () {
     function initServerStats() {
         const statNumbers = EQuery('.stat-number');
 
-        statNumbers.each(stat => {
+        statNumbers.each((i, stat) => {
             const target = parseInt(stat.textContent);
             if (!isNaN(target)) {
                 animateNumber(stat, 0, target, 2000);
@@ -733,6 +788,41 @@ EQuery(async function () {
         }
 
         requestAnimationFrame(updateNumber);
+    }
+
+    function initAdminMessages() {
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        // Observe admin message cards
+        const adminCards = EQuery('.admin-message-card');
+        adminCards.each((i, card) => {
+            EQuery(card).css('animation-play-style: paused');
+            observer.observe(card);
+        });
+
+        // Add click effect to Steve faces
+        const steveFaces = EQuery('.steve-face');
+        steveFaces.click(function() {
+            EQuery(this).css('animation: none');
+            setTimeout(() => {
+                EQuery(this).css('animation: steveBounce 2s ease-in-out infinite');
+            }, 100);
+            
+            // Show fun message
+            showMessage('Steve says: "Thanks for clicking!" 🎮', 'success');
+        });
     }
 
     // Minecraft-specific effects
@@ -835,16 +925,34 @@ EQuery(async function () {
     EQuery('head').append(style);
 
     // Easter egg: Konami code
-    let konamiCode = [];
     const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
 
-    document.addEventListener('keydown', function (e) {
+    let konamiCode = [];
+    const easterEggs = {
+        '38,38,40,40,37,39,37,39,66,65': function () {
+            EQuery('body').css('animation: rainbow 2s ease-in-out infinite');
+            setTimeout(() => {
+                document.body.style.animation = '';
+            }, 6000);
+        }
+    }
+
+    EQuery(document).keydown(function (e) {
         konamiCode.push(e.keyCode);
 
         if (konamiCode.length > konamiSequence.length) {
             konamiCode.shift();
         }
 
+        for (let codes in easterEggs) {
+            if (konamiCode.join(',') === codes) {
+                showMessage('🎉 Easter egg found! You\'re awesome! 🎉', 'success');
+                easterEggs[codes]();
+                konamiCode = []
+                break;
+            }
+        }
+/*
         if (konamiCode.join(',') === konamiSequence.join(',')) {
             // Easter egg activated!
             showMessage('🎉 Easter egg found! You\'re awesome! 🎉', 'success');
@@ -856,7 +964,7 @@ EQuery(async function () {
             }, 6000);
 
             konamiCode = [];
-        }
+        }*/
     });
 
     // Add rainbow animation for easter egg
@@ -904,20 +1012,6 @@ EQuery(async function () {
         const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
         showMessage(randomWelcome, 'success');
     }, 8000);
-
-    // Simulate online player count changes
-    setInterval(() => {
-        const playerCount = EQuery('#online-players');
-        if (playerCount) {
-            const currentCount = parseInt(playerCount.textContent);
-            const change = Math.floor(Math.random() * 6) - 3; // -3 to +3
-            const newCount = Math.max(50, Math.min(200, currentCount + change));
-
-            if (newCount !== currentCount) {
-                animateNumber(playerCount, currentCount, newCount, 1000);
-            }
-        }
-    }, 30000); // Update every 30 seconds
 
     // Add typing effect to hero title
     function addTypingEffect() {

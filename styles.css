@@ -248,6 +248,7 @@ body {
     box-shadow: 4px 4px 0 var(--minecraft-shadow);
     transition: all 0.3s ease;
     transform: translateX(0);
+    visibility: hidden;
 }
 
 .music-player:hover {
@@ -569,12 +570,13 @@ body {
     flex-direction: column;
     cursor: pointer;
     gap: 4px;
+    z-index: 5;
 }
 
 .bar {
     width: 25px;
     height: 3px;
-    background: var(--minecraft-black);
+    background: var(--text-secondary);
     transition: 0.3s;
 }
 
@@ -775,7 +777,6 @@ body {
     display: inline-block;
     margin: 0 10px;
     opacity: 0;
-    transform: translateY(50px);
     animation: wordSlideIn 0.8s ease forwards;
 }
 
@@ -919,7 +920,7 @@ body {
 }
 
 .stat-card {
-    background: var(--minecraft-white);
+    background: var(--bg-primary);
     border: 2px solid var(--minecraft-black);
     border-radius: 0;
     padding: 20px;
@@ -1827,8 +1828,6 @@ section {
     margin-bottom: 25px;
 }
 
-
-
 .remember-me {
     display: flex;
     align-items: center;
@@ -2023,6 +2022,202 @@ section {
     }
 }
 
+.admin-messages {
+    background: var(--card-bg);
+    border-top: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
+    padding: 100px 0;
+}
+
+.admin-messages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.admin-message-card {
+    background: var(--minecraft-white);
+    border: 3px solid var(--minecraft-black);
+    border-radius: 0;
+    padding: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 6px 6px 0 var(--minecraft-shadow);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease forwards;
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+.admin-message-card:nth-child(1) { animation-delay: 0.1s; }
+.admin-message-card:nth-child(2) { animation-delay: 0.2s; }
+.admin-message-card:nth-child(3) { animation-delay: 0.3s; }
+.admin-message-card:nth-child(4) { animation-delay: 0.4s; }
+
+.admin-message-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(124, 179, 66, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.admin-message-card:hover::before {
+    left: 100%;
+}
+
+.admin-message-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 8px 8px 0 var(--minecraft-shadow);
+}
+
+.admin-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.steve-face {
+    width: 80px;
+    height: 80px;
+    background: var(--minecraft-green);
+    border: 3px solid var(--minecraft-black);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    box-shadow: 4px 4px 0 var(--minecraft-shadow);
+    animation: steveBounce 2s ease-in-out infinite;
+    position: relative;
+    cursor: pointer;
+}
+
+.steve-face::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: var(--minecraft-dark-green);
+    border: 2px solid var(--minecraft-black);
+    border-radius: 0;
+    z-index: -1;
+    animation: steveGlow 3s ease-in-out infinite;
+}
+
+@keyframes steveBounce {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.05) rotate(-2deg); }
+    50% { transform: scale(1.1) rotate(0deg); }
+    75% { transform: scale(1.05) rotate(2deg); }
+}
+
+@keyframes steveGlow {
+    0%, 100% { box-shadow: 0 0 0 rgba(124, 179, 66, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(124, 179, 66, 0.8); }
+}
+
+.admin-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.admin-name {
+    font-family: 'Minecraft', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--minecraft-black);
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 0 var(--minecraft-white);
+}
+
+.admin-role {
+    background: var(--minecraft-blue);
+    color: var(--minecraft-white);
+    padding: 5px 15px;
+    border: 2px solid var(--minecraft-black);
+    border-radius: 0;
+    font-family: 'Minecraft', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 2px 2px 0 var(--minecraft-shadow);
+}
+
+.admin-message {
+    text-align: center;
+}
+
+.admin-message p {
+    color: var(--minecraft-black);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    font-style: italic;
+    position: relative;
+}
+
+.admin-message p::before {
+    content: '"';
+    font-size: 2rem;
+    color: var(--minecraft-green);
+    font-family: 'Minecraft', monospace;
+    position: absolute;
+    top: -10px;
+    left: -10px;
+}
+
+.admin-message p::after {
+    content: '"';
+    font-size: 2rem;
+    color: var(--minecraft-green);
+    font-family: 'Minecraft', monospace;
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+}
+
+.message-date {
+    font-family: 'Minecraft', monospace;
+    font-size: 12px;
+    color: var(--minecraft-gray);
+    font-weight: 700;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-messages-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .admin-message-card {
+        padding: 20px;
+    }
+    
+    .steve-face {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .admin-name {
+        font-size: 1.1rem;
+    }
+}
+
 /* Footer */
 .footer {
     background: var(--minecraft-black);
@@ -2116,18 +2311,34 @@ section {
         display: flex;
     }
 
+    .hero {
+        margin-top: 72px;
+    }
+
+    .theme-toggle {
+        position: absolute;
+        top: 81px;
+        right: 12px;
+    }
+
+    .account-btn :first-child {
+        display: none;
+    }
+
     .nav-menu {
         position: fixed;
         left: -100%;
-        top: 70px;
+        top: 0;
         flex-direction: column;
-        background: var(--minecraft-white);
-        width: 100%;
+        background: var(--bg-secondary);
+        width: 330px;
+        height: 100vh;
         text-align: center;
         transition: 0.3s;
         padding: 20px 0;
         border-top: 2px solid var(--minecraft-black);
         box-shadow: 0 4px 0 var(--minecraft-shadow);
+        z-index: 4;
     }
 
     .nav-menu.active {
