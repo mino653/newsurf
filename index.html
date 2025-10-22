@@ -10,8 +10,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="./styles.css">
 </head>
 
@@ -87,7 +86,7 @@
                 </div>
             </button>
             <div style="position: relative;">
-                <button class="minecraft-btn account-btn">Account <span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                <button id="account-btn" class="minecraft-btn account-btn">Account <span class="material-symbols-outlined">keyboard_arrow_down</span></button>
                 <div id="secondary-dropmenu" class="nav-bar-dropdown secondary-menu">
                     <ul>
                         <li data-visibility="loggedin">
@@ -95,7 +94,7 @@
 
                         </li>
                         <li data-visibility="loggedout">
-                            <a href="./login" class="secondary-menu-link login">Sign in</a>
+                            <a href="./login.html" class="secondary-menu-link login">Sign in</a>
 
                         </li>
                         <li data-visibility="loggedout">
@@ -116,6 +115,11 @@
             </div>
         </div>
     </nav>
+
+    <button id="scroll-to-top" class="scroll-to-top-btn">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path></svg>
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path></svg>
+    </button>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -159,7 +163,7 @@
                         <span class="btn-sub">play.surfnetwork.xyz</span>
                     </div>
                 </button>
-                <button class="minecraft-btn btn-secondary" onclick="scrollToSection('store')">
+                <button class="minecraft-btn btn-secondary" id="shopping-cart-btn">
                     <div class="btn-icon"><span class="material-symbols-outlined">shopping_cart</span></div>
                     <div class="btn-text">
                         <span class="btn-main">Visit Store</span>
@@ -321,7 +325,7 @@
 
                 <div class="feature-card">
                     <div class="card-header">
-                    <center><div class="card-icon">💬</div>
+                        <div class="card-icon">💬</div>
                         <h3>Discord Integration</h3>
                     </div>
                     <div class="card-content">
@@ -330,7 +334,7 @@
                             <li>Live Chat</li>
                             <li>Server Updates</li>
                             <li>Voice Channels</li>
-                            <li>Bot Integration</li></center>
+                            <li>Bot Integration</li>
                         </ul>
                     </div>
                 </div>
@@ -616,100 +620,6 @@
 
     <!-- Scripts -->
     <script type="module" src="./js/script.js"></script>
-    
-    <style>
-        /* Your existing CSS variables */
-        :root {
-            --minecraft-green: #7CB342;
-            --minecraft-dark-green: #558B2F;
-            --minecraft-black: #212121;
-            --minecraft-white: #FFFFFF;
-            --minecraft-shadow: rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Scroll to top button styles */
-        .scroll-to-top-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--minecraft-green);
-            color: var(--minecraft-white);
-            border: 2px solid var(--minecraft-black);
-            border-radius: 0;
-            padding: 15px 20px;
-            font-family: 'Minecraft', monospace;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 4px 4px 0 var(--minecraft-shadow);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-        }
-
-        .scroll-to-top-btn.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .scroll-to-top-btn:hover {
-            background: var(--minecraft-dark-green);
-            transform: translateY(-2px);
-            box-shadow: 6px 6px 0 var(--minecraft-shadow);
-        }
-
-        .scroll-to-top-btn:active {
-            transform: translateY(2px);
-            box-shadow: 2px 2px 0 var(--minecraft-shadow);
-        }
-    </style>
-</head>
-<body>
-    <!-- Your page content here -->
-    <div style="height: 2000px; background: linear-gradient(45deg, #f0f0f0, #e0e0e0);">
-        <h1>Scroll down to see the button appear!</h1>
-    </div>
-    
-    <!-- Scroll to top button -->
-    <button id="scroll-to-top" class="scroll-to-top-btn">
-        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path></svg>
-        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path></svg>
-    </button>
-
-    <script>
-        function initScrollToTop() {
-            const scrollBtn = document.getElementById('scroll-to-top');
-            
-            window.addEventListener('scroll', function() {
-                if (window.pageYOffset > 300) {
-                    scrollBtn.classList.add('show');
-                } else {
-                    scrollBtn.classList.remove('show');
-                }
-            });
-            
-            scrollBtn.addEventListener('click', function() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', initScrollToTop);
-    </script>
-
-
 </body>
 
 </html>
-
-
-
-

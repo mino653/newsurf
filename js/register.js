@@ -2,23 +2,25 @@ import './equery.js';
 import { getState, getDB, setState, redirect } from './util.js';
 
 EQuery(function () {
-    let signupForm = EQuery('#signupCard');
-    let usernameField = signupForm.find('#usernameInput');
-    let emailField = signupForm.find('#emailInput');
-    let pswField = signupForm.find('#pswInput');
-    let cpswField = signupForm.find('#cpswInput');
-    let showPsw = signupForm.find('.togglePsw');
-    let termsCheckbox = signupForm.find('#termsCheckbox');
-    let subCheckbox = signupForm.find('#subCheckbox');
+    let signupForm = EQuery('#signup-form');
+    let usernameField = signupForm.find('#username');
+    let emailField = signupForm.find('#email');
+    let pswField = signupForm.find('#password');
+    let cpswField = signupForm.find('#confirmPassword');
+    let showPsw = signupForm.find('.password-toggle-btn');
+    let termsCheckbox = signupForm.find('#terms');
+    let subCheckbox = signupForm.find('#newsletter');
     let submitBtn = signupForm.find('button[type=submit]');
     let pswValidateBox = signupForm.find('#pswValidateBox');
-    let prompt = signupForm.find('.input-prompt');
+    let error = signupForm.find('.error-message');
+    let info = signupForm.find('.success-message');
     let validpsw = false;
     let equalpsw = false;
     let canShowPsw = false;
 
     pswField.attr({ type: canShowPsw ? 'text' : 'password' });
     cpswField.attr({ type: canShowPsw ? 'text' : 'password' });
+    showPsw.find('span').text(canShowPsw ? 'visibility_off' : 'visibility');
 
     getDB(state => {
         if (state.userdata !== undefined) redirect('./index.html');
@@ -83,13 +85,17 @@ EQuery(function () {
         });
     }
 
-    signupForm.find('#toLogin').clock
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
 
     showPsw.click(function () {
         canShowPsw = !canShowPsw;
 
         pswField.attr({ type: canShowPsw ? 'text' : 'password' });
         cpswField.attr({ type: canShowPsw ? 'text' : 'password' });
+        showPsw.find('span').text(canShowPsw ? 'visibility_off' : 'visibility');
     });
 
     validPsw(pswField);
@@ -105,7 +111,33 @@ EQuery(function () {
             pswValidateBox.find('#equal').addClass('invalid');
         }
     });
-    console.log(pswField, pswValidateBox)
+    
+    EQuery('head').append(EQuery.elemt('style', `
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--minecraft-gray);
+            border-radius: 50%;
+            border-top-color: var(--minecraft-white);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    `));
 
     pswField.focus(function () {
         pswValidateBox.show();
@@ -126,13 +158,18 @@ EQuery(function () {
     submitBtn.click(async function (e) {
         e.preventDefault();
 
-        prompt.hide()
-            .removeClass('error')
-            .text('');
+        error.hide().text('');
+        info.hide().text('');
 
         if (!termsCheckbox.val()) {
             termsCheckbox.removeClass('shake');
             termsCheckbox.addClass('shake');
+            return;
+        }
+
+        if (!isValidEmail(emailField.val())) {
+            emailField.removeClass('shake').addClass('shake');
+            error.show().css('animation: slideInDown 0.3s ease').text('Please enter a valid email address.');
             return;
         }
 
@@ -160,15 +197,12 @@ EQuery(function () {
                 let state = getState();
                 state.userdata = response;
                 setState(state, function () {
-                    prompt.hide()
-                        .removeClass('error')
-                        .text('');
+                    error.hide().text('');
+                    info.show().css('animation: slideInDown 0.3s ease').text('Registration successful! Redirecting...');
                     redirect('./confirm-email.html');
                 });
             } else {
-                prompt.show()
-                    .addClass('error')
-                    .text(response.error);
+                error.show().css('animation: slideInDown 0.3s ease').text(response.error);
             }
 
         } else {

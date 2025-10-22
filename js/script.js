@@ -109,6 +109,7 @@ EQuery(async function () {
         });
 
         EQuery('#ip').text(response.ip);
+        console.log(response)
         EQuery('#serverStatus').addClass(response.status.online ? 'bg-success' : 'bg-fail').text(response.status.online ? 'Online' : 'Offline');
         EQuery('#playersCount').text(response.status.count + '/' + response.max + ' Players');
         EQuery('#serverVersion').text(response.status.version);
@@ -213,6 +214,10 @@ EQuery(async function () {
         const hamburger = EQuery('.hamburger');
         const navMenu = EQuery('.nav-menu');
         const navLinks = EQuery('.nav-link');
+        const acctBtn = EQuery('#account-btn');
+        const dropdownMenu = EQuery('#secondary-dropmenu');
+        let state = getState();
+        let dropdown = false;
 
         // Mobile menu toggle
         hamburger.click(function () {
@@ -230,6 +235,18 @@ EQuery(async function () {
             });
         });
 
+        acctBtn.click(function () {
+            dropdown = !dropdown;
+            if (dropdown) {
+                dropdownMenu.show().css('animation: slideInDown 0.3s ease forwards');
+                acctBtn.find('span').text('keyboard_arrow_up');
+            } else {
+                dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
+                setTimeout(function () {dropdownMenu.hide()}, 300);
+                acctBtn.find('span').text('keyboard_arrow_down');
+            }
+        })
+
         // Close mobile menu when clicking on links
         navLinks.each((index, link) => {
             link.addEventListener('click', function () {
@@ -237,10 +254,8 @@ EQuery(async function () {
                 navMenu.removeClass('active');
 
                 // Reset hamburger bars
-                const bars = hamburger.querySelectorAll('.bar');
-                bars.each(bar => {
-                    bar.style.transform = 'none';
-                });
+                const bars = hamburger.find('.bar');
+                bars.css('transform: none');
             });
         });
 
@@ -249,7 +264,7 @@ EQuery(async function () {
             EQuery(link).click(function (e) {
                 e.preventDefault();
                 const targetId = this.getAttribute('href');
-                const targetSection = EQuery(targetId);
+                const targetSection = EQuery(targetId)[0];
 
                 if (targetSection) {
                     targetSection.scrollIntoView({
@@ -261,6 +276,8 @@ EQuery(async function () {
         });
 
         // Navbar background on scroll
+        const scrollBtn = EQuery('#scroll-to-top');
+    
         window.addEventListener('scroll', function () {
             const navbar = EQuery('.navbar');
             if (window.scrollY > 50) {
@@ -268,7 +285,29 @@ EQuery(async function () {
             } else {
                 navbar.css('backdrop-filter: none');
             }
+
+            if (window.pageYOffset > 300) {
+                scrollBtn.addClass('show');
+            } else {
+                scrollBtn.removeClass('show');
+            }
         });
+
+        scrollBtn.click(function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        console.log(state && state.userdata && state.userdata.logged_in)
+        if (state && state.userdata && state.userdata.logged_in) {
+            EQuery('[data-visibility=loggedin]').show();
+            EQuery('[data-visibility=loggedout]').hide();
+        } else {
+            EQuery('[data-visibility=loggedin]').hide();
+            EQuery('[data-visibility=loggedout]').show();
+        }
     }
 
     // Music Player functionality
@@ -418,7 +457,7 @@ EQuery(async function () {
         // Auto-start music after a delay
         setTimeout(() => {
             if (!musicGenerator.isPlaying) {
-                playPauseBtn[0].click();
+                if (playPauseBtn[0]) playPauseBtn[0].click();
             }
         }, 4000);
     }
@@ -432,6 +471,7 @@ EQuery(async function () {
         const cartItems = EQuery('#cart-items');
         const cartTotal = EQuery('#cart-total');
         const checkoutBtn = EQuery('#checkout-btn');
+        const shoppingBtn = EQuery('#shopping-cart-btn');
 
         let cart = [];
         let total = 0;
@@ -553,6 +593,10 @@ EQuery(async function () {
                 this.innerHTML = 'Checkout';
                 this.disabled = false;
             }, 2000);
+        });
+
+        shoppingBtn.click(function () {
+            scrollToSection('store');
         });
     }
 
@@ -695,7 +739,12 @@ EQuery(async function () {
     function initMinecraftEffects() {
         // Add block break effect to buttons
         const buttons = EQuery('.minecraft-btn');
-        buttons.click(createBlockBreakEffect);
+
+        window.addEventListener('click', function (e) {
+            if (e.target.classList.contains('minecraft-btn')) {
+                createBlockBreakEffect(e);
+            }
+        });
 
         // Add hover effects to cards
         const cards = EQuery('.feature-card, .product-card');
@@ -711,10 +760,9 @@ EQuery(async function () {
     }
 
     // Create block break effect
-    function createBlockBreakEffect(element) {
-        const rect = element.currentTarget.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+    function createBlockBreakEffect(event) {
+        const centerX = event.x;
+        const centerY = event.y;
 
         for (let i = 0; i < 8; i++) {
             const particle = EQuery.elemt('div')
@@ -751,7 +799,7 @@ EQuery(async function () {
 
     // Utility function to scroll to section
     function scrollToSection(sectionId) {
-        const section = EQuery(`#${sectionId}`);
+        const section = EQuery(`#${sectionId}`)[0];
         if (section) {
             section.scrollIntoView({
                 behavior: 'smooth',
