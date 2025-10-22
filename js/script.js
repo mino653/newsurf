@@ -9,6 +9,7 @@ import {
 
 EQuery(async function () {
     // Initialize all features
+    
     initLoadingScreen();
     initThemeToggle();
     initNavigation();

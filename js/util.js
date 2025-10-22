@@ -57,6 +57,4 @@ function redirect(href) {
     setTimeout(() => window.location = href, 500);
 }
 
-export {
-    getState, getDB, clear, setState, redirect, reload
-};
+export { getState, getDB, clear, setState, redirect, reload };
