@@ -31,7 +31,6 @@ EQuery(async function () {
                 .click(showUserMenu)
                 .append([EQuery.elemt('i', null, 'fas fa-user me-2'), userdata.username]);
         }
-        loadTheme()
     });
 
     const ipRevealBtn = EQuery('#ipRevealBtn');

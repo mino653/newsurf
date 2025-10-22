@@ -419,6 +419,39 @@ body {
     box-shadow: 2px 2px 0 var(--minecraft-shadow);
 }
 
+.nav-bar-dropdown {
+    background: var(--bg-secondary);
+    box-shadow: inset 0 4px 0 0 rgba(38, 36, 35, .25), inset -4px 0 0 0 #262423, inset 0 -4px 0 0 rgba(0, 0, 0, .75), inset 4px 0 0 0 rgba(0, 0, 0, .75), 0 4px 0 0 rgba(0, 0, 0, .25);
+    min-width: 200px;
+    padding: 16px;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 11px);
+}
+
+.nav-bar-dropdown ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-bar-dropdown ul li:not(:last-child) {
+    border-bottom: 1px solid #3636366b;
+}
+
+.nav-bar-dropdown a {
+    color: var(--text-light);
+    display: block;
+    font-family: 'Minecraft', monospace;
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: 1.04px;
+    line-height: 12px;
+    padding: 12px 0;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
 .theme-toggle {
     background: var(--minecraft-blue);
     color: var(--minecraft-white);
