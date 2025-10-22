@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SurfNetwork</title>
+    <meta name="description" content="Your SurfNetwork Profile - Manage your Minecraft account">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Minecraft:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Minecraft-Inspired CSS with Real Animations */
+
+        /* CSS Variables */
+        :root {
+            --minecraft-green: #7CB342;
+            --minecraft-dark-green: #558B2F;
+            --minecraft-brown: #8D6E63;
+            --minecraft-dark-brown: #5D4037;
+            --minecraft-blue: #2196F3;
+            --minecraft-dark-blue: #1976D2;
+            --minecraft-red: #F44336;
+            --minecraft-dark-red: #D32F2F;
+            --minecraft-yellow: #FFEB3B;
+            --minecraft-dark-yellow: #FBC02D;
+            --minecraft-purple: #9C27B0;
+            --minecraft-dark-purple: #7B1FA2;
+            --minecraft-gray: #9E9E9E;
+            --minecraft-dark-gray: #616161;
+            --minecraft-black: #212121;
+            --minecraft-white: #FFFFFF;
+            --minecraft-text: #E0E0E0;
+            --minecraft-shadow: rgba(0, 0, 0, 0.3);
+            
+            /* Light mode colors */
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F5;
+            --bg-hero: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            --bg-sky: linear-gradient(180deg, #87CEEB 0%, #98FB98 70%, #8B4513 100%);
+            --text-primary: #000000;
+            --text-secondary: #333333;
+            --text-light: #000000;
+            --border-color: #000000;
+            --card-bg: #FFFFFF;
+            --nav-bg: #FFFFFF;
+        }
+
+        /* Dark mode colors */
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #1a1a1a;
+            --bg-hero: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
+            --bg-sky: linear-gradient(180deg, #000000 0%, #1a1a1a 70%, #2d2d2d 100%);
+            --text-primary: #FFFFFF;
+            --text-secondary: #E0E0E0;
+            --text-light: #FFFFFF;
+            --border-color: #FFFFFF;
+            --card-bg: #1a1a1a;
+            --nav-bg: #000000;
+        }
+
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-hero);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Profile Background */
+        .profile-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .minecraft-sky-profile {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-sky);
+            animation: skyAnimation 20s ease-in-out infinite;
+        }
+
+        @keyframes skyAnimation {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(30deg); }
+        }
+
+        .profile-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .profile-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--minecraft-white);
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+        }
+
+        .profile-particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .profile-particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .profile-particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .profile-particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .profile-particle:nth-child(5) { left: 50%; animation-delay: 4s; }
+        .profile-particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .profile-particle:nth-child(7) { left: 70%; animation-delay: 6s; }
+        .profile-particle:nth-child(8) { left: 80%; animation-delay: 7s; }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Profile Container */
+        .profile-container {
+            min-height: 100vh;
+            padding: 40px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-logo-block {
+            width: 60px;
+            height: 60px;
+            background: var(--minecraft-green);
+            border: 3px solid var(--border-color);
+            border-radius: 0;
+            animation: logoRotate 10s linear infinite;
+        }
+
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-logo-text {
+            font-family: 'Minecraft', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-shadow: 2px 2px 0 var(--minecraft-white);
+        }
+
+        .profile-title {
+            font-family: 'Minecraft', monospace;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 var(--minecraft-white);
+        }
+
+        .profile-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Profile Content */
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* Profile Sidebar */
+        .profile-sidebar {
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 0;
+            padding: 30px;
+            box-shadow: 6px 6px 0 var(--minecraft-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .profile-avatar {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar-container {
+            width: 120px;
+            height: 120px;
+            background: var(--minecraft-green);
+            border: 3px solid var(--border-color);
+            border-radius: 0;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+            animation: avatarBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes avatarBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .avatar-change-btn {
+            background: var(--minecraft-blue);
+            color: var(--minecraft-white);
+            border: 2px solid var(--border-color);
+            border-radius: 0;
+            padding: 10px 20px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+
+        .avatar-change-btn:hover {
+            background: var(--minecraft-dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+        }
+
+        .profile-stats {
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 2px solid var(--minecraft-gray);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-value {
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            color: var(--minecraft-green);
+            font-size: 1.1rem;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .profile-action-btn {
+            background: var(--minecraft-white);
+            color: var(--minecraft-black);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 15px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .profile-action-btn:hover {
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+        }
+
+        .profile-action-btn.danger {
+            background: var(--minecraft-red);
+            color: var(--minecraft-white);
+        }
+
+        .profile-action-btn.danger:hover {
+            background: var(--minecraft-dark-red);
+        }
+
+        /* Profile Main */
+        .profile-main {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .profile-section {
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 0;
+            padding: 30px;
+            box-shadow: 6px 6px 0 var(--minecraft-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .profile-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 8px 8px 0 var(--minecraft-shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .section-icon {
+            font-size: 24px;
+        }
+
+        .section-title {
+            font-family: 'Minecraft', monospace;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            text-shadow: 1px 1px 0 var(--minecraft-white);
+        }
+
+        .section-content {
+            color: var(--text-primary);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            color: var(--minecraft-black);
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--minecraft-green);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: var(--minecraft-gray);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 15px;
+            background: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            color: var(--minecraft-black);
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--minecraft-green);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+            transform: translateY(-2px);
+        }
+
+        /* Button Styles */
+        .minecraft-btn {
+            background: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 15px 25px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--minecraft-black);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .minecraft-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 0 var(--minecraft-shadow);
+        }
+
+        .minecraft-btn:active {
+            transform: translateY(2px);
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+
+        .btn-primary {
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--minecraft-dark-green);
+        }
+
+        .btn-secondary {
+            background: var(--minecraft-blue);
+            color: var(--minecraft-white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--minecraft-dark-blue);
+        }
+
+        .btn-danger {
+            background: var(--minecraft-red);
+            color: var(--minecraft-white);
+        }
+
+        .btn-danger:hover {
+            background: var(--minecraft-dark-red);
+        }
+
+        /* Achievement Grid */
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .achievement-item {
+            background: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+
+        .achievement-item:hover {
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+            transform: translateY(-5px);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .achievement-title {
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Server Stats */
+        .server-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .server-stat-card {
+            background: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+
+        .server-stat-card:hover {
+            background: var(--minecraft-blue);
+            color: var(--minecraft-white);
+            transform: translateY(-5px);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+        }
+
+        .server-stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .server-stat-number {
+            font-family: 'Minecraft', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .server-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Messages */
+        .message {
+            padding: 15px 20px;
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            margin: 20px 0;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            animation: slideInDown 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+
+        .message.success {
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+        }
+
+        .message.error {
+            background: var(--minecraft-red);
+            color: var(--minecraft-white);
+        }
+
+        .message.info {
+            background: var(--minecraft-blue);
+            color: var(--minecraft-white);
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--minecraft-gray);
+            border-radius: 50%;
+            border-top-color: var(--minecraft-white);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .profile-sidebar {
+                position: static;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .achievement-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .server-stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+
+            .profile-logo-text {
+                font-size: 2rem;
+            }
+
+            .profile-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .profile-section,
+            .profile-sidebar {
+                padding: 20px;
+            }
+
+            .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Profile Background -->
+    <div class="profile-background">
+        <div class="minecraft-sky-profile"></div>
+        <div class="profile-particles">
+            <div class="profile-particle"></div>
+            <div class="profile-particle"></div>
+            <div class="profile-particle"></div>
+            <div class="profile-particle"></div>
+            <div class="profile-particle"></div>
+            <div class="profile-particle"></div>
+            <div class="profile-particle"></div>
+            <div class="profile-particle"></div>
+        </div>
+    </div>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        <div class="container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-logo">
+                    <div class="profile-logo-block"></div>
+                    <span class="profile-logo-text">SurfNetwork</span>
+                </div>
+                <h1 class="profile-title">Player Profile</h1>
+                <p class="profile-subtitle">Manage your Minecraft account and view your progress</p>
+            </div>
+
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <!-- Profile Sidebar -->
+                <div class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <div class="avatar-container">🧙‍♂️</div>
+                        <button class="avatar-change-btn" onclick="changeAvatar()">Change Avatar</button>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Rank</span>
+                            <span class="stat-value">VIP</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Level</span>
+                            <span class="stat-value">42</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Coins</span>
+                            <span class="stat-value">1,250</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Playtime</span>
+                            <span class="stat-value">127h</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Joined</span>
+                            <span class="stat-value">Jan 2024</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="profile-action-btn" onclick="editProfile()">✏️ Edit Profile</button>
+                        <button class="profile-action-btn" onclick="changePassword()">🔒 Change Password</button>
+                        <button class="profile-action-btn" onclick="viewSettings()">⚙️ Settings</button>
+                        <button class="profile-action-btn danger" onclick="logout()">🚪 Logout</button>
+                    </div>
+                </div>
+
+                <!-- Profile Main -->
+                <div class="profile-main">
+                    <!-- Personal Information -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <span class="section-icon">👤</span>
+                            <h2 class="section-title">Personal Information</h2>
+                        </div>
+                        <div class="section-content">
+                            <form id="personal-info-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="firstName" class="form-label">First Name</label>
+                                        <input type="text" id="firstName" name="firstName" class="form-input" value="Alex" placeholder="Enter first name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName" class="form-label">Last Name</label>
+                                        <input type="text" id="lastName" name="lastName" class="form-input" value="Minecraft" placeholder="Enter last name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" id="email" name="email" class="form-input" value="alex@example.com" placeholder="Enter your email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="minecraftUsername" class="form-label">Minecraft Username</label>
+                                    <input type="text" id="minecraftUsername" name="minecraftUsername" class="form-input" value="AlexMiner" placeholder="Enter Minecraft username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bio" class="form-label">Bio</label>
+                                    <textarea id="bio" name="bio" class="form-textarea" placeholder="Tell us about yourself...">Passionate Minecraft player who loves building and exploring. Always up for a new adventure!</textarea>
+                                </div>
+                                <button type="submit" class="minecraft-btn btn-primary">💾 Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <span class="section-icon">🏆</span>
+                            <h2 class="section-title">Achievements</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="achievement-grid">
+                                <div class="achievement-item">
+                                    <div class="achievement-icon">🎯</div>
+                                    <div class="achievement-title">First Steps</div>
+                                    <div class="achievement-desc">Joined SurfNetwork</div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon">⚔️</div>
+                                    <div class="achievement-title">Warrior</div>
+                                    <div class="achievement-desc">Reached Level 25</div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon">🏗️</div>
+                                    <div class="achievement-title">Builder</div>
+                                    <div class="achievement-desc">Built 50 structures</div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon">💎</div>
+                                    <div class="achievement-title">Miner</div>
+                                    <div class="achievement-desc">Mined 1000 blocks</div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon">🌟</div>
+                                    <div class="achievement-title">VIP Member</div>
+                                    <div class="achievement-desc">Purchased VIP rank</div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon">🎮</div>
+                                    <div class="achievement-title">Gamer</div>
+                                    <div class="achievement-desc">Played 100+ hours</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Server Statistics -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <span class="section-icon">📊</span>
+                            <h2 class="section-title">Server Statistics</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="server-stats-grid">
+                                <div class="server-stat-card">
+                                    <div class="server-stat-icon">⏰</div>
+                                    <div class="server-stat-number">127h</div>
+                                    <div class="server-stat-label">Total Playtime</div>
+                                </div>
+                                <div class="server-stat-card">
+                                    <div class="server-stat-icon">🏗️</div>
+                                    <div class="server-stat-number">156</div>
+                                    <div class="server-stat-label">Blocks Placed</div>
+                                </div>
+                                <div class="server-stat-card">
+                                    <div class="server-stat-icon">⛏️</div>
+                                    <div class="server-stat-number">2,847</div>
+                                    <div class="server-stat-label">Blocks Mined</div>
+                                </div>
+                                <div class="server-stat-card">
+                                    <div class="server-stat-icon">💀</div>
+                                    <div class="server-stat-number">23</div>
+                                    <div class="server-stat-label">Deaths</div>
+                                </div>
+                                <div class="server-stat-card">
+                                    <div class="server-stat-icon">🎯</div>
+                                    <div class="server-stat-number">89</div>
+                                    <div class="server-stat-label">Mobs Killed</div>
+                                </div>
+                                <div class="server-stat-card">
+                                    <div class="server-stat-icon">🏆</div>
+                                    <div class="server-stat-number">6</div>
+                                    <div class="server-stat-label">Achievements</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme support
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        // Show message function
+        function showMessage(text, type = 'info') {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.message');
+            existingMessages.forEach(msg => msg.remove());
+            
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            
+            // Add to top of page
+            document.body.insertBefore(message, document.body.firstChild);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+
+        // Profile functions
+        function changeAvatar() {
+            const avatars = ['🧙‍♂️', '🧙‍♀️', '👨‍💻', '👩‍💻', '🧑‍🎨', '👨‍🚀', '👩‍🚀', '🧑‍🔬', '👨‍🔬', '👩‍🔬'];
+            const currentAvatar = document.querySelector('.avatar-container');
+            const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+            
+            currentAvatar.textContent = randomAvatar;
+            showMessage('Avatar changed successfully!', 'success');
+        }
+
+        function editProfile() {
+            showMessage('Profile edit mode activated!', 'info');
+            // Enable form editing
+            const form = document.getElementById('personal-info-form');
+            const inputs = form.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.disabled = false;
+                input.style.background = 'var(--minecraft-white)';
+            });
+        }
+
+        function changePassword() {
+            showMessage('Password change feature coming soon!', 'info');
+        }
+
+        function viewSettings() {
+            showMessage('Settings panel coming soon!', 'info');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showMessage('Logging out...', 'info');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            }
+        }
+
+        // Form submission
+        document.getElementById('personal-info-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Simulate saving
+            submitBtn.innerHTML = '<div class="loading"></div> Saving...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                showMessage('Profile updated successfully!', 'success');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Initialize theme on load
+        initTheme();
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate achievement items on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'slideInUp 0.6s ease forwards';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe achievement items
+            const achievementItems = document.querySelectorAll('.achievement-item');
+            achievementItems.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                observer.observe(item);
+            });
+
+            // Add click effects to cards
+            const cards = document.querySelectorAll('.server-stat-card, .achievement-item');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+        });
+
+        // Add CSS for slideInUp animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
