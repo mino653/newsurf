@@ -14,7 +14,7 @@ class MusicGenerator {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.masterGain = this.audioContext.createGain();
             this.masterGain.connect(this.audioContext.destination);
-            this.masterGain.gain.setValueAtTime(0.3, this.audioContext.currentTime); // Lower volume
+            this.masterGain.gain.setValueAtTime(0.9, this.audioContext.currentTime); // Lower volume
             return true;
         } catch (error) {
             console.log('Web Audio API not supported');
@@ -73,13 +73,15 @@ class MusicGenerator {
 
         // Play melody multiple times with variations
         for (let repeat = 0; repeat < 4; repeat++) {
-            melody.forEach((note, index) => {
-                const variation = Math.random() * 0.1 - 0.05; // Small pitch variation
-                const freq = note.freq * (1 + variation);
-                this.playNote(freq, note.duration, currentTime);
-                currentTime += note.duration;
-            });
-            currentTime += 0.5; // Pause between repeats
+            if (this.isPlaying) {
+                melody.forEach((note, index) => {
+                    const variation = Math.random() * 0.1 - 0.05; // Small pitch variation
+                    const freq = note.freq * (1 + variation);
+                    this.playNote(freq, note.duration, currentTime);
+                    currentTime += note.duration;
+                });
+                currentTime += 0.5; // Pause between repeats
+            }
         }
 
         this.currentTrack = setTimeout(() => {
@@ -90,7 +92,7 @@ class MusicGenerator {
     }
 
     stopTrack() {
-        if (this.currentTrack) {
+        if (this.currentTrack && this.isPlaying) {
             clearTimeout(this.currentTrack);
             this.currentTrack = null;
         }

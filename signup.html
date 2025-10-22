@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - SurfNetwork</title>
+    <meta name="description" content="Join SurfNetwork - The ultimate Minecraft server experience">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Minecraft:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Login/Signup specific styles */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-hero);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .minecraft-sky-auth {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-sky);
+            animation: skyAnimation 20s ease-in-out infinite;
+        }
+
+        .auth-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .auth-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--minecraft-white);
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+        }
+
+        .auth-particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .auth-particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .auth-particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .auth-particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .auth-particle:nth-child(5) { left: 50%; animation-delay: 4s; }
+        .auth-particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .auth-particle:nth-child(7) { left: 70%; animation-delay: 6s; }
+        .auth-particle:nth-child(8) { left: 80%; animation-delay: 7s; }
+
+        .auth-card {
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 0;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 8px 8px 0 var(--minecraft-shadow);
+            animation: slideInUp 0.8s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .auth-logo-block {
+            width: 50px;
+            height: 50px;
+            background: var(--minecraft-green);
+            border: 2px solid var(--border-color);
+            border-radius: 0;
+            animation: logoRotate 10s linear infinite;
+        }
+
+        .auth-logo-text {
+            font-family: 'Minecraft', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-shadow: 2px 2px 0 var(--minecraft-white);
+        }
+
+        .auth-title {
+            font-family: 'Minecraft', monospace;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 var(--minecraft-white);
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .auth-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            color: var(--minecraft-black);
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--minecraft-green);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: var(--minecraft-gray);
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--minecraft-gray);
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle-btn:hover {
+            color: var(--minecraft-green);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-options {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .form-options input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--minecraft-green);
+            margin-top: 2px;
+        }
+
+        .form-options label {
+            font-family: 'Minecraft', monospace;
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .form-options a {
+            color: var(--minecraft-blue);
+            text-decoration: none;
+        }
+
+        .form-options a:hover {
+            color: var(--minecraft-dark-blue);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 18px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+            margin-bottom: 20px;
+        }
+
+        .auth-btn:hover {
+            background: var(--minecraft-dark-green);
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 0 var(--minecraft-shadow);
+        }
+
+        .auth-btn:active {
+            transform: translateY(2px);
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+        }
+
+        .auth-divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--minecraft-black);
+        }
+
+        .auth-divider span {
+            background: var(--card-bg);
+            padding: 0 20px;
+            font-family: 'Minecraft', monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .switch-auth-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .switch-auth-btn {
+            background: var(--minecraft-blue);
+            color: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 12px 25px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .switch-auth-btn:hover {
+            background: var(--minecraft-dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+        }
+
+        .back-to-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--minecraft-white);
+            color: var(--minecraft-black);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 10px 20px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+            text-decoration: none;
+            z-index: 3;
+        }
+
+        .back-to-home:hover {
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 var(--minecraft-shadow);
+        }
+
+        .error-message {
+            background: var(--minecraft-red);
+            color: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+            display: none;
+        }
+
+        .success-message {
+            background: var(--minecraft-green);
+            color: var(--minecraft-white);
+            border: 2px solid var(--minecraft-black);
+            border-radius: 0;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-family: 'Minecraft', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 2px 2px 0 var(--minecraft-shadow);
+            display: none;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            font-size: 12px;
+            font-family: 'Minecraft', monospace;
+        }
+
+        .password-strength.weak { color: var(--minecraft-red); }
+        .password-strength.medium { color: var(--minecraft-yellow); }
+        .password-strength.strong { color: var(--minecraft-green); }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .auth-card {
+                margin: 20px;
+                padding: 30px;
+                max-width: 450px;
+            }
+
+            .auth-logo-text {
+                font-size: 1.5rem;
+            }
+
+            .auth-title {
+                font-size: 1.5rem;
+            }
+
+            .back-to-home {
+                top: 10px;
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Background -->
+    <div class="auth-background">
+        <div class="minecraft-sky-auth"></div>
+        <div class="auth-particles">
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+        </div>
+    </div>
+
+    <!-- Back to Home Button -->
+    <a href="index.html" class="back-to-home">🏠 Back to Home</a>
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Auth Header -->
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <div class="auth-logo-block"></div>
+                    <span class="auth-logo-text">SurfNetwork</span>
+                </div>
+                <h1 class="auth-title">Join the Adventure!</h1>
+                <p class="auth-subtitle">Create your account and start your Minecraft journey with us</p>
+            </div>
+
+            <!-- Error/Success Messages -->
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+
+            <!-- Signup Form -->
+            <form id="signup-form" class="auth-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" id="firstName" name="firstName" class="form-input" placeholder="Enter first name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Enter last name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="form-label">Minecraft Username</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Enter your Minecraft username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-toggle">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="Create a strong password" required>
+                        <button type="button" class="password-toggle-btn" onclick="togglePassword('password')">👁️</button>
+                    </div>
+                    <div id="password-strength" class="password-strength"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <div class="password-toggle">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+                        <button type="button" class="password-toggle-btn" onclick="togglePassword('confirmPassword')">👁️</button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></label>
+                </div>
+
+                <div class="form-options">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">Subscribe to our newsletter for updates and special offers</label>
+                </div>
+
+                <button type="submit" class="auth-btn">🎮 Create Account</button>
+            </form>
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+            <div class="switch-auth">
+                <p class="switch-auth-text">Already have an account?</p>
+                <a href="login.html" class="switch-auth-btn">🚀 Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme support
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        // Password toggle functionality
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            const strengthIndicator = document.getElementById('password-strength');
+            let strength = 0;
+            let feedback = '';
+
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            if (strength < 2) {
+                strengthIndicator.textContent = 'Weak password';
+                strengthIndicator.className = 'password-strength weak';
+            } else if (strength < 4) {
+                strengthIndicator.textContent = 'Medium strength';
+                strengthIndicator.className = 'password-strength medium';
+            } else {
+                strengthIndicator.textContent = 'Strong password';
+                strengthIndicator.className = 'password-strength strong';
+            }
+        }
+
+        // Real-time password strength checking
+        document.getElementById('password').addEventListener('input', function() {
+            checkPasswordStrength(this.value);
+        });
+
+        // Form validation and submission
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            // Hide previous messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Basic validation
+            if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
+                showError('Please fill in all required fields');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
+            
+            if (username.length < 3) {
+                showError('Username must be at least 3 characters long');
+                return;
+            }
+            
+            if (password.length < 8) {
+                showError('Password must be at least 8 characters long');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+            
+            if (!terms) {
+                showError('Please accept the Terms of Service and Privacy Policy');
+                return;
+            }
+            
+            // Simulate signup process
+            submitBtn.innerHTML = '<div class="loading"></div> Creating Account...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate successful signup
+                showSuccess('Account created successfully! Welcome to SurfNetwork!');
+                submitBtn.innerHTML = '✅ Account Created';
+                submitBtn.style.background = 'var(--minecraft-green)';
+                
+                // Redirect after delay
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }, 2000);
+        });
+
+        // Email validation
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            errorMessage.style.animation = 'slideInDown 0.3s ease';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            successMessage.style.animation = 'slideInDown 0.3s ease';
+        }
+
+        // Add loading animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            .loading {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border: 3px solid var(--minecraft-gray);
+                border-radius: 50%;
+                border-top-color: var(--minecraft-white);
+                animation: spin 1s ease-in-out infinite;
+            }
+            
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+            
+            @keyframes slideInDown {
+                from {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize theme on load
+        initTheme();
+    </script>
+</body>
+</html>

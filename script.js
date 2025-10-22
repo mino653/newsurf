@@ -1,5 +1,9 @@
 // SurfNetwork Minecraft Website - Enhanced JavaScript
-document.addEventListener('DOMContentLoaded', function() {
+
+import './equery.js';
+import './music-generator.js';
+
+EQuery(function () {
     // Initialize all features
     initLoadingScreen();
     initThemeToggle();
@@ -16,43 +20,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Theme Toggle
 function initThemeToggle() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = themeToggle.querySelector('.theme-icon');
-    
+    const themeToggle = EQuery('#theme-toggle');
+    const themeIcon = themeToggle.find('.theme-icon');
+
     // Load saved theme
     const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    EQuery(document.documentElement).attr('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
-    
+
     // Theme toggle functionality
-    themeToggle.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
+    themeToggle.click(function () {
+        const currentTheme = EQuery(document.documentElement).getAttr('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
+
+        EQuery(document.documentElement).attr('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
-        
+
         // Add transition effect
-        document.body.style.transition = 'all 0.3s ease';
+        EQuery('body').css('transistion: all .3s ease');
         setTimeout(() => {
-            document.body.style.transition = '';
+            EQuery('body').css('transistion: ');
         }, 300);
     });
 }
 
 function updateThemeIcon(theme) {
-    const themeIcon = document.querySelector('.theme-icon');
-    themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    const themeIcon = EQuery('.theme-icon');
+    themeIcon.find('span').text(theme === 'dark'? 'clear_day' : 'bedtime');
 }
 
 // Loading Screen
-function initLoadingScreen() {
-    const loadingScreen = document.getElementById('loading-screen');
-    
+async function initLoadingScreen() {
+    const loadingScreen = EQuery('#loading-screen');
+
     // Simulate loading
     setTimeout(() => {
-        loadingScreen.classList.add('hidden');
+        loadingScreen.addClass('hidden');
         // Start animations after loading
         setTimeout(() => {
             initHeroAnimations();
@@ -62,49 +66,49 @@ function initLoadingScreen() {
 
 // Hero Animations
 function initHeroAnimations() {
-    const titleWords = document.querySelectorAll('.title-word');
-    const subtitle = document.querySelector('.subtitle-text');
-    const buttons = document.querySelector('.hero-buttons');
-    const stats = document.querySelector('.server-stats');
-    
+    const titleWords = EQuery('.title-word');
+    const subtitle = EQuery('.subtitle-text');
+    const buttons = EQuery('.hero-buttons');
+    const stats = EQuery('.server-stats');
+
     // Animate title words
-    titleWords.forEach((word, index) => {
+    titleWords.each((index, word) => {
         setTimeout(() => {
             word.style.animation = 'wordSlideIn 0.8s ease forwards';
         }, index * 200);
     });
-    
+
     // Animate subtitle
     setTimeout(() => {
-        subtitle.style.animation = 'fadeIn 1s ease forwards';
+        subtitle.css('animations: fadeIn 1s ease forwards');
     }, 800);
-    
+
     // Animate buttons
     setTimeout(() => {
-        buttons.style.animation = 'fadeIn 1s ease forwards';
+        buttons.css('animation: fadeIn 1s ease forwards');
     }, 1000);
-    
+
     // Animate stats
     setTimeout(() => {
-        stats.style.animation = 'fadeIn 1s ease forwards';
+        stats.css('animation: fadeIn 1s ease forwards');
     }, 1200);
 }
 
 // Navigation functionality
 function initNavigation() {
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
+    const hamburger = EQuery('.hamburger');
+    const navMenu = EQuery('.nav-menu');
+    const navLinks = EQuery('.nav-link');
 
     // Mobile menu toggle
-    hamburger.addEventListener('click', function() {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        
+    hamburger.click(function () {
+        hamburger.toggleClass('active');
+        navMenu.toggleClass('active');
+
         // Animate hamburger bars
-        const bars = hamburger.querySelectorAll('.bar');
-        bars.forEach((bar, index) => {
-            if (hamburger.classList.contains('active')) {
+        const bars = hamburger.find('.bar');
+        bars.each((index, bar) => {
+            if (hamburger.hasClass('active')) {
                 bar.style.transform = `rotate(${index === 0 ? 45 : index === 1 ? 0 : -45}deg) translate(${index === 0 ? '5px, 5px' : index === 1 ? '0, 0' : '5px, -5px'})`;
             } else {
                 bar.style.transform = 'none';
@@ -113,26 +117,26 @@ function initNavigation() {
     });
 
     // Close mobile menu when clicking on links
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-            
+    navLinks.each((index, link) => {
+        link.addEventListener('click', function () {
+            hamburger.removeClass('active');
+            navMenu.removeClass('active');
+
             // Reset hamburger bars
             const bars = hamburger.querySelectorAll('.bar');
-            bars.forEach(bar => {
+            bars.each(bar => {
                 bar.style.transform = 'none';
             });
         });
     });
 
     // Smooth scrolling for navigation links
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+    navLinks.each((index, link) => {
+        EQuery(link).click(function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
+            const targetSection = EQuery(targetId);
+
             if (targetSection) {
                 targetSection.scrollIntoView({
                     behavior: 'smooth',
@@ -143,28 +147,26 @@ function initNavigation() {
     });
 
     // Navbar background on scroll
-    window.addEventListener('scroll', function() {
-        const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', function () {
+        const navbar = EQuery('.navbar');
         if (window.scrollY > 50) {
-            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-            navbar.style.backdropFilter = 'blur(10px)';
+            navbar.css('backdrop-filter: blur(10px);');
         } else {
-            navbar.style.background = 'var(--minecraft-white)';
-            navbar.style.backdropFilter = 'none';
+            navbar.css('backdrop-filter: none');
         }
     });
 }
 
 // Music Player functionality
 function initMusicPlayer() {
-    const musicPlayer = document.getElementById('music-player');
-    const playPauseBtn = document.getElementById('play-pause');
-    const nextSongBtn = document.getElementById('next-song');
-    const volumeToggleBtn = document.getElementById('volume-toggle');
-    const closeMusicBtn = document.getElementById('close-music');
-    const currentSongSpan = document.getElementById('current-song');
-    const popupSongName = document.getElementById('popup-song-name');
-    const nowPlayingPopup = document.getElementById('now-playing-popup');
+    const musicPlayer = EQuery('#music-player');
+    const playPauseBtn = EQuery('#play-pause');
+    const nextSongBtn = EQuery('#next-song');
+    const volumeToggleBtn = EQuery('#volume-toggle');
+    const closeMusicBtn = EQuery('#close-music');
+    const currentSongSpan = EQuery('#current-song');
+    const popupSongName = EQuery('#popup-song-name');
+    const nowPlayingPopup = EQuery('#now-playing-popup');
 
     // Custom music tracks
     const musicTracks = [
@@ -176,7 +178,6 @@ function initMusicPlayer() {
     ];
 
     let currentTrackIndex = 0;
-    let isPlaying = false;
     let isMuted = false;
     let musicGenerator = null;
     let autoHideTimer = null;
@@ -191,39 +192,37 @@ function initMusicPlayer() {
     }
 
     // Play/Pause functionality
-    playPauseBtn.addEventListener('click', async function() {
+    playPauseBtn.click(async function () {
         if (!musicGenerator) {
             await initMusicGenerator();
         }
 
-        if (isPlaying) {
-            if (musicGenerator) {
+        if (musicGenerator) {
+            if (musicGenerator.isPlaying) {
                 musicGenerator.stopTrack();
-            }
-            playPauseBtn.innerHTML = '<span class="music-icon">▶</span>';
-            isPlaying = false;
-        } else {
-            if (musicGenerator) {
-                const currentTrack = musicTracks[currentTrackIndex];
-                musicGenerator.playTrack(currentTrack.name);
-                isPlaying = true;
-                playPauseBtn.innerHTML = '<span class="music-icon">⏸</span>';
-                showNowPlayingPopup();
+                musicGenerator.isPlaying = false;
+                playPauseBtn.find('.music-icon span').text('play_arrow');
             } else {
-                showMessage('Music generator not available. Using fallback audio.', 'info');
-                playPauseBtn.innerHTML = '<span class="music-icon">⏸</span>';
-                isPlaying = true;
+                const currentTrack = musicTracks[currentTrackIndex];
+                musicGenerator.isPlaying = true;
+                musicGenerator.playTrack(currentTrack.name);
+                playPauseBtn.find('.music-icon span').text('pause');
+                showNowPlayingPopup();
             }
+        } else {
+            showMessage('Music generator not available. Using fallback audio.', 'info');
+            playPauseBtn.find('.music-icon span').text('play_arrow');
+            isPlaying = true;
         }
     });
 
     // Next song functionality
-    nextSongBtn.addEventListener('click', async function() {
+    nextSongBtn.click(async function () {
         currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
         updateCurrentSong();
         showNowPlayingPopup();
-        
-        if (isPlaying && musicGenerator) {
+
+        if (musicGenerator && musicGenerator.isPlaying) {
             musicGenerator.stopTrack();
             const currentTrack = musicTracks[currentTrackIndex];
             musicGenerator.playTrack(currentTrack.name);
@@ -231,18 +230,19 @@ function initMusicPlayer() {
     });
 
     // Volume toggle
-    volumeToggleBtn.addEventListener('click', function() {
+    volumeToggleBtn.click(function () {
         isMuted = !isMuted;
-        volumeToggleBtn.innerHTML = isMuted ? '<span class="music-icon">🔇</span>' : '<span class="music-icon">🔊</span>';
+        volumeToggleBtn.find('.music-icon span').text(isMuted ? 'voulume_up' : 'volume_off');
     });
 
     // Close music player
-    closeMusicBtn.addEventListener('click', function() {
-        musicPlayer.classList.add('hidden');
-        if (musicGenerator && isPlaying) {
+    closeMusicBtn.click(function () {
+        musicPlayer.addClass('hidden');
+        if (musicGenerator && musicGenerator.isPlaying) {
             musicGenerator.stopTrack();
-            isPlaying = false;
-            playPauseBtn.innerHTML = '<span class="music-icon">▶</span>';
+            musicGenerator.isPlaying = false;
+            playPauseBtn.html('<span class="music-icon">▶</span>');
+
         }
     });
 
@@ -250,31 +250,31 @@ function initMusicPlayer() {
     function startAutoHideTimer() {
         clearTimeout(autoHideTimer);
         autoHideTimer = setTimeout(() => {
-            if (!musicPlayer.classList.contains('hidden')) {
-                musicPlayer.classList.add('auto-hidden');
+            if (!musicPlayer.hasClass('hidden')) {
+                musicPlayer.addClass('auto-hidden');
             }
         }, 5000);
     }
 
     function resetAutoHideTimer() {
         clearTimeout(autoHideTimer);
-        musicPlayer.classList.remove('auto-hidden');
+        musicPlayer.removeClass('auto-hidden');
         startAutoHideTimer();
     }
 
     // Add event listeners for interaction
-    musicPlayer.addEventListener('mouseenter', function() {
-        musicPlayer.classList.remove('auto-hidden');
+    musicPlayer.mouseenter(function () {
+        musicPlayer.removeClass('auto-hidden');
         clearTimeout(autoHideTimer);
     });
 
-    musicPlayer.addEventListener('mouseleave', function() {
+    musicPlayer.mouseleave(function () {
         startAutoHideTimer();
     });
 
     // Track any interaction with music player
-    const musicPlayerElements = musicPlayer.querySelectorAll('button');
-    musicPlayerElements.forEach(element => {
+    const musicPlayerElements = musicPlayer.find('button');
+    musicPlayerElements.each((index, element) => {
         element.addEventListener('click', resetAutoHideTimer);
         element.addEventListener('mouseenter', resetAutoHideTimer);
     });
@@ -282,42 +282,42 @@ function initMusicPlayer() {
     // Update current song display
     function updateCurrentSong() {
         const currentTrack = musicTracks[currentTrackIndex];
-        currentSongSpan.textContent = currentTrack.name;
-        popupSongName.textContent = currentTrack.name;
+        currentSongSpan.text(currentTrack.name);
+        popupSongName.text(currentTrack.name);
     }
 
     // Show now playing popup
     function showNowPlayingPopup() {
-        nowPlayingPopup.classList.add('show');
+        nowPlayingPopup.addClass('show');
         setTimeout(() => {
-            nowPlayingPopup.classList.remove('show');
+            nowPlayingPopup.removeClass('show');
         }, 3000);
     }
 
     // Initialize
     updateCurrentSong();
     initMusicGenerator();
-    
+
     // Start auto-hide timer
     startAutoHideTimer();
-    
+
     // Auto-start music after a delay
     setTimeout(() => {
-        if (!isPlaying) {
-            playPauseBtn.click();
+        if (!musicGenerator.isPlaying) {
+            playPauseBtn[0].click();
         }
     }, 4000);
 }
 
 // Store functionality
-function initStore() {
-    const categoryBtns = document.querySelectorAll('.category-btn');
-    const productCards = document.querySelectorAll('.product-card');
-    const buyBtns = document.querySelectorAll('.buy-btn');
-    const cartSummary = document.getElementById('cart-summary');
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    const checkoutBtn = document.getElementById('checkout-btn');
+async function initStore() {
+    const categoryBtns = EQuery('.category-btn');
+    const productCards = EQuery('.product-card');
+    const buyBtns = EQuery('.buy-btn');
+    const cartSummary = EQuery('#cart-summary');
+    const cartItems = EQuery('#cart-items');
+    const cartTotal = EQuery('#cart-total');
+    const checkoutBtn = EQuery('#checkout-btn');
 
     let cart = [];
     let total = 0;
@@ -336,17 +336,19 @@ function initStore() {
         'coin-booster': { name: 'Coin Booster', price: 7.99, category: 'boosters' }
     };
 
+    // products = await loadProducts();
+
     // Category filtering with animation
-    categoryBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
+    categoryBtns.each((index, btn) => {
+        EQuery(btn).click(function () {
             const category = this.getAttribute('data-category');
-            
+
             // Update active button
-            categoryBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
+            categoryBtns.each((i, b) => b.removeClass('active'));
+            this.addClass('active');
 
             // Animate category change
-            productCards.forEach(card => {
+            productCards.each(card => {
                 if (card.getAttribute('data-category') === category) {
                     card.style.display = 'block';
                     card.style.animation = 'fadeIn 0.5s ease';
@@ -361,18 +363,18 @@ function initStore() {
     });
 
     // Add to cart functionality with animation
-    buyBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
+    buyBtns.each(btn => {
+        EQuery(btn).click(function () {
             const productId = this.getAttribute('data-product');
             const product = products[productId];
-            
+
             if (product) {
                 addToCart(product);
-                
+
                 // Animate button
                 this.innerHTML = '<div class="loading"></div> Adding...';
                 this.style.background = 'var(--minecraft-green)';
-                
+
                 setTimeout(() => {
                     this.innerHTML = 'Purchase';
                     this.style.background = '';
@@ -387,49 +389,39 @@ function initStore() {
         total += product.price;
         updateCartDisplay();
         showMessage(`${product.name} added to cart!`, 'success');
-        
+
         // Animate cart
-        cartSummary.style.animation = 'slideInDown 0.3s ease';
+        cartSummary.css('animation: slideInDown 0.3s ease');
     }
 
     // Update cart display
     function updateCartDisplay() {
         if (cart.length === 0) {
-            cartSummary.style.display = 'none';
+            cartSummary.hide();
             return;
         }
 
-        cartSummary.style.display = 'block';
-        cartItems.innerHTML = '';
+        cartSummary.show();
+        cartItems.html('');
 
-        cart.forEach((item, index) => {
-            const cartItem = document.createElement('div');
-            cartItem.className = 'cart-item';
-            cartItem.style.animation = 'fadeIn 0.3s ease';
-            cartItem.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 2px solid var(--minecraft-black);">
-                    <span style="font-family: 'Minecraft', monospace; font-weight: 700;">${item.name}</span>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <span style="font-family: 'Minecraft', monospace; font-weight: 700; color: var(--minecraft-green);">$${item.price.toFixed(2)}</span>
-                        <button onclick="removeFromCart(${index})" style="background: var(--minecraft-red); border: 2px solid var(--minecraft-black); color: var(--minecraft-white); padding: 8px 15px; font-family: 'Minecraft', monospace; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">Remove</button>
-                    </div>
-                </div>
-            `;
-            cartItems.appendChild(cartItem);
+        cart.each((item, index) => {
+            const cartItem = EQuery.elemt('div', null, 'cart-item', null, 'animation: fadeIn 0.3s ease');
+            cartItem.html(`<div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 2px solid var(--minecraft-black);"><span style="font-family: 'Minecraft', monospace; font-weight: 700;">${item.name}</span><div style="display: flex; align-items: center; gap: 15px;"><span style="font-family: 'Minecraft', monospace; font-weight: 700; color: var(--minecraft-green);">$${item.price.toFixed(2)}</span><button onclick="removeFromCart(${index})" style="background: var(--minecraft-red); border: 2px solid var(--minecraft-black); color: var(--minecraft-white); padding: 8px 15px; font-family: 'Minecraft', monospace; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">Remove</button></div></div>`);
+            cartItems.append(cartItem);
         });
 
         cartTotal.textContent = total.toFixed(2);
     }
 
     // Remove from cart (global function)
-    window.removeFromCart = function(index) {
+    window.removeFromCart = function (index) {
         total -= cart[index].price;
         cart.splice(index, 1);
         updateCartDisplay();
     };
 
     // Checkout functionality
-    checkoutBtn.addEventListener('click', function() {
+    checkoutBtn.click(function () {
         if (cart.length === 0) {
             showMessage('Your cart is empty!', 'error');
             return;
@@ -457,53 +449,52 @@ function initScrollAnimations() {
         rootMargin: '0px 0px -50px 0px'
     };
 
-    const observer = new IntersectionObserver(function(entries) {
+    const observer = new IntersectionObserver(function (entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
+                EQuery(entry.target).addClass('visible');
             }
         });
     }, observerOptions);
 
     // Add animation classes to elements
-    const animatedElements = document.querySelectorAll('.feature-card, .product-card, .contact-item, .stat-card, .feature-item');
-    animatedElements.forEach(el => {
-        el.classList.add('fade-in');
+    const animatedElements = EQuery('.feature-card, .product-card, .contact-item, .stat-card, .feature-item').addClass('fade-in');
+    animatedElements.each((i, el) => {
         observer.observe(el);
     });
 
     // Parallax effect for hero section
-    window.addEventListener('scroll', function() {
+    EQuery(window).on('scroll', function () {
         const scrolled = window.pageYOffset;
-        const floatingBlocks = document.querySelectorAll('.floating-block');
-        const particles = document.querySelectorAll('.particle');
-        
-        floatingBlocks.forEach((block, index) => {
+        const floatingBlocks = EQuery('.floating-block');
+        const particles = EQuery('.particle');
+
+        floatingBlocks.each((index, block) => {
             const speed = 0.5 + (index * 0.1);
-            block.style.transform = `translateY(${scrolled * speed}px)`;
+            block.css(`transform: translateY(${scrolled * speed}px)`);
         });
-        
-        particles.forEach((particle, index) => {
+
+        particles.each((index, particle) => {
             const speed = 0.3 + (index * 0.05);
-            particle.style.transform = `translateY(${scrolled * speed}px)`;
+            particle.css(`transform: translateY(${scrolled * speed}px)`);
         });
     });
 }
 
 // Contact form functionality
 function initContactForm() {
-    const contactForm = document.getElementById('contact-form');
-    
-    contactForm.addEventListener('submit', function(e) {
+    const contactForm = EQuery('#contact-form');
+
+    contactForm.submit(function (e) {
         e.preventDefault();
-        
+
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
-        
+
         // Simulate form submission
         submitBtn.innerHTML = '<div class="loading"></div> Sending...';
         submitBtn.disabled = true;
-        
+
         setTimeout(() => {
             showMessage('Message sent successfully! We\'ll get back to you soon.', 'success');
             this.reset();
@@ -515,18 +506,18 @@ function initContactForm() {
 
 // Copy IP functionality
 function initCopyIP() {
-    const copyIPBtn = document.getElementById('copy-ip-btn');
-    
-    copyIPBtn.addEventListener('click', function() {
-        const ip = 'play.surfnetwork.com';
-        
+    const copyIPBtn = EQuery('#copy-ip-btn');
+
+    copyIPBtn.click(function () {
+        const ip = 'play.surfnetwork.xyz';
+
         // Try to copy to clipboard
         if (navigator.clipboard) {
             navigator.clipboard.writeText(ip).then(() => {
                 showMessage('Server IP copied to clipboard!', 'success');
                 this.innerHTML = '<div class="btn-icon">✓</div><div class="btn-text"><span class="btn-main">Copied!</span><span class="btn-sub">play.surfnetwork.com</span></div>';
                 this.style.background = 'var(--minecraft-green)';
-                
+
                 setTimeout(() => {
                     this.innerHTML = '<div class="btn-icon">🌐</div><div class="btn-text"><span class="btn-main">Copy IP</span><span class="btn-sub">play.surfnetwork.com</span></div>';
                     this.style.background = '';
@@ -534,12 +525,11 @@ function initCopyIP() {
             });
         } else {
             // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = ip;
-            document.body.appendChild(textArea);
-            textArea.select();
+            const textArea = EQuery.elemt('textarea').val(ip);
+            EQuery('body').add(textArea);
+            textArea[0].select();
             document.execCommand('copy');
-            document.body.removeChild(textArea);
+            textArea.remove();
             showMessage('Server IP copied to clipboard!', 'success');
         }
     });
@@ -547,24 +537,20 @@ function initCopyIP() {
 
 // Particle effects
 function initParticleEffects() {
-    const particlesContainer = document.querySelector('.particles');
-    
+    const particlesContainer = EQuery('.particles');
+
     // Add more dynamic particles
     for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 8 + 's';
-        particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
-        particlesContainer.appendChild(particle);
+        const particle = EQuery.elemt('div', null, 'particle', null, `left: ${Math.random() * 100}%;animation-delay: ${Math.random() * 8}s;animation-duration: ${Math.random() * 4 + 4}s`);
+        particlesContainer.append(particle);
     }
 }
 
 // Server stats animation
 function initServerStats() {
-    const statNumbers = document.querySelectorAll('.stat-number');
-    
-    statNumbers.forEach(stat => {
+    const statNumbers = EQuery('.stat-number');
+
+    statNumbers.each(stat => {
         const target = parseInt(stat.textContent);
         if (!isNaN(target)) {
             animateNumber(stat, 0, target, 2000);
@@ -575,101 +561,83 @@ function initServerStats() {
 // Animate number counting
 function animateNumber(element, start, end, duration) {
     const startTime = performance.now();
-    
+
     function updateNumber(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         const current = Math.floor(start + (end - start) * progress);
         element.textContent = current;
-        
+
         if (progress < 1) {
             requestAnimationFrame(updateNumber);
         }
     }
-    
+
     requestAnimationFrame(updateNumber);
 }
 
 // Minecraft-specific effects
 function initMinecraftEffects() {
     // Add block break effect to buttons
-    const buttons = document.querySelectorAll('.minecraft-btn');
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Create block break particles
-            createBlockBreakEffect(this);
-        });
-    });
-    
+    const buttons = EQuery('.minecraft-btn');
+    buttons.click(createBlockBreakEffect);
+
     // Add hover effects to cards
-    const cards = document.querySelectorAll('.feature-card, .product-card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px)';
-            this.style.boxShadow = '6px 6px 0 var(--minecraft-shadow)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '4px 4px 0 var(--minecraft-shadow)';
-        });
+    const cards = EQuery('.feature-card, .product-card');
+    cards.mouseenter(function () {
+        this.style.transform = 'translateY(-10px)';
+        this.style.boxShadow = '6px 6px 0 var(--minecraft-shadow)';
+    });
+
+    cards.mouseleave(function () {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '4px 4px 0 var(--minecraft-shadow)';
     });
 }
 
 // Create block break effect
 function createBlockBreakEffect(element) {
-    const rect = element.getBoundingClientRect();
+    const rect = element.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
+
     for (let i = 0; i < 8; i++) {
-        const particle = document.createElement('div');
-        particle.style.position = 'fixed';
-        particle.style.left = centerX + 'px';
-        particle.style.top = centerY + 'px';
-        particle.style.width = '4px';
-        particle.style.height = '4px';
-        particle.style.background = 'var(--minecraft-green)';
-        particle.style.border = '1px solid var(--minecraft-black)';
-        particle.style.borderRadius = '0';
-        particle.style.pointerEvents = 'none';
-        particle.style.zIndex = '1000';
-        
+        const particle = EQuery.elemt('div')
+            .css(`position: fixed;left: ${centerX}px;top: ${centerY}px;width:4px;height: 4px;background: var(--minecraft-green);border: 1px solid var(--minecraft-black);border-radius:0;pointer-events: none;z-index: 1000`);
+
         const angle = (i / 8) * Math.PI * 2;
         const velocity = 50 + Math.random() * 50;
-        const vx = Math.cos(angle) * velocity;
-        const vy = Math.sin(angle) * velocity;
-        
-        document.body.appendChild(particle);
-        
+        let vx = Math.cos(angle) * velocity;
+        let vy = Math.sin(angle) * velocity;
+
+        EQuery('body').append(particle);
+
         let x = 0;
         let y = 0;
         let opacity = 1;
-        
+
         const animate = () => {
             x += vx * 0.016;
             y += vy * 0.016;
             vy += 200 * 0.016; // gravity
             opacity -= 0.02;
-            
-            particle.style.transform = `translate(${x}px, ${y}px)`;
-            particle.style.opacity = opacity;
-            
+
+            particle.css(`transform: translate(${x}px, ${y}px);opacity: opacity`);
+
             if (opacity > 0) {
                 requestAnimationFrame(animate);
             } else {
-                document.body.removeChild(particle);
+                particle.remove();
             }
         };
-        
         requestAnimationFrame(animate);
     }
 }
 
 // Utility function to scroll to section
 function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
+    const section = EQuery(`#${sectionId}`);
     if (section) {
         section.scrollIntoView({
             behavior: 'smooth',
@@ -681,16 +649,14 @@ function scrollToSection(sectionId) {
 // Show message function
 function showMessage(text, type = 'info') {
     // Remove existing messages
-    const existingMessages = document.querySelectorAll('.message');
-    existingMessages.forEach(msg => msg.remove());
-    
-    const message = document.createElement('div');
-    message.className = `message ${type}`;
-    message.textContent = text;
-    
+    const existingMessages = EQuery('.message');
+    existingMessages.each((i, msg) => msg.remove());
+
+    const message = EQuery.elemt('div', text, `message ${type}`, null, 'position: fixed;top: 40px;left: 12px;z-index: 99999999');
+
     // Add to top of page
-    document.body.insertBefore(message, document.body.firstChild);
-    
+    EQuery('body').prepend(message);
+
     // Auto remove after 5 seconds
     setTimeout(() => {
         message.remove();
@@ -698,43 +664,41 @@ function showMessage(text, type = 'info') {
 }
 
 // Add CSS for fadeOut animation
-const style = document.createElement('style');
-style.textContent = `
+const style = EQuery.elemt('style', `
     @keyframes fadeOut {
         0% { opacity: 1; transform: scale(1); }
         100% { opacity: 0; transform: scale(0.8); }
     }
-`;
-document.head.appendChild(style);
+`);
+EQuery('head').append(style);
 
 // Easter egg: Konami code
 let konamiCode = [];
 const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
 
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     konamiCode.push(e.keyCode);
-    
+
     if (konamiCode.length > konamiSequence.length) {
         konamiCode.shift();
     }
-    
+
     if (konamiCode.join(',') === konamiSequence.join(',')) {
         // Easter egg activated!
         showMessage('🎉 Easter egg found! You\'re awesome! 🎉', 'success');
-        
+
         // Add some fun effects
-        document.body.style.animation = 'rainbow 2s ease-in-out';
+        EQuery('body').css('animation: rainbow 2s ease-in-out infinite');
         setTimeout(() => {
             document.body.style.animation = '';
-        }, 2000);
-        
+        }, 6000);
+
         konamiCode = [];
     }
 });
 
 // Add rainbow animation for easter egg
-const rainbowStyle = document.createElement('style');
-rainbowStyle.textContent = `
+const rainbowStyle = EQuery.elemt('style', `
     @keyframes rainbow {
         0% { filter: hue-rotate(0deg); }
         25% { filter: hue-rotate(90deg); }
@@ -742,8 +706,8 @@ rainbowStyle.textContent = `
         75% { filter: hue-rotate(270deg); }
         100% { filter: hue-rotate(360deg); }
     }
-`;
-document.head.appendChild(rainbowStyle);
+`);
+EQuery('head').append(rainbowStyle);
 
 // Add some human-like touches
 setTimeout(() => {
@@ -760,7 +724,7 @@ setTimeout(() => {
         "📱 Follow us on social media for updates!",
         "🌟 We're always adding new features - stay tuned!"
     ];
-    
+
     const randomTip = tips[Math.floor(Math.random() * tips.length)];
     showMessage(randomTip, 'info');
 }, 15000);
@@ -774,19 +738,19 @@ setTimeout(() => {
         "Join thousands of players worldwide! 🌍",
         "Your Minecraft journey starts here! 🚀"
     ];
-    
+
     const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
     showMessage(randomWelcome, 'success');
 }, 8000);
 
 // Simulate online player count changes
 setInterval(() => {
-    const playerCount = document.getElementById('online-players');
+    const playerCount = EQuery('#online-players');
     if (playerCount) {
         const currentCount = parseInt(playerCount.textContent);
         const change = Math.floor(Math.random() * 6) - 3; // -3 to +3
         const newCount = Math.max(50, Math.min(200, currentCount + change));
-        
+
         if (newCount !== currentCount) {
             animateNumber(playerCount, currentCount, newCount, 1000);
         }
@@ -795,12 +759,12 @@ setInterval(() => {
 
 // Add typing effect to hero title
 function addTypingEffect() {
-    const titleWords = document.querySelectorAll('.title-word');
-    titleWords.forEach((word, index) => {
+    const titleWords = EQuery('.title-word');
+    titleWords.each((index, word) => {
         const text = word.textContent;
         word.textContent = '';
         word.style.opacity = '1';
-        
+
         setTimeout(() => {
             let i = 0;
             const typeInterval = setInterval(() => {
