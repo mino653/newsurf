@@ -4,7 +4,8 @@ import {
     getDB,
     getState,
     clear,
-    redirect
+    redirect,
+    fetchWithTimeout
 } from './util.js';
 
 EQuery(async function () {
@@ -87,30 +88,43 @@ EQuery(async function () {
     setInterval(getStats, 30000);
 
     async function getStats() {
-        let response = await (await fetch('https://surfnetwork-api.onrender.com/get-server-stats', { method: 'post' })).json();
+        try {    
+            let response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/get-server-stats', { method: 'post' })
 
-        EQuery('#ip').text(response.ip);
-        console.log(response)
-        EQuery('#serverStatus').addClass(response.status.online ? 'bg-success' : 'bg-fail').text(response.status.online ? 'Online' : 'Offline');
-        EQuery('#playersCount').text(response.status.count + '/' + response.max + ' Players');
-        EQuery('#serverVersion').text(response.status.version);
-        EQuery('#serverUptime').text(response.status.uptime);
-        EQuery('#totalPlayers').text(response.status.total);
-        EQuery('#playerCount').text(response.status.count);
-        EQuery('#playersAvg').text(response.status.average);
+            EQuery('#ip').text(response.ip);
+            EQuery('#serverStatus').addClass(response.status.online ? 'bg-success' : 'bg-fail').text(response.status.online ? 'Online' : 'Offline');
+            animateNumber(EQuery('#online-players')[0], EQuery('#online-players').text(), response.status.count, 200);
+            EQuery('#serverVersion').text(response.status.version);
+            EQuery('#serverUptime').text(response.status.uptime);
+            EQuery('#totalPlayers').text(response.status.total);
+            EQuery('#playerCount').text(response.status.count);
+            EQuery('#playersAvg').text(response.status.average);
+        } catch (e) {
+            EQuery('#ip').text('Unavaliable');
+            EQuery('#serverStatus').addClass('bg-fail').text('Offline');
+            EQuery('#online-players').text(0);
+            EQuery('#serverVersion').text('1.21.5');
+            EQuery('#serverUptime').text(0);
+            EQuery('#totalPlayers').text(0);
+            EQuery('#playerCount').text(0);
+            EQuery('#playersAvg').text(0);
+            showMessage('Failed to fetch server stats. Timedout 5000ms.', 'error');
+        }
     }
 
     async function updateServerStatus() {
         const playerCountElement = document.getElementById('playerCount');
         if (playerCountElement) {
             setInterval(async function () {
-                let response = await (await fetch('https://surfnetwork-api.onrender.com/player-count', { method: 'post' })).json().catch(function (e) {
-                    throw new Error(e);
-                });
-                const currentCount = response.status.count;
-                const maxCount = response.status.max;
-                playerCountElement.textContent = `${currentCount}/${maxCount} Players`;
-            }, 5000);
+                try {
+                    let response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/player-count', { method: 'post' })
+                    const currentCount = response.status.count;
+                    const maxCount = response.status.max;
+                    playerCountElement.textContent = `${currentCount}/${maxCount} Players`;
+                } catch {
+                    showMessage('Failed to fetch server stats. Timedout 5000ms.', 'error');
+                }
+            }, 30000);
         }
     }
 
