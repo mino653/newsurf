@@ -489,7 +489,16 @@ body {
     text-decoration: none;
     text-transform: uppercase;
 }
-
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+.down {
+  transform: rotate(80deg);
+  -webkit-transform: rotate(45deg);
+}
 .scroll-to-top-btn {
     position: fixed;
     bottom: 30px;
@@ -2545,6 +2554,69 @@ section {
     50% {
         opacity: 0.5;
     }
+
+}
+/* Loading Screen Rotating Messages */
+.loading-text {
+    font-family: 'Minecraft', monospace;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    animation: textBlink 1s ease-in-out infinite;
+    min-height: 30px;
+}
+
+/* Dark mode loading screen */
+[data-theme="dark"] .loading-screen {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
+}
+
+@keyframes e-spinner-left-spin {
+  0% {transform: rotate(130deg);}
+  50% {transform: rotate(-5deg);}
+  100% {transform: rotate(130deg);}
+}
+@-webkit-keyframes e-spinner-left-spin {
+  0% {transform: rotate(130deg);}
+  50% {transform: rotate(-5deg);}
+  100% {transform: rotate(130deg);}
+}
+@keyframes e-spinner-right-spin {
+  0% {transform: rotate(-130deg);}
+  50% {transform: rotate(5deg);}
+  100% {transform: rotate(-130deg);}
+}
+@-webkit-keyframes e-spinner-right-spin {
+  0% {transform: rotate(-130deg);}
+  50% {transform: rotate(5deg);}
+  100% {transform: rotate(-130deg);}
+}
+@keyframes e-spinner-easein {
+  12.5% {transform: rotate(135deg);}
+  25% {transform: rotate(270deg);}
+  37.5% {transform: rotate(405deg);}
+  50% {transform: rotate(540deg);}
+  62.5% {transform: rotate(675deg);}
+  75% {transform: rotate(810deg);}
+  87.5% {transform: rotate(945deg);}
+  100% {transform: rotate(1080deg);}
+}
+@-webkit-keyframes e-spinner-easein {
+  12.5% {transform: rotate(135deg);}
+  25% {transform: rotate(270deg);}
+  37.5% {transform: rotate(405deg);}
+  50% {transform: rotate(540deg);}
+  62.5% {transform: rotate(675deg);}
+  75% {transform: rotate(810deg);}
+  87.5% {transform: rotate(945deg);}
+  100% {transform: rotate(1080deg);}
+}
+@keyframes e-spinner-rotate {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
+@-webkit-keyframes e-spinner-rotate {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
 }
 
 @keyframes e-spinner-left-spin {
