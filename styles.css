@@ -489,7 +489,16 @@ body {
     text-decoration: none;
     text-transform: uppercase;
 }
-
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+.down {
+  transform: rotate(80deg);
+  -webkit-transform: rotate(45deg);
+}
 .scroll-to-top-btn {
     position: fixed;
     bottom: 30px;
@@ -2526,4 +2535,5 @@ section {
     50% {
         opacity: 0.5;
     }
+
 }
