@@ -2,18 +2,19 @@ import {
     getState,
     getDB,
     setState,
-    redirect
+    redirect,
+    fetchWithTimeout
 } from './util.js';
 import './script.js';
 
 EQuery(function () {
-    let loginForm = EQuery('#login-form');
-    let emailField = loginForm.find('#email');
-    let pswField = loginForm.find('#password');
-    let showPsw = loginForm.find('.togglePsw');
-    let submitBtn = loginForm.find('button[type=submit]');
-    let error = loginForm.find('.error-message');
-    let info = loginForm.find('.success-message');
+    const loginForm = EQuery('#login-form');
+    const emailField = loginForm.find('#email');
+    const pswField = loginForm.find('#password');
+    const showPsw = loginForm.find('#togglePsw');
+    const submitBtn = loginForm.find('button[type=submit]');
+    const error = loginForm.find('#error-message');
+    const info = loginForm.find('#success-message');
     let canShowPsw = false;
 
     getDB(state => {
@@ -54,17 +55,16 @@ EQuery(function () {
     `));
 
     function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
 
     submitBtn.click(async function (e) {
         e.preventDefault();
-
         error.hide().text('');
         info.hide().text('');
 
-        let spinner = loginForm.find('.spinner-outer').spinner();
+        const spinner = loginForm.find('.spinner-outer').spinner();
 
         if (!isValidEmail(emailField.val())) {
             spinner.find('.e-spinner').remove();
@@ -73,40 +73,53 @@ EQuery(function () {
             return;
         }
 
-        let requestJSON = {
+        if (!pswField.val().length > 8) {
+            spinner.find('.e-spinner').remove();
+            pswField.removeClass('shake').addClass('shake');
+            error.show().css('animation: slideInDown 0.3s ease').text('Please enter a valid password.');
+            return;
+        }
+
+        
+        EQuery(this).css('cursor: not-allowed').attr({disbled: true});
+
+        const requestJSON = {
             "email": emailField.val(),
             "psw": pswField.val()
         };
-
-        let headers = new Headers();
+        const headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        let raw = JSON.stringify(requestJSON);
-        let requestOptions = {
+        const raw = JSON.stringify(requestJSON);
+        const requestOptions = {
             method: 'POST',
             headers: headers,
             body: raw,
             redirect: 'follow'
         };
-        let response = await (await fetch('https://surfnetwork-api.onrender.com/login/ppsecure', requestOptions)).json().catch(e => {
-            throw new Error(e)
-        });
 
-        spinner.find('.e-spinner').remove();
-        console.log(response)
+        try {
+            const response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/login/ppsecure', requestOptions);
+            spinner.find('.e-spinner').remove();
 
-        if (response.detail === undefined) {
-            let state = getState();
-            state.userdata = response;
-            setState(state, function () {
-                info.show().css('animation: slideInDown 0.3s ease').text('Login successful!');
-                error.hide().text('');
-                if (!state.userdata.confirm_email) redirect('./confirm-email.html');
-                else redirect('./index.html');
-            });
-        } else {
-            error.show().css('animation: slideInDown 0.3s ease').text(response.detail.error || "An error occured while processing your request");
+            if (response.detail === undefined) {
+                let state = getState();
+                state.userdata = response;
+                setState(state, function () {
+                    info.show().css('animation: slideInDown 0.3s ease').text('Login successful!');
+                    error.hide().text('');
+                    if (!state.userdata.confirm_email) redirect('./confirm-email.html');
+                    else redirect('./index.html');
+                });
+            } else {
+                error.show().css('animation: slideInDown 0.3s ease').text(response.detail.error || "An error occured while processing your request");
+            }
+            EQuery(this).css('cursor: default').attr({disbled: false});
+        } catch (e) {
+            spinner.find('.e-spinner').remove();
+            error.show().css('animation: slideInDown 0.3s ease').text(e);
+            EQuery(this).css('cursor: default').attr({disbled: false});
         }
     });
 
-    loginForm.find('#toSignup').click(() => redirect('./signup.html'));
+    EQuery('#toSignup').click(() => redirect('./signup.html'));
 });

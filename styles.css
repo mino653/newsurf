@@ -1554,6 +1554,15 @@ section {
     box-shadow: 4px 4px 0 var(--minecraft-shadow);
 }
 
+.e-spinner {width: 64px;margin-left: -32px;z-index: 57;pointer-events: none;background: unset;}
+.e-spinner-container {pointer-events: none;width: 100%;padding-bottom: 100%;animation: 1568.24ms linear 0s infinite normal none running e-spinner-rotate;}
+.e-spinner-rotator {position: absolute;height: 100%;width: 100%;animation: 5332ms cubic-bezier(0.4, 0, 0.2, 1) 0s infinite normal both running e-spinner-easein;}
+.e-spinner-left {position: absolute;inset: 0px 49% 0px 0px;overflow: hidden;}
+.e-spinner-left .e-spinner-circle {left: 0%;right: 0px;border-right-color: transparent;animation: 1333ms cubic-bezier(0.4, 0, 0.2, 1) 0s infinite normal both running e-spinner-left-spin;}
+.e-spinner-right {position: absolute;inset: 0px 0px 0px 49%;overflow: hidden;}
+.e-spinner-right .e-spinner-circle {left: -100%;right: 0px;border-left-color: transparent;animation: 1333ms cubic-bezier(0.4, 0, 0.2, 1) 0s infinite normal both running e-spinner-right-spin;}
+.e-spinner-circle {box-sizing: border-box;position: absolute;width: 200%;height: 100%;border-style: solid;border-color: rgb(221, 221, 221) rgb(221, 221, 221) transparent;border-radius: 50%;border-width: 6px;}
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -1561,12 +1570,12 @@ section {
 .form-group .input-prompt {display: none;color: #1a1a1a;font-size: 16px;font-family: monospace;}
 .form-group .input-prompt.info {color: #4caf50;}
 .form-group .input-prompt.error {color: #f83266;}
-.form-group .message {display: block;position: absolute;background: #1f1f1f;color: #e8e8e8;top: 0px;padding: 8px;text-align: left;border-radius: 12px;box-shadow: 0 0 2px #000;}
-.form-group .message p {padding: 5px 35px;font-size: 16px;}
-.form-group .message .valid {color: #4caf50}
-.form-group .message .valid:before {position: relative;left: -35px;content: "✓";}
-.form-group .message .invalid {color: #ff6347}
-.form-group .message .invalid:before {position: relative;left: -35px;content: "×";}
+.form-group .psw-message {display: none;position: absolute;background: #1f1f1f;color: #e8e8e8;top: 0px;padding: 8px;text-align: left;border-radius: 12px;box-shadow: 0 0 2px #000;z-index:6}
+.form-group .psw-message p {padding: 5px 35px;font-size: 16px;}
+.form-group .psw-message .valid {color: #4caf50}
+.form-group .psw-message .valid:before {position: relative;left: -35px;content: "✓";}
+.form-group .psw-message .invalid {color: #ff6347}
+.form-group .psw-message .invalid:before {position: relative;left: -35px;content: "×";}
 
 .contact-form input,
 .contact-form textarea {
@@ -1826,6 +1835,16 @@ section {
     justify-content: flex-start;
     align-items: center;
     margin-bottom: 25px;
+}
+
+.form-options input[type=checkbox] {
+    margin-right: 12px;
+}
+
+.form-options a {
+    font-style: bold;
+    color:rgb(125, 218, 25);
+    text-decoration: none;
 }
 
 .remember-me {
@@ -2507,16 +2526,16 @@ section {
     }
     
     25% {
-        transform: translateX(-10px);
+        transform: translateX(-20px);
     }
     
     75% {
-        transform: translateX(10px);
+        transform: translateX(20px);
     }
 }
 
 .shake {
-    animation: shake 1.3s linear;
+    animation: shake .4s cubic-bezier(0.53, 0.64, 1, 0.09) 2;
 }
 
 @keyframes pulse {
@@ -2526,4 +2545,53 @@ section {
     50% {
         opacity: 0.5;
     }
+}
+
+@keyframes e-spinner-left-spin {
+  0% {transform: rotate(130deg);}
+  50% {transform: rotate(-5deg);}
+  100% {transform: rotate(130deg);}
+}
+@-webkit-keyframes e-spinner-left-spin {
+  0% {transform: rotate(130deg);}
+  50% {transform: rotate(-5deg);}
+  100% {transform: rotate(130deg);}
+}
+@keyframes e-spinner-right-spin {
+  0% {transform: rotate(-130deg);}
+  50% {transform: rotate(5deg);}
+  100% {transform: rotate(-130deg);}
+}
+@-webkit-keyframes e-spinner-right-spin {
+  0% {transform: rotate(-130deg);}
+  50% {transform: rotate(5deg);}
+  100% {transform: rotate(-130deg);}
+}
+@keyframes e-spinner-easein {
+  12.5% {transform: rotate(135deg);}
+  25% {transform: rotate(270deg);}
+  37.5% {transform: rotate(405deg);}
+  50% {transform: rotate(540deg);}
+  62.5% {transform: rotate(675deg);}
+  75% {transform: rotate(810deg);}
+  87.5% {transform: rotate(945deg);}
+  100% {transform: rotate(1080deg);}
+}
+@-webkit-keyframes e-spinner-easein {
+  12.5% {transform: rotate(135deg);}
+  25% {transform: rotate(270deg);}
+  37.5% {transform: rotate(405deg);}
+  50% {transform: rotate(540deg);}
+  62.5% {transform: rotate(675deg);}
+  75% {transform: rotate(810deg);}
+  87.5% {transform: rotate(945deg);}
+  100% {transform: rotate(1080deg);}
+}
+@keyframes e-spinner-rotate {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
+@-webkit-keyframes e-spinner-rotate {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
 }

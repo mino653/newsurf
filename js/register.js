@@ -1,19 +1,19 @@
-import './equery.js';
-import { getState, getDB, setState, redirect } from './util.js';
+import { getState, getDB, setState, redirect, fetchWithTimeout } from './util.js';
+import './script.js';
 
 EQuery(function () {
-    let signupForm = EQuery('#signup-form');
-    let usernameField = signupForm.find('#username');
-    let emailField = signupForm.find('#email');
-    let pswField = signupForm.find('#password');
-    let cpswField = signupForm.find('#confirmPassword');
-    let showPsw = signupForm.find('.password-toggle-btn');
-    let termsCheckbox = signupForm.find('#terms');
-    let subCheckbox = signupForm.find('#newsletter');
-    let submitBtn = signupForm.find('button[type=submit]');
-    let pswValidateBox = signupForm.find('#pswValidateBox');
-    let error = signupForm.find('.error-message');
-    let info = signupForm.find('.success-message');
+    const signupForm = EQuery('#signup-form');
+    const usernameField = signupForm.find('#username');
+    const emailField = signupForm.find('#email');
+    const pswField = signupForm.find('#password');
+    const cpswField = signupForm.find('#confirmPassword');
+    const showPsw = signupForm.find('.password-toggle-btn');
+    const termsCheckbox = signupForm.find('#terms');
+    const subCheckbox = signupForm.find('#newsletter');
+    const submitBtn = signupForm.find('button[type=submit]');
+    const pswValidateBox = signupForm.find('#pswValidateBox');
+    const error = signupForm.find('.error-message');
+    const info = signupForm.find('.success-message');
     let validpsw = false;
     let equalpsw = false;
     let canShowPsw = false;
@@ -139,16 +139,17 @@ EQuery(function () {
         }
     `));
 
-    pswField.focus(function () {
-        pswValidateBox.show();
+    pswField.focus(function (e) {
+        EQuery(this).findPosition
+        pswValidateBox.show().css(`top: ${EQuery(this).findPosition().top + 55}px`);
     });
 
     pswField.blur(function () {
         pswValidateBox.hide();
     });
 
-    cpswField.focus(function () {
-        pswValidateBox.show();
+    cpswField.focus(function (e) {
+        pswValidateBox.show().css(`top: ${EQuery(this).findPosition().top + 55}px`);
     });
 
     cpswField.blur(function () {
@@ -174,42 +175,47 @@ EQuery(function () {
         }
 
         if (validpsw && equalpsw) {
-            let spinner = signupForm.find('.spinner-outer').spinner();
-            this.disabled = true;
+            try {
+                const spinner = signupForm.find('.spinner-outer').spinner();
+                this.disabled = true;
 
-            let requestJSON = {
-                "username": usernameField.val(),
-                "email": emailField.val(),
-                "psw": pswField.val(),
-                "sub": subCheckbox.val()
-            };
+                const requestJSON = {
+                    "username": usernameField.val(),
+                    "email": emailField.val(),
+                    "psw": pswField.val(),
+                    "sub": subCheckbox.val()
+                };
 
-            let headers = new Headers();
-            headers.append('Content-Type', 'application/json');
-            let raw = JSON.stringify(requestJSON);
-            let requestOptions = { method: 'POST', headers: headers, body: raw, redirect: 'follow' };
-            let response = await (await fetch('https://surfnetwork-api.onrender.com/register/ppsecure', requestOptions)).json().catch(e => { throw new Error(e) });
+                const headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+                const raw = JSON.stringify(requestJSON);
+                const requestOptions = { method: 'POST', headers: headers, body: raw, redirect: 'follow' };
+                const response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/register/ppsecure', requestOptions);
 
-            spinner.find('.e-spinner').remove();
-            this.disabled = false;
+                spinner.find('.e-spinner').remove();
+                this.disabled = false;
 
-            if (response.error === undefined) {
-                let state = getState();
-                state.userdata = response;
-                setState(state, function () {
-                    error.hide().text('');
-                    info.show().css('animation: slideInDown 0.3s ease').text('Registration successful! Redirecting...');
-                    redirect('./confirm-email.html');
-                });
-            } else {
-                error.show().css('animation: slideInDown 0.3s ease').text(response.error);
+                if (response.error === undefined) {
+                    const state = getState();
+                    state.userdata = response;
+                    setState(state, function () {
+                        error.hide().text('');
+                        info.show().css('animation: slideInDown 0.3s ease').text('Registration successful! Redirecting...');
+                        redirect('./confirm-email.html');
+                    });
+                } else {
+                    error.show().css('animation: slideInDown 0.3s ease').text(response.error);
+                }
+            } catch (e) {
+                spinner.find('.e-spinner').remove();
+                error.show().css('animation: slideInDown 0.3s ease').text(e);
+                EQuery(this).css('cursor: default').attr({disbled: false});
             }
-
         } else {
             pswValidateBox.removeClass('shake');
             pswValidateBox.addClass('shake');
         }
     });
 
-    signupForm.find('#toLogin').click(() => redirect('./login.html'));
+    EQuery('#toLogin').click(() => redirect('./login.html'));
 });

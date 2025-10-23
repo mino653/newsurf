@@ -87,18 +87,7 @@ EQuery(async function () {
     setInterval(getStats, 30000);
 
     async function getStats() {
-        let response = await (await fetch('https://surfnetwork-api.onrender.com/get-server-stats', { method: 'post' }).catch(function () {
-            EQuery('#ip').text('Unavaliable');
-            EQuery('#serverStatus').addClass('bg-fail').text('Offline');
-            EQuery('#playersCount').text('0/0 Players');
-            EQuery('#serverVersion').text('Unavaliable');
-            EQuery('#serverUptime').text('Offline');
-            EQuery('#totalPlayers').text('Unavaliable');
-            EQuery('#playerCount').text(0);
-            EQuery('#playersAvg').text(0);
-        })).json().catch(function (e) {
-            throw new Error(e);
-        });
+        let response = await (await fetch('https://surfnetwork-api.onrender.com/get-server-stats', { method: 'post' })).json();
 
         EQuery('#ip').text(response.ip);
         console.log(response)

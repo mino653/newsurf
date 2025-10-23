@@ -35,6 +35,29 @@ function logout() {
     reload();
 };
 
+async function fetchWithTimeout(url, options = {}, timeout = 5000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    try {
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(id);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json()
+    } catch (error) {
+        clearTimeout(id);
+
+        if (error.name === 'AbortError') {
+            throw new Error('Request timed out');
+        } else throw error;
+    }
+}
 
 function reload() {
     save();
@@ -57,4 +80,4 @@ function redirect(href) {
     setTimeout(() => window.location = href, 500);
 }
 
-export { getState, getDB, clear, setState, redirect, reload };
+export { getState, getDB, clear, setState, redirect, reload, fetchWithTimeout };
