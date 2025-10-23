@@ -157,28 +157,96 @@ EQuery(async function () {
         themeIcon.find('span').text(theme === 'dark' ? 'clear_day' : 'bedtime');
     }
 
-    // Loading Screen
-    async function initLoadingScreen() {
-        const loadingScreen = EQuery('#loading-screen');
-
-        // Simulate loading
+   // Loading Screen with rotating messages - stops when loading is done
+function initLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    const loadingText = document.getElementById('loading-text');
+    
+    // Array of loading messages
+    const loadingMessages = [
+        'Loading chunks...',
+        'Spawning entities...',
+        'Generating terrain...',
+        'Building structures...',
+        'Loading textures...',
+        'Preparing world...',
+        'Initializing server...',
+        'Connecting to database...',
+        'Loading player data...',
+        'Almost there...'
+    ];
+    
+    let messageIndex = 0;
+    let isFirstLoad = true;
+    let messageTimer = null;
+    let isLoading = true;
+    
+    // Function to change loading message
+    function changeLoadingMessage() {
+        if (!isLoading) return; // Stop if loading is done
+        
+        if (isFirstLoad) {
+            // First message stays longer
+            messageTimer = setTimeout(() => {
+                isFirstLoad = false;
+                messageIndex = 1;
+                loadingText.textContent = loadingMessages[messageIndex];
+                changeLoadingMessage();
+            }, 2000);
+        } else {
+            // Cycle through messages
+            messageTimer = setTimeout(() => {
+                if (!isLoading) return; // Check again before changing
+                
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                loadingText.textContent = loadingMessages[messageIndex];
+                
+                // Keep cycling every 2 seconds
+                changeLoadingMessage();
+            }, 2000);
+        }
+    }
+    
+    // Start cycling messages
+    changeLoadingMessage();
+    
+    // Function to stop loading
+    function stopLoading() {
+        isLoading = false;
+        clearTimeout(messageTimer); // Stop message cycling
+        
+        // Show final message
+        loadingText.textContent = 'Done!';
+        loadingText.style.animation = 'none';
+        
+        // Hide loading screen after showing final message
         setTimeout(() => {
-            loadingScreen.addClass('hidden');
+            loadingScreen.classList.add('hidden');
+            
             // Start animations after loading
-            setTimeout(() => {            
-                initCopyIP();
-                initParticleEffects();
-                // initMusicPlayer();
-                initStore();
-                initScrollAnimations();
-                initNavigation();
-                initAdminMessages();
-                initServerStats();
-                initMinecraftEffects();
+            setTimeout(() => {
                 initHeroAnimations();
             }, 500);
-        }, 3000);
+        }, 1000);
     }
+    
+    // Check if page is fully loaded
+    if (document.readyState === 'complete') {
+        stopLoading();
+    } else {
+        window.addEventListener('load', function() {
+            // Small delay to ensure everything is loaded
+            setTimeout(stopLoading, 500);
+        });
+    }
+    
+    // Fallback: stop loading after maximum time (10 seconds)
+    setTimeout(() => {
+        if (isLoading) {
+            stopLoading();
+        }
+    }, 10000);
+}
 
     // Hero Animations
     function initHeroAnimations() {

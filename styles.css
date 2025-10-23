@@ -2537,3 +2537,16 @@ section {
     }
 
 }
+/* Loading Screen Rotating Messages */
+.loading-text {
+    font-family: 'Minecraft', monospace;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    animation: textBlink 1s ease-in-out infinite;
+    min-height: 30px;
+}
+
+/* Dark mode loading screen */
+[data-theme="dark"] .loading-screen {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
+}
