@@ -17,7 +17,7 @@ EQuery(async function () {
 
     let userdata;
     getDB(state => {
-        if (state.userdata !== undefined) {
+        if (state !== undefined && state.userdata !== undefined) {
             const loginLink = EQuery('#loginNavLink');
             userdata = state.userdata;
             loginLink.removeChildren()
@@ -102,13 +102,15 @@ EQuery(async function () {
         } catch (e) {
             EQuery('#ip').text('Unavaliable');
             EQuery('#serverStatus').addClass('bg-fail').text('Offline');
-            EQuery('#online-players').text(0);
+            EQuery('#online-players').text('0');
+            EQuery('#uptime').text('0');
+            EQuery('#rating').text('0');
             EQuery('#serverVersion').text('1.21.5');
-            EQuery('#serverUptime').text(0);
-            EQuery('#totalPlayers').text(0);
-            EQuery('#playerCount').text(0);
-            EQuery('#playersAvg').text(0);
-            showMessage('Failed to fetch server stats. Timedout 5000ms.', 'error');
+            EQuery('#serverUptime').text('0');
+            EQuery('#totalPlayers').text('0');
+            EQuery('#playerCount').text('0');
+            EQuery('#playersAvg').text('0');
+            showMessage('Failed to fetch server stats. Timedout 30000ms.', 'error');
         }
     }
 
@@ -122,7 +124,7 @@ EQuery(async function () {
                     const maxCount = response.status.max;
                     playerCountElement.textContent = `${currentCount}/${maxCount} Players`;
                 } catch {
-                    showMessage('Failed to fetch server stats. Timedout 5000ms.', 'error');
+                    showMessage('Failed to fetch server stats. Timedout 30000ms.', 'error');
                 }
             }, 30000);
         }
@@ -229,6 +231,16 @@ function initLoadingScreen() {
             // Start animations after loading
             setTimeout(() => {
                 initHeroAnimations();
+                initCopyIP();
+                initParticleEffects();
+                // initMusicPlayer();
+                initStore();
+                initScrollAnimations();
+                initNavigation();
+                initAdminMessages();
+                initServerStats();
+                initMinecraftEffects();
+                initHeroAnimations();
             }, 500);
         }, 1000);
     }
@@ -312,11 +324,11 @@ function initLoadingScreen() {
             dropdown = !dropdown;
             if (dropdown) {
                 dropdownMenu.show().css('animation: slideInDown 0.3s ease forwards');
-                acctBtn.find('span').text('keyboard_arrow_up');
+                acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_up');
             } else {
                 dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
                 setTimeout(function () {dropdownMenu.hide()}, 300);
-                acctBtn.find('span').text('keyboard_arrow_down');
+                acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_down');
             }
         });
 
@@ -342,7 +354,7 @@ function initLoadingScreen() {
                         dropdown = false;
                         dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
                         setTimeout(function () {dropdownMenu.hide()}, 300);
-                        acctBtn.find('span').text('keyboard_arrow_down');
+                        acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_down');
                     }
 
                     if (navExceptions.indexOf(elts[i]) === -1) {
@@ -356,7 +368,7 @@ function initLoadingScreen() {
                     dropdown = false;
                     dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
                     setTimeout(function () {dropdownMenu.hide()}, 300);
-                    acctBtn.find('span').text('keyboard_arrow_down');
+                    acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_down');
                 }
                 
                 if (navExceptions.indexOf(e.target) === -1) {
