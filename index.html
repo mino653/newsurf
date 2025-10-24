@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SurfNetwork </title>
-    <meta name="description" content="Join SurfNetwork - The ultimate Minecraft server experience with custom maps, ranks, and amazing community!">
+    <meta name="description"
+        content="Join SurfNetwork - The ultimate Minecraft server experience with custom maps, ranks, and amazing community!">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
+    <link rel="stylesheet" href="./equery.css">
     <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
     <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
+    <!--<div id="loading-screen" class="loading-screen">
         <div class="loading-content">
             <div class="minecraft-logo">
                 <div class="block-animation">
@@ -31,6 +33,9 @@
             </div>
             <p class="loading-text" id="loading-text">Loading chunks...</p>
         </div>
+    </div>-->
+    <div class="preloader">
+        <figure> <img src="./assets/pumkin.png" alt="Pumkin"> </figure>
     </div>
     <!-- Music Player -->
     <div id="music-player" class="music-player">
@@ -65,62 +70,69 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <div class="nav-logo">
-                <div class="logo-block"></div>
-                <span class="logo-text">SurfNetwork</span>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="#features" class="nav-link">Features</a></li>
-                <li class="nav-item"><a href="#store" class="nav-link">Store</a></li>
-                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <button id="theme-toggle" class="minecraft-btn theme-toggle">
-                <div class="theme-icon">
-                    <span class="material-symbols-outlined">bedtime</span>
+            <div class="e-flex justify-between item-center">
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
                 </div>
-            </button>
-            <div style="position: relative;">
-                <button id="account-btn" class="minecraft-btn account-btn dropdown"><span>Account</span> <span class="material-symbols-outlined">keyboard_arrow_down</span></button>
-                <div id="secondary-dropmenu" class="nav-bar-dropdown secondary-menu dropdown">
-                    <ul>
-                        <li data-visibility="loggedin">
-                            <a href="./profile" class="secondary-menu-link profile">Profile</a>
-
-                        </li>
-                        <li data-visibility="loggedout">
-                            <a href="./login.html" class="secondary-menu-link login">Sign in</a>
-
-                        </li>
-                        <li data-visibility="loggedout">
-                            <a href="./signup.html" class="secondary-menu-link register">Create account</a>
-
-                        </li>
-                        <li data-visibility="invalidemail">
-                            <a href="./confirm_email.html" class="secondary-menu-link confirm_email">Verify your email</a>
-
-                        </li>
-                        <li data-visibility="loggedin">
-                            <a href="javascript:void(0);" class="secondary-menu-link logout">Log out</a>
-                        </li>
-                    </ul>
+                <div class="nav-logo">
+                    <div class="logo-block">
+                        <img src="./assets/halloween-logo1.png" alt="Logo">
+                    </div>
+                </div>
+                <div class="site-menu">
+                    <div class="menueffect navbar-collapse">
+                        <ul class="nav-menu">
+                            <li class="nav-item"><a href="./" class="nav-link"><span>Home</span></a></li>
+                            <li class="nav-item"><a href="./store.html" class="nav-link"><span>Store</span></a></li>
+                            <li class="nav-item"><a href="./features" class="nav-link"><span>Features</span></a></li>
+                            <li class="nav-item"><a href="./forum" class="nav-link"><span>Forum</span></a></li>
+                            <li class="nav-item"><a href="./events" class="nav-link"><span>Events</span></a></li>
+                            <li class="nav-item"><a href="#contact" class="nav-link"><span>Contact</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- <button id="theme-toggle" class="minecraft-btn theme-toggle">
+                    <div class="theme-icon">
+                        <span class="material-symbols-outlined">bedtime</span>
+                    </div>
+                </button> -->
+                <div style="position: relative;">
+                    <button id="account-btn" class="minecraft-btn account-btn dropdown"><span>Account</span> <span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                    <div id="secondary-dropmenu" class="nav-bar-dropdown secondary-menu dropdown">
+                        <ul>
+                            <li data-visibility="loggedin">
+                                <a href="./profile" class="secondary-menu-link profile">Profile</a>
+                            </li>
+                            <li data-visibility="loggedout">
+                                <a href="./login.html" class="secondary-menu-link login">Sign in</a>
+                            </li>
+                            <li data-visibility="loggedout">
+                                <a href="./signup.html" class="secondary-menu-link register">Create account</a>
+                            </li>
+                            <li data-visibility="invalidemail">
+                                <a href="./confirm_email.html" class="secondary-menu-link confirm_email">Verify your email</a>
+                            </li>
+                            <li data-visibility="loggedin">
+                                <a href="javascript:void(0);" class="secondary-menu-link logout">Log out</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
     <button id="scroll-to-top" class="scroll-to-top-btn">
-        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path></svg>
+        <img src="./assets/top.png" alt="top">
+        <!-- <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+            <path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path>
+        </svg> -->
     </button>
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-background">
-            <div class="minecraft-sky"></div>
+            <!-- <div class="minecraft-sky"></div>
             <div class="floating-blocks">
                 <div class="floating-block grass"></div>
                 <div class="floating-block stone"></div>
@@ -128,7 +140,7 @@
                 <div class="floating-block emerald"></div>
                 <div class="floating-block gold"></div>
                 <div class="floating-block iron"></div>
-            </div>
+            </div> -->
             <div class="particles">
                 <div class="particle"></div>
                 <div class="particle"></div>
@@ -139,7 +151,7 @@
             </div>
         </div>
         <div class="hero-content">
-            <div class="hero-title-container">
+            <!-- <div class="hero-title-container">
                 <h1 class="hero-title">
                     <span class="title-word">Welcome</span>
                     <span class="title-word">to</span>
@@ -187,6 +199,46 @@
                         <div class="stat-label">Rating</div>
                     </div>
                 </div>
+            </div> -->
+            <div class="swiper-wrapper" style="transition-duration: 0ms;">
+                <div class="swiper-slide swiper-slide-active">
+                    <div class="slide-image" style="background: url(&quot;./assets/samhain-slider-2.jpg&quot;);"></div>
+                        <div class="container">
+                        <h1>Have Fun With <br>Us On Halloween </h1>
+                        <p>Join our party at the end of this summer. </p>
+                        <div class="bosluk1112"></div>
+                        <a href="#">Learn More →</a>
+                    </div>
+                </div>            
+                <div class="swiper-slide">
+                    <div class="slide-image" style="background: url(&quot;./assets/samhain-slider-3.jpg&quot;);"></div>
+                        <div class="container">
+                        <h1>31th Octobar 2022 <br>Halloween Party </h1>
+                        <p>Scary fun party on halloween. </p>
+                        <div class="bosluk1112"></div>
+                        <a href="#">Learn More →</a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="slide-image" style="background: url(&quot;./assets/samhain-slider-2.jpg&quot;);"></div>
+                        <div class="container">
+                        <h1>Have Fun With <br>Us On Halloween </h1>
+                        <p>Join our party at the end of this summer. </p>
+                        <div class="bosluk1112"></div>
+                        <a href="#">Learn More →</a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="slide-image" style="background: url(&quot;./assets/samhain-slider-3.jpg&quot;);"></div>
+                        <div class="container">
+                        <h1>31th Octobar 2022 <br>Halloween Party </h1>
+                        <p>Scary fun party on halloween. </p>
+                        <div class="bosluk1112"></div>
+                        <a href="#">Learn More →</a>
+                    </div>
+                </div>
+                <div class="button-prev">❮</div>
+                <div class="button-next">❯</div>
             </div>
         </div>
         <div class="scroll-indicator">
@@ -194,8 +246,59 @@
             <span class="scroll-text">Scroll Down</span>
         </div>
     </section>
+    <section id="about" class="hakkimizda-bolumu-anasayfa">
+        <div class="tablo">
+            <div class="tablo-1-ve-2">
+                <div class="galeri1 zoomIn">
+                    <img class="imagerotate" src="./assets/circle-samhain.png" alt="Red moon">
+                </div>
+                <div class="galeri slideInUp">
+                    <img src="./assets/about-samhain1.png" alt="Webone about">
+                </div>
+            </div>
+            <div class="tablo-1-ve-3">
+                <h2 class="h2-baslik  e-margin-bottom">Have an awesome scary experience with out Halloween Features.</h2>
+                <p>You will enjoy the 31st of October with special features with our special party for Halloween. You can make your loved ones, colleagues and employees have an unforgettable day at this magnificent festival.</p>
+                <img class="divider e-margin-bottom" height="15" width="120" alt="Divider" src="./assets/divider.jpg">
+                <div class="e-row about-item ">
+                    <div class="e-col s2 e-padding">
+                        <div class="iconLeft">
+                            <i class="floaticon-medal"></i>
+                        </div>
+                    </div>
+                    <div class="e-col s10 e-padding">
+                        <h3 class="baslik-3s">In-game cosmetics</h3>
+                        <p>Enjoy this season wit custom in-game cosmetics and items for Halloween.</p>
+                    </div>
+                </div>
+                <div class="e-row about-item ">
+                    <div class="e-col s2 e-padding">
+                        <div class="iconLeft">
+                            <i class="floaticon-medal"></i>
+                        </div>
+                    </div>
+                    <div class="e-col s10 e-padding">
+                        <h3 class="baslik-3s">Custom Maps</h3>
+                        <p>Fun themed maps to play with your friends!</p>
+                    </div>
+                </div>
+                <div class="e-row e-margin-bottom about-item ">
+                    <div class="e-col s2 e-padding">
+                        <div class="iconLeft">
+                            <i class="floaticon-medal"></i>
+                        </div>
+                    </div>
+                    <div class="e-col s10 e-padding">
+                        <h3 class="baslik-3s">Community</h3>
+                        <p>Active and friendly player community</p>
+                    </div>
+                </div>
+                <a href="./about-us/" class="custom-button wow ">Get to know us →</a>
+            </div>
+        </div>
+    </section>
     <!-- About Section -->
-    <section id="about" class="about">
+    <!-- <section id="about" class="about">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">About SurfNetwork</h2>
@@ -205,11 +308,10 @@
             <div class="about-content">
                 <div class="about-text">
                     <div class="about-description">
-                        <p>Since 2025, SurfNetwork has been trying to offer its best  Minecraft experience. Custom-made maps, fun game modes, and a strong player base are every advantage of our server.
-
-.</p>
+                        <p>Since 2025, SurfNetwork has been trying to offer its best Minecraft experience. Custom-made
+                            maps, fun game modes, and a strong player base are every advantage of our server.</p>
                         <p>Join thousands of players who have made SurfNetwork Their second home.</p>
-
+                    </div>
                     <div class="features-grid">
                         <div class="feature-item">
                             <div class="feature-icon"><span class="material-symbols-outlined">map</span></div>
@@ -252,17 +354,43 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Features Section -->
     <section id="features" class="features">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Server Features</h2>
-                <div class="section-subtitle">Everything you need for the perfect Minecraft experience</div>
+                <div class="section-subtitle">31 October 2025</div>
             </div>
-
-            <div class="features-grid">
+            <div class="features-container">
+                <div class="e-row">
+                    <div class="e-col l-12">
+                        <div class="swiper-container-horizontal">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide swiper-dulicate">
+                                    <div class="component-tabs">
+                                        <div class="tab-content current">
+                                            <div class="cards">
+                                                <div class="card">
+                                                    <img src="./assets/features-h.jpg" alt="Features">
+                                                    <div class="card-content">
+                                                        <h2>Feature name</h2>
+                                                        <button>View</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="button-prev1">❮</div>
+                            <div class="button-next1">❯</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="features-grid">
                 <div class="feature-card">
                     <div class="card-header">
                         <div class="card-icon">🏄‍♂️</div>
@@ -327,7 +455,7 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </section>
     <section id="admin-messages" class="admin-messages">
@@ -336,57 +464,20 @@
                 <h2 class="section-title">Here's What the Admins Had to Say</h2>
                 <div class="section-subtitle">Messages from our amazing admin team</div>
             </div>
-            <div class="admin-messages-grid">
-                <div class="admin-message-card">
-                    <div class="admin-avatar">
-                        <div class="steve-face">🧑‍💼</div>
+            <div class="card members-card">
+                <div class="card-header header-theme">Staff members</div>
+                <div id="admin-message-list" class="card-body">
+                    <div style="margin-bottom: 32px" id="member_list_staff_members">
+                        <div class="e-margin-bottom list-container">
+                            <div class="list-content">
+                                <div class="admin-message">No messages!</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="admin-info">
-                        <h3 class="admin-name">Steve</h3>
-                        <span class="admin-role">Server Owner</span>
-                    </div>
-                    <div class="admin-message">
-                        <p>"Welcome to SurfNetwork! We've been working hard to create the ultimate Minecraft experience for all players. Join us for epic adventures, custom maps, and an amazing community!"</p>
-                        <div class="message-date">2 days ago</div>
-                    </div>
-                </div>
-                <div class="admin-message-card">
-                    <div class="admin-avatar">
-                        <div class="steve-face">🧑‍💼</div>
-                    </div>
-                    <div class="admin-info">
-                        <h3 class="admin-name">Alex</h3>
-                        <span class="admin-role">Head Admin</span>
-                    </div>
-                    <div class="admin-message">
-                        <p>"Our new surf maps are incredible! I've been testing them for weeks and they're absolutely mind-blowing. Can't wait for you all to try them out!"</p>
-                        <div class="message-date">1 week ago</div>
-                    </div>
-                </div>
-                <div class="admin-message-card">
-                    <div class="admin-avatar">
-                        <div class="steve-face">🧑‍💼</div>
-                    </div>
-                    <div class="admin-info">
-                        <h3 class="admin-name">Emma</h3>
-                        <span class="admin-role">Community Manager</span>
-                    </div>
-                    <div class="admin-message">
-                        <p>"The community here is amazing! Every day I see players helping each other, building together, and creating friendships. This is what Minecraft is all about!"</p>
-                        <div class="message-date">3 days ago</div>
-                    </div>
-                </div>
-                <div class="admin-message-card">
-                    <div class="admin-avatar">
-                        <div class="steve-face">🧑‍💼</div>
-                    </div>
-                    <div class="admin-info">
-                        <h3 class="admin-name">Mike</h3>
-                        <span class="admin-role">Developer</span>
-                    </div>
-                    <div class="admin-message">
-                        <p>"We're constantly working on new features and improvements. Your feedback helps us make SurfNetwork better every day. Keep those suggestions coming!"</p>
-                        <div class="message-date">5 days ago</div>
+                    <div class="pagination">
+                        <a class="" href="javascript:void(0)">«</a>
+                        <a class="" href="javascript:void(0)">0</a>
+                        <a class="" href="javascript:void(0)">»</a>
                     </div>
                 </div>
             </div>
@@ -402,19 +493,19 @@
 
             <div class="store-categories">
                 <button class="category-btn active" data-category="ranks">
-                    <span class="btn-icon">👑</span>
+                    <span class="btn-icon"><span class="material-symbols-outlined">ranks</span></span>
                     <span class="btn-text">Ranks</span>
                 </button>
                 <button class="category-btn" data-category="coins">
-                    <span class="btn-icon">💰</span>
+                    <span class="btn-icon"><span class="material-symbols-outlined">cash</span></span>
                     <span class="btn-text">Coins</span>
                 </button>
                 <button class="category-btn" data-category="cosmetics">
-                    <span class="btn-icon">✨</span>
+                    <span class="btn-icon"><span class="material-symbols-outlined">cosmetics</span></span>
                     <span class="btn-text">Cosmetics</span>
                 </button>
                 <button class="category-btn" data-category="boosters">
-                    <span class="btn-icon">⚡</span>
+                    <span class="btn-icon"><span class="material-symbols-outlined">bolt</span></span>
                     <span class="btn-text">Boosters</span>
                 </button>
             </div>
@@ -569,7 +660,7 @@
             <div class="cart-summary" id="cart-summary" style="display: none;">
                 <div class="cart-header">
                     <h3>Shopping Cart</h3>
-                    <div class="cart-icon">🛒</div>
+                    <div class="cart-icon"><span class="material-symbols-outlined">shopping_cart</span></div>
                 </div>
                 <div id="cart-items" class="cart-items"></div>
                 <div class="cart-total">
@@ -635,13 +726,51 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
+            <div class="e-row row-padding">
+                <div class="e-col m3 e-padding">
+                    <div class="logo e-margin-bottom">
+                        <img src="./assets/logo.png" alt="Logo">
+                    </div>
+                    <div class="footer-info e-margin-bottom ">
+                        <p><i class="flaticon-call iconpfooter2"></i>&nbsp;&nbsp;&nbsp;+1 (234) 567 89 10</p>
+                        <p><i class="flaticon-email iconpfooter3"></i>&nbsp;&nbsp;&nbsp;support@surfnetwork.xyz</p>
+                    </div>
+                    <ul class="footer-social">
+                        <li>
+                            <a href="#"><i class="fi fi-brands-facebook"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fi fi-brands-discord"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fi fi-brands-youtube"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="e-col m7 e-padding"></div>
+                <div class="e-col m2 e-padding">
+                    <h6 class="widget-title">Quick Links</h6>
+                    <div class="footer-menu">
+                        <div class="menu-quick-links-container">
+                            <ul id="menu-quick-links" class="menu">
+                                <li class="menu-item"><a href="./">Home</a></li>
+                                <li class="menu-item"><a href="./about-us/">About Us</a></li>
+                                <li class="menu-item"><a href="./team/">Team</a></li>
+                                <li class="menu-item"><a href="./about-us/">Halloween</a></li>
+                                <li class="menu-item"><a href="./contact/">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="footer-content">
+                <!--
                 <div class="footer-section">
                     <div class="footer-logo">
                         <div class="logo-block"></div>
                         <h3>SurfNetwork</h3>
                     </div>
-                    <p>Keep Surfin!</p>
+                    <p>Keep Surfing!</p>
                 </div>
                 <div class="footer-section">
                     <h4>Quick Links</h4>
@@ -655,12 +784,21 @@
                 <div class="footer-section">
                     <h4>Connect</h4>
                     <div class="social-links">
-                        <a href="#" class="social-link">💬</a>
-                        <a href="#" class="social-link">🐦</a>
-                        <a href="#" class="social-link">📺</a>
-                        <a href="#" class="social-link">🔗</a>
+                        <a href="#" class="social-link discord">
+                            <-- TODO: Discord ->
+                        </a>
+                        <a href="#" class="social-link twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" height="34" width="34"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+                        </a>
+                        <a href="#" class="social-link yt">
+                            <-- TODO: YT ->
+                        </a>
+                        <a href="#" class="social-link links">
+                            <-- TODO: links ->
+                        </a>
                     </div>
                 </div>
+                -->
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 SurfNetwork. All rights reserved.<br>Made with ❤️ by the SurfNetwork Team, Powered by EQuery.</p>
@@ -670,4 +808,5 @@
     <!-- Scripts -->
     <script type="module" src="./js/script.js"></script>
 </body>
+
 </html>

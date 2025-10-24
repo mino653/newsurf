@@ -5,14 +5,17 @@ import {
     getState,
     clear,
     redirect,
-    fetchWithTimeout
+    fetchWithTimeout,
+    setState
 } from './util.js';
+import './halloween-easter-egg.js';
+import { halloweenBats, halloweenFog } from './halloween-easter-egg.js';
 
 EQuery(async function () {
     // Initialize all features
     
     initLoadingScreen();
-    initThemeToggle();
+    // initThemeToggle();
     initContactForm();
 
     let userdata;
@@ -163,105 +166,101 @@ EQuery(async function () {
     }
 
    // Loading Screen with rotating messages - stops when loading is done
-function initLoadingScreen() {
-    const loadingScreen = document.getElementById('loading-screen');
-    const loadingText = document.getElementById('loading-text');
-    
-    // Array of loading messages
-    const loadingMessages = [
-        'Loading chunks...',
-        'Spawning entities...',
-        'Generating terrain...',
-        'Building structures...',
-        'Loading textures...',
-        'Preparing world...',
-        'Initializing server...',
-        'Connecting to database...',
-        'Loading player data...',
-        'Almost there...'
-    ];
-    
-    let messageIndex = 0;
-    let isFirstLoad = true;
-    let messageTimer = null;
-    let isLoading = true;
-    
-    // Function to change loading message
-    function changeLoadingMessage() {
-        if (!isLoading) return; // Stop if loading is done
+    function initLoadingScreen() {
+        const loadingScreen = EQuery('loading-screen');
+        // const loadingText = document.getElementById('loading-text');
         
-        if (isFirstLoad) {
-            // First message stays longer
-            messageTimer = setTimeout(() => {
-                isFirstLoad = false;
-                messageIndex = 1;
-                loadingText.textContent = loadingMessages[messageIndex];
-                changeLoadingMessage();
-            }, 2000);
-        } else {
-            // Cycle through messages
-            messageTimer = setTimeout(() => {
-                if (!isLoading) return; // Check again before changing
-                
-                messageIndex = (messageIndex + 1) % loadingMessages.length;
-                loadingText.textContent = loadingMessages[messageIndex];
-                
-                // Keep cycling every 2 seconds
-                changeLoadingMessage();
-            }, 2000);
-        }
-    }
-    
-    // Start cycling messages
-    changeLoadingMessage();
-    
-    // Function to stop loading
-    function stopLoading() {
-        isLoading = false;
-        clearTimeout(messageTimer); // Stop message cycling
+        // Array of loading messages
+        /* const loadingMessages = [
+            'Loading chunks...',
+            'Spawning entities...',
+            'Generating terrain...',
+            'Building structures...',
+            'Loading textures...',
+            'Preparing world...',
+            'Initializing server...',
+            'Connecting to database...',
+            'Loading player data...',
+            'Almost there...'
+        ];
         
-        // Show final message
-        loadingText.textContent = 'Done!';
-        loadingText.style.animation = 'none';
+        let messageIndex = 0;
+        let isFirstLoad = true;
+        let messageTimer = null;
         
-        // Hide loading screen after showing final message
-        setTimeout(() => {
-            loadingScreen.classList.add('hidden');
+        // Function to change loading message
+        function changeLoadingMessage() {
+            if (!isLoading) return; // Stop if loading is done
             
-            // Start animations after loading
-            setTimeout(() => {
-                initHeroAnimations();
-                initCopyIP();
-                initParticleEffects();
-                // initMusicPlayer();
-                initStore();
-                initScrollAnimations();
-                initNavigation();
-                initAdminMessages();
-                initServerStats();
-                initMinecraftEffects();
-                initHeroAnimations();
-            }, 500);
-        }, 1000);
-    }
-    
-    // Check if page is fully loaded
-    if (document.readyState === 'complete') {
-        stopLoading();
-    } else {
-        window.addEventListener('load', function() {
-            // Small delay to ensure everything is loaded
-            setTimeout(stopLoading, 500);
-        });
-    }
-    
-    // Fallback: stop loading after maximum time (10 seconds)
-    setTimeout(() => {
-        if (isLoading) {
-            stopLoading();
+            if (isFirstLoad) {
+                // First message stays longer
+                messageTimer = setTimeout(() => {
+                    isFirstLoad = false;
+                    messageIndex = 1;
+                    loadingText.textContent = loadingMessages[messageIndex];
+                    changeLoadingMessage();
+                }, 2000);
+            } else {
+                // Cycle through messages
+                messageTimer = setTimeout(() => {
+                    if (!isLoading) return; // Check again before changing
+                    
+                    messageIndex = (messageIndex + 1) % loadingMessages.length;
+                    loadingText.textContent = loadingMessages[messageIndex];
+                    
+                    // Keep cycling every 2 seconds
+                    changeLoadingMessage();
+                }, 2000);
+            }
         }
-    }, 10000);
-}
+        
+        // Start cycling messages
+        changeLoadingMessage(); */
+
+        
+        let isLoading = true;
+
+        // Function to stop loading
+        function stopLoading() {
+            isLoading = false;
+            // clearTimeout(messageTimer); // Stop message cycling
+            
+            // Show final message
+            // loadingText.textContent = 'Done!';
+            // loadingText.style.animation = 'none';
+            
+            // Hide loading screen after showing final message
+            EQuery('body').addClass('loaded');
+            setTimeout(() => {
+                // loadingScreen.classList.add('hidden');
+                EQuery('.preloader').css('display: none');
+                // Start animations after loading
+                setTimeout(() => {
+                    initHeroAnimations();
+                    initCopyIP();
+                    initParticleEffects();
+                    // initMusicPlayer();
+                    initStore();
+                    initScrollAnimations();
+                    initNavigation();
+                    initAdminMessages();
+                    initServerStats();
+                    initMinecraftEffects();
+                    initHeroAnimations();
+                }, 500);
+            }, 1000);
+        }
+        
+        // Check if page is fully loaded
+        if (document.readyState === 'complete') {
+            stopLoading();
+        } else {
+            window.addEventListener('load', function() {
+                // Small delay to ensure everything is loaded
+                setTimeout(stopLoading, 500);
+            });
+        }
+    }
 
     // Hero Animations
     function initHeroAnimations() {
@@ -301,13 +300,25 @@ function initLoadingScreen() {
         const acctBtn = EQuery('#account-btn');
         const dropdownMenu = EQuery('#secondary-dropmenu');
         const logoutBtn = EQuery('.dropdown .logout');
+        const pointerRing = EQuery.elemt('div').css('left: 0;top: 0;width: 0;height: 0;padding: 1.5rem;border: .1px solid #f1f1f1;position: fixed;border-radius: 10rem;transition: transform .1s;pointer-events: none;z-index: 9999;')
+        const pointerDot = EQuery.elemt('div').css('left: 0;top: 0;margin-top: -.5rem;margin-left: -.3rem;width: 0;height: 0;border: 2.5px solid #b29a7b;position: fixed;border-radius: .4rem;pointer-events: none;transition: border-color 0.5s, transform;z-index: 9999;')
         let state = getState();
+        let pointerdown = false;
+        let expandNav = false;
         let dropdown = false;
+
+        EQuery('body').prepend([pointerDot, pointerRing]);
 
         // Mobile menu toggle
         hamburger.click(function () {
-            hamburger.toggleClass('active');
-            navMenu.toggleClass('active');
+            expandNav = !expandNav
+            if (expandNav) {
+                hamburger.addClass('active');
+                navMenu.addClass('active');
+            } else {
+                hamburger.removeClass('active');
+                navMenu.removeClass('active');
+            }
 
             // Animate hamburger bars
             const bars = hamburger.find('.bar');
@@ -424,6 +435,25 @@ function initLoadingScreen() {
             }
         });
 
+        EQuery(document).mousemove(function (e) {
+            pointerDot.css(`border-color: rgb(171, 171, 171);transform: translate(${e.x}px, ${e.y}px);`);
+            pointerRing.css(`border-color: rgb(241, 241, 241);transform: translate(calc(${e.x}px - ${pointerdown ? 14 : 26}px), calc(${e.y}px - ${pointerdown ? 14 : 26}px));`);
+        });
+
+        EQuery(document).mousedown(function (e) {
+            pointerdown = true;
+            pointerRing.css('padding: 10px');
+            pointerDot.css(`border-color: rgb(171, 171, 171);transform: translate(${e.x}px, ${e.y}px);`);
+            pointerRing.css(`border-color: rgb(241, 241, 241);transform: translate(calc(${e.x}px - ${pointerdown ? 14 : 26}px), calc(${e.y}px - ${pointerdown ? 14 : 26}px));`);
+        });
+
+        EQuery(document).mouseup(function (e) {
+            pointerdown = false;
+            pointerRing.css('padding: 25px');
+            pointerDot.css(`border-color: rgb(171, 171, 171);transform: translate(${e.x}px, ${e.y}px);`);
+            pointerRing.css(`border-color: rgb(241, 241, 241);transform: translate(calc(${e.x}px - ${pointerdown ? 14 : 26}px), calc(${e.y}px - ${pointerdown ? 14 : 26}px));`);
+        })
+
         scrollBtn.click(function() {
             window.scrollTo({
                 top: 0,
@@ -441,7 +471,7 @@ function initLoadingScreen() {
             EQuery('[data-visibility=invalidemail]').hide();
         }
 
-        if (state.confirm_email == false) {
+        if (state.confirm_email === false) {
             EQuery('[data-visibility=invalidemail]').show();
         } 
     }
@@ -629,48 +659,58 @@ function initLoadingScreen() {
         // products = await loadProducts();
 
         // Category filtering with animation
-        categoryBtns.each((index, btn) => {
-            EQuery(btn).click(function () {
-                const category = this.getAttribute('data-category');
+        categoryBtns.click(function () {
+            const category = this.getAttribute('data-category');
 
-                // Update active button
-                categoryBtns.each((i, b) => b.removeClass('active'));
-                this.addClass('active');
+            // Update active button
+            categoryBtns.removeClass('active');
+            EQuery(this).addClass('active');
 
-                // Animate category change
-                productCards.each(card => {
-                    if (card.getAttribute('data-category') === category) {
-                        card.style.display = 'block';
-                        card.style.animation = 'fadeIn 0.5s ease';
-                    } else {
-                        card.style.animation = 'fadeOut 0.3s ease';
-                        setTimeout(() => {
-                            card.style.display = 'none';
-                        }, 300);
-                    }
-                });
+            // Animate category change
+            productCards.each((i, card) => {
+                if (card.getAttribute('data-category') === category) {
+                    EQuery(card).show().css('animation: fadeIn .5s ease');
+                } else {
+                    EQuery(card).css('animation: fadeOut .5s ease');
+                    setTimeout(() => {
+                        EQuery(card).hide();
+                    }, 500);
+                }
             });
         });
 
         // Add to cart functionality with animation
-        buyBtns.each(btn => {
-            EQuery(btn).click(function () {
-                const productId = this.getAttribute('data-product');
-                const product = products[productId];
+        buyBtns.click(async function () {
+            const productId = this.getAttribute('data-product');
+            const product = products[productId];
+            const state = getState();
 
-                if (product) {
-                    addToCart(product);
+            if (state.userdata === undefined) {
+                showMessage('You require an account to make a purchase', 'warn');
+                return;
+            }
 
+            if (state.userdata.confirm_email === false) {
+                showMessage('You require a verified email to make a purchase', 'warn');
+                return;
+            }
+
+            if (product) {
+                try {                
                     // Animate button
-                    this.innerHTML = '<div class="loading"></div> Adding...';
-                    this.style.background = 'var(--minecraft-green)';
+                    EQuery(this).css('background-color: var(--minecraft-green)').html('<div class="loading"></div> Adding...');
+                    const response = await fetchWithTimeout(`https://surfnetwork-api.onrender.com/confirm-purchase?user-id=${state.userdata.id}&product-id=${productId}`);
 
-                    setTimeout(() => {
-                        this.innerHTML = 'Purchase';
-                        this.style.background = '';
-                    }, 2000);
+                    if (response.ok) {
+                        addToCart(product)
+                    } else {
+                        showMessage(`Purchase failed: ${response.message}`, 'error');
+                    }
+                    EQuery(this).css('background: ').text('Purchase');
+                } catch (e) {
+                    showMessage('Failed to fetch server stats. Timedout 30000ms.', 'error');
                 }
-            });
+            }
         });
 
         // Add item to cart
@@ -686,48 +726,58 @@ function initLoadingScreen() {
 
         // Update cart display
         function updateCartDisplay() {
+            state.cart = cart;
+            setState(state);
             if (cart.length === 0) {
                 cartSummary.hide();
                 return;
             }
 
             cartSummary.show();
-            cartItems.html('');
+            cartItems.removeChildren();
 
-            cart.each((item, index) => {
-                const cartItem = EQuery.elemt('div', null, 'cart-item', null, 'animation: fadeIn 0.3s ease');
-                cartItem.html(`<div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 2px solid var(--minecraft-black);"><span style="font-family: 'Minecraft', monospace; font-weight: 700;">${item.name}</span><div style="display: flex; align-items: center; gap: 15px;"><span style="font-family: 'Minecraft', monospace; font-weight: 700; color: var(--minecraft-green);">$${item.price.toFixed(2)}</span><button onclick="removeFromCart(${index})" style="background: var(--minecraft-red); border: 2px solid var(--minecraft-black); color: var(--minecraft-white); padding: 8px 15px; font-family: 'Minecraft', monospace; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">Remove</button></div></div>`);
+            cart.forEach((item, index) => {
+                const btn = EQuery.elemt('button', 'Remove').css('background: var(--minecraft-red); border: 2px solid var(--minecraft-black); color: var(--text-primary); padding: 8px 15px; font-family: \'Minecraft\', monospace; font-weight: 700; cursor: pointer; transition: all 0.2s ease;');
+                const cartItem = EQuery.elemt('div', [
+                    EQuery.elemt('div', [
+                        EQuery.elemt('span', item.name).css('font-family: \'Minecraft\', monospace;color: var(--bg-primary);font-weight: 700;'),
+                        EQuery.elemt('div', [
+                            EQuery.elemt('span', `$${item.price.toFixed(2)}`).css('font-family: \'Minecraft\', monospace; font-weight: 700; color: var(--minecraft-green);'), btn
+                        ]).css('display: flex; align-items: center; gap: 15px;')
+                    ]).css('display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 2px solid var(--minecraft-black);')
+                ]);
+                btn.click(() => removeFromCart(index));
                 cartItems.append(cartItem);
             });
 
-            cartTotal.textContent = total.toFixed(2);
+            cartTotal.text(total.toFixed(2));
         }
 
         // Remove from cart (global function)
         window.removeFromCart = function (index) {
             total -= cart[index].price;
             cart.splice(index, 1);
+            console.log(cart);
             updateCartDisplay();
         };
 
         // Checkout functionality
         checkoutBtn.click(function () {
+            const _this = this;
             if (cart.length === 0) {
                 showMessage('Your cart is empty!', 'error');
                 return;
             }
 
             // Simulate checkout process
-            this.innerHTML = '<div class="loading"></div> Processing...';
-            this.disabled = true;
+            EQuery(this).attr({disabled: true}).html('<div class="loading"></div> Processing...');
 
             setTimeout(() => {
                 showMessage('Purchase successful! Check your email for confirmation.', 'success');
                 cart = [];
                 total = 0;
                 updateCartDisplay();
-                this.innerHTML = 'Checkout';
-                this.disabled = false;
+                EQuery(_this).attr({disabled: false}).text('Checkout');
             }, 2000);
         });
 
@@ -746,16 +796,24 @@ function initLoadingScreen() {
         const observer = new IntersectionObserver(function (entries) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    EQuery(entry.target).addClass('visible').css('transform:translateY(0px)');
+                    EQuery(entry.target).addClass('visible');
                 } else {
-                    EQuery(entry.target).removeClass('visible').css('transform:translateY(50px)');
+                    EQuery(entry.target).removeClass('visible');
                 }
             });
         }, observerOptions);
 
         // Add animation classes to elements
         const animatedElements = EQuery('.feature-card, .product-card, .contact-item, .stat-card, .feature-item').addClass('fade-in');
+        const animatedFadeInUp = EQuery('.h2-baslik, .custom-button, footer .logo, .footer-info, .footer-social').addClass('fadeInUp');
+        const animatedFadeInRight = EQuery('.about-item').addClass('fadeInRight');
         animatedElements.each((i, el) => {
+            observer.observe(el);
+        });
+        animatedFadeInUp.each((i, el) => {
+            observer.observe(el);
+        });
+        animatedFadeInRight.each((i, el) => {
             observer.observe(el);
         });
 
@@ -873,7 +931,94 @@ function initLoadingScreen() {
         requestAnimationFrame(updateNumber);
     }
 
-    function initAdminMessages() {
+    async function initAdminMessages() {
+        const list = EQuery('#member_list_staff_members');
+        const prevBtn = EQuery('#admin-message-list .pagination a:first-child');
+        const indexCount = EQuery('#admin-message-list .pagination a:nth-child(2)');
+        const nextBtn = EQuery('#admin-message-list .pagination a:last-child');
+        const itemsCount = 5;
+        let index = 0;
+        let messages = {};
+        
+        try {
+            const response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/get-admin-messages');
+            messages = response;
+        } catch (e) {
+            showMessage(`Failed to fetch admin data: ${e}`, 'error');
+            messages = {
+                page: [],
+                pageCount: 0
+            };
+        }
+
+        const pageCount = messages.pageCount;
+        const pages = messages.page;
+        const chunk = setChunk(0, pageCount > itemsCount ? itemsCount : 1, pages);
+
+        updateAdminMessages(index, chunk);
+
+        function updateAdminMessages(i, chunk) {
+            const max = chunk.length;
+            if (pageCount === 0) return;
+            let pages = chunk[i];
+            list.removeChildren();
+
+            pages.forEach(page => {
+                let badges = [];
+
+                for (let j = 0;j < page.badges;j++) {
+                    badges.push(EQuery.elemt('span', page.badge[k].content, `badge ${page.badge[j].badgeType}`));
+                }
+
+                let elt = EQuery.elemt('div', [
+                    EQuery.elemt('div', [
+                        EQuery.elemt('img', null, 'avatar-img members-staff-av e-round-medium', {src: page.imageSource}),
+                        EQuery.elemt('div', [
+                            EQuery.elemt('span', [
+                                page.playerName,
+                                ...badges
+                            ], 'username', null, `color: ${page.assentColor}`),
+                            EQuery.elemt('div', [EQuery.elemt('span', page.playerDetails, 'ui e-opacity e-small')], 'description')
+                        ], 'flex-grow-1')
+                    ], 'e-flex list-header'),
+                    EQuery.elemt('div', [
+                        EQuery.elemt('div', page.messageContent, 'admin-message'),
+                        EQuery.elemt('div', page.timeDiff, 'message-details e-small e-opacity')
+                    ], 'list-content')
+                ], 'e-marin-bottom list-container');
+                list.append(elt);
+            });
+
+            indexCount.text(i + 1);
+            prevBtn.removeClass('disabled');
+            nextBtn.removeClass('disabled');
+            if (i === 0) prevBtn.addClass('disabled');
+            else if (i === max - 1) nextBtn.addClass('disabled');
+        }
+
+        prevBtn.click(function () {
+            index -= index !== 0 ? 1 : 0;
+            updateAdminMessages(index, chunk);
+        });
+
+        nextBtn.click(function () {
+            index += index !== chunk.length - 1 ? 1 : 0;
+            updateAdminMessages(index, chunk);
+        });
+
+        function setChunk(start, count, items) {
+            let arr = [];
+            
+            while (items.length > count) {
+                arr.push([...items.splice(start, count)]);
+            }
+
+            arr.push([...items]);
+            
+            return arr;
+        }
+
+        /*
         // Intersection Observer for scroll animations
         const observerOptions = {
             threshold: 0.1,
@@ -905,7 +1050,7 @@ function initLoadingScreen() {
             
             // Show fun message
             showMessage('Steve says: "Thanks for clicking!" 🎮', 'success');
-        });
+        });*/
     }
 
     // Minecraft-specific effects
@@ -936,10 +1081,11 @@ function initLoadingScreen() {
     function createBlockBreakEffect(event) {
         const centerX = event.x;
         const centerY = event.y;
+        const color = EQuery(event.target).getStyleValue('background-color')
 
         for (let i = 0; i < 8; i++) {
             const particle = EQuery.elemt('div')
-                .css(`position: fixed;left: ${centerX}px;top: ${centerY}px;width:4px;height: 4px;background: var(--minecraft-green);border: 1px solid var(--minecraft-black);border-radius:0;pointer-events: none;z-index: 1000`);
+                .css(`position: fixed;left: ${centerX}px;top: ${centerY}px;width:4px;height: 4px;background: ${color};border: .5px solid var(--minecraft-black);border-radius:0;pointer-events: none;z-index: 1000`);
 
             const angle = (i / 8) * Math.PI * 2;
             const velocity = 50 + Math.random() * 50;
@@ -987,7 +1133,7 @@ function initLoadingScreen() {
         const existingMessages = EQuery('.message');
         existingMessages.each((i, msg) => msg.remove());
 
-        const message = EQuery.elemt('div', text, `message ${type}`, null, 'position: fixed;top: 40px;left: 12px;z-index: 99999999');
+        const message = EQuery.elemt('div', text, `message ${type}`, null, 'position: fixed;top: 40px;left: 12px;z-index: 9999');
 
         // Add to top of page
         EQuery('body').prepend(message);
@@ -1008,47 +1154,60 @@ function initLoadingScreen() {
     EQuery('head').append(style);
 
     // Easter egg: Konami code
-    const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
-
-    let konamiCode = [];
+    let konamiCode = {};
     const easterEggs = {
         '38,38,40,40,37,39,37,39,66,65': function () {
-            EQuery('body').css('animation: rainbow 2s ease-in-out infinite');
+            EQuery('body>* *').css('animation: rainbow 2s ease-in-out infinite');
+            showMessage('🎉 Party easter egg 🎉', 'success');
             setTimeout(() => {
-                document.body.style.animation = '';
+                EQuery('body>* *').css('animation: none');
             }, 6000);
-        }
+        },
+        '38,39,38,39,40,37,40,37,72,65,76,76,79,87,69,69,78': halloweenEasterEgg
     }
 
+    for (let codes in easterEggs) {
+        konamiCode[codes] = [];
+    }
+
+    console.log(konamiCode);
+
     EQuery(document).keydown(function (e) {
-        konamiCode.push(e.keyCode);
-
-        if (konamiCode.length > konamiSequence.length) {
-            konamiCode.shift();
-        }
-
         for (let codes in easterEggs) {
-            if (konamiCode.join(',') === codes) {
-                showMessage('🎉 Easter egg found! You\'re awesome! 🎉', 'success');
+            konamiCode[codes].push(e.keyCode);
+            if (konamiCode[codes].length > codes.split(',').length) {
+                konamiCode[codes].shift();
+            }
+            if (konamiCode[codes].join(',') === codes) {
                 easterEggs[codes]();
-                konamiCode = []
+                konamiCode[codes] = []
                 break;
             }
         }
-/*
-        if (konamiCode.join(',') === konamiSequence.join(',')) {
-            // Easter egg activated!
-            showMessage('🎉 Easter egg found! You\'re awesome! 🎉', 'success');
-
-            // Add some fun effects
-            EQuery('body').css('animation: rainbow 2s ease-in-out infinite');
-            setTimeout(() => {
-                document.body.style.animation = '';
-            }, 6000);
-
-            konamiCode = [];
-        }*/
     });
+
+    function halloweenEasterEgg() {
+        let canvas = new EQuery.canvas();
+        let target = EQuery.elemt('div', [
+            EQuery.elemt('div', canvas.domElement).css('position: relative;top: 0;left: 0;height: 100%;width: 100%'),
+            EQuery.elemt('img', null, null, {src: './assets/circle-samhain.png'}, 'position: absolute;top: 20px;right: 80px;z-index: 10;height: 20%;width: 20%;')
+        ]).css('position: fixed;top:0;left: 0;height: 100vh;width: 100vw;background: #000000aa;z-index: 999999;animation: fadeIn .3s');
+        EQuery('body').append(target);
+
+        let c = halloweenFog(canvas);
+        let h = halloweenBats({
+            target: target
+        });
+        setTimeout(function () {
+            target.css('animation: .5s fadeOut');
+            setTimeout(() => {
+                target.remove();
+                h.stop();
+            }, 500);
+        }, 30000);
+        
+        showMessage('Happy Halloween!', 'halloween');
+    }
 
     // Add rainbow animation for easter egg
     const rainbowStyle = EQuery.elemt('style', `
@@ -1063,10 +1222,9 @@ function initLoadingScreen() {
     EQuery('head').append(rainbowStyle);
 
     // Add some human-like touches
-    setTimeout(() => {
+    setInterval(() => {
         // Random helpful tips
         const tips = [
-            "💡 Tip: Use the music player to set the perfect gaming mood!",
             "🎮 Pro tip: Join our Discord for exclusive events and giveaways!",
             "⭐ Don't forget to rate us 5 stars if you enjoy the server!",
             "🎁 Check out our daily rewards for free items!",
@@ -1087,9 +1245,9 @@ function initLoadingScreen() {
         // Show a welcome message with server info
         const welcomeMessages = [
             "Welcome to SurfNetwork! 🏄‍♂️",
-            "Ready for an epic Minecraft adventure? ⚔️",
-            "Join thousands of players worldwide! 🌍",
-            "Your Minecraft journey starts here! 🚀"
+            "Happy Halloween 🎃",
+            "Join us in out Halloween party",
+            "The frights are here!"
         ];
 
         const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
