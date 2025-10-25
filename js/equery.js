@@ -1778,7 +1778,7 @@
         elt = typeof elt == 'string' ? getElemt(elt) : elt;
         if (typeof val == 'string') css(elt, `width: ${val}`);
         else if (val) css(elt, `width: ${toCssPx(val)}`);
-        else return getStyleValue(elt, 'width');
+        else return Number(getStyleValue(elt, 'height').replaceAll('px', ''));
     };
 
     class SVG {
@@ -2515,6 +2515,7 @@
         mouseenter: function () { return this.forEach(on, ['mouseenter', ...arguments]) },
         mouseleave: function () { return this.forEach(on, ['mouseleave', ...arguments]) },
         mousemove: function () { return this.forEach(on, ['mousemove', ...arguments]) },
+        mouseup: function () { return this.forEach(on, ['mouseup', ...arguments]) },
         mousewheel: function () { return this.forEach(on, ['mousewheel', ...arguments]) },
         paste: function () { return this.forEach(on, ['paste', ...arguments]) },
         reset: function () { return this.forEach(on, ['reset', ...arguments]) },
