@@ -855,7 +855,7 @@ img {vertical-align: middle;border-style: none;}
 .galeri1, .galeri {position: absolute;top: 0;width: 100%;height: 100%;}
 .galeri {display: flex;align-items: center;justify-content: center;}
 .galeri img {width: -webkit-fill-available;max-width: 604px;}
-.h2-baslik {background-image: linear-gradient(to right, #ff812d, #ff6a07);font-family: 'Minecraft', monospace;font-size: 30px;font-weight: 700;display: inline-block;-webkit-background-clip: text;color: transparent;margin-top: 0;}
+.h2-baslik {background-image: linear-gradient(to right, #ff812d, #ff6a07);font-family: 'Minecraft', monospace;font-size: 30px;font-weight: 700;display: inline-block;background-clip: text;-webkit-background-clip: text;color: transparent;margin-top: 0;}
 h3.baslik-3s {color: #ff812d;font-family: 'Minecraft', monospace;font-size: 1.8rem;font-weight: 600;margin: 0;}
 .imagerotate {position: absolute;top: 0%;-webkit-animation: spin 15s linear infinite;-moz-animation: spin 15s linear infinite;animation: spin 15s linear infinite;width: 100%;height: 100%;}
 .zoomIn {-webkit-animation-name: zoomOn;animation-name: zoomIn}
@@ -2440,7 +2440,7 @@ form {border: none}
 .footer .footer-social li {display: inline-block;margin-right: 10px;padding: 0;list-style: none;}
 .footer .footer-social li a {width: 53px;height: 40px;line-height: 46px;display: inline-block;border: 1px solid rgba(255, 255, 255, 0.3);color: #ffffff;text-align: center;font-size: 21px;}
 .footer .footer-social li a {border-image: linear-gradient(to right, #ffffff, #ffffff);background: linear-gradient(#000, #000), linear-gradient(to right, #ff6600, #ff6a07);background-origin: padding-box, border-box;background-repeat: no-repeat;border: 2px solid transparent;}
-.footer .widget-title {background-image: linear-gradient(to right, #ff812d, #ff6a07);-webkit-background-clip: text;color: transparent;font-size: 28px;font-weight: 700;font-family: 'Minecraft', monospace;}
+.footer .widget-title {background-image: linear-gradient(to right, #ff812d, #ff6a07);background-clip: text;-webkit-background-clip: text;color: transparent;font-size: 28px;font-weight: 700;font-family: 'Minecraft', monospace;}
 .footer .widget-title {width: 100%;display: block;font-weight: 500;font-size: 26px;margin-top: 10px;margin-bottom: 15px;}
 .footer .footer-menu {width: 100%;display: flex;flex-wrap: wrap;margin: 0;padding: 0;justify-content: center;}
 .footer .menu {margin: 0;padding: 0;}
