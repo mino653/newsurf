@@ -801,62 +801,41 @@ img {vertical-align: middle;border-style: none;}
     text-align: center !important;
 }
 
-.swiper-wrapper {position: relative;width: 100%;height: 100%;z-index: 1;display: -webkit-flex;display: -ms-flexbox;display: flex;-webkit-transition-property: -webkit-transform;transition-property: -webkit-transform;-o-transition-property: transform;transition-property: transform;transition-property: transform, -webkit-transform;-webkit-box-sizing: content-box;box-sizing: content-box;-webkit-transform: translate3d(0, 0, 0);transform: translate3d(0, 0, 0);} 
+.swiper-wrapper {position: relative;width: 100%;height: 100%;z-index: 1;display: -webkit-flex;display: -ms-flexbox;display: flex;-webkit-transition-property: -webkit-transform;transition-property: -webkit-transform;-o-transition-property: transform;transition-property: transform;transition-property: transform, -webkit-transform;-webkit-box-sizing: content-box;box-sizing: content-box;-webkit-transform: translate3d(0, 0, 0);transform: translate3d(0, 0, 0);}
 .swiper-slide {display: none;width: 100vw;flex-wrap: wrap;align-items: center;padding-top: 150px;background: #000;padding: 0 15%;z-index: 1;opacity: 0;}
 .swiper-slide.swiper-slide-active {display: flex;z-index: 2;opacity: 1}
-
-/* Hero-specific sliding animations (scoped to avoid interfering with other sliders) */
-.hero .swiper-wrapper { position: relative; }
-.hero .swiper-wrapper .swiper-slide { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding-top: 150px; opacity: 0; transform: translateX(100%); transition: transform 0.6s cubic-bezier(.2,.9,.2,1), opacity 0.6s cubic-bezier(.2,.9,.2,1); z-index: 1; pointer-events: none; }
-.hero .swiper-wrapper .swiper-slide .container { transition: transform 0.6s cubic-bezier(.2,.9,.2,1), opacity 0.6s; }
-.hero .swiper-wrapper .swiper-slide.swiper-slide-active { opacity: 1; transform: translateX(0); z-index: 2; pointer-events: auto; }
-
-/* Entering from right (next) */
-.hero .swiper-wrapper .swiper-slide.slide-enter-right { transform: translateX(100%); opacity: 1; }
-.hero .swiper-wrapper .swiper-slide.slide-enter-right .container { transform: translateX(30px); opacity: 0; }
-.hero .swiper-wrapper .swiper-slide.slide-enter-right.swiper-slide-active { transform: translateX(0); }
-.hero .swiper-wrapper .swiper-slide.slide-enter-right.swiper-slide-active .container { transform: translateX(0); opacity: 1; }
-
-/* Entering from left (prev) */
-.hero .swiper-wrapper .swiper-slide.slide-enter-left { transform: translateX(-100%); opacity: 1; }
-.hero .swiper-wrapper .swiper-slide.slide-enter-left .container { transform: translateX(-30px); opacity: 0; }
-.hero .swiper-wrapper .swiper-slide.slide-enter-left.swiper-slide-active { transform: translateX(0); }
-.hero .swiper-wrapper .swiper-slide.slide-enter-left.swiper-slide-active .container { transform: translateX(0); opacity: 1; }
-
-/* Exiting to left */
-.hero .swiper-wrapper .swiper-slide.slide-exit-left { transform: translateX(-100%); opacity: 0; z-index: 1; pointer-events: none; }
-.hero .swiper-wrapper .swiper-slide.slide-exit-left .container { transform: translateX(-30px); opacity: 0; }
-
-/* Exiting to right */
-.hero .swiper-wrapper .swiper-slide.slide-exit-right { transform: translateX(100%); opacity: 0; z-index: 1; pointer-events: none; }
-.hero .swiper-wrapper .swiper-slide.slide-exit-right .container { transform: translateX(30px); opacity: 0; }
-
-/* Dot indicators for hero slider */
-.hero .slider-dots {
-    position: absolute;
-    bottom: 36px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 6;
-}
-.hero .slider-dots .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.25);
-    cursor: pointer;
-    border: 2px solid rgba(0,0,0,0.15);
-    transition: transform .18s ease, background .18s ease, border-color .18s ease;
-}
-.hero .slider-dots .dot.active {
-    background: linear-gradient(90deg, #ff6600, #ff6a07);
-    transform: scale(1.25);
-    border-color: rgba(255,255,255,0.95);
-}
 .slide-image {width: 100%;height: 100%;position: absolute;left: 0;top: 0;background-size: cover !important;background-position: center !important;opacity: 1;}
 .swiper-slide .container {color: #fff;position: relative;z-index: 1;margin: 0;width: 100%;padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;text-align: left;}
+
+/* Hero slider animation helpers
+    - Non-active slides are hidden by default (display:none)
+    - When JS adds .slide-enter-* or .slide-exit-* we temporarily show the slide (display:flex)
+    - .swiper-slide-active represents the currently visible slide
+*/
+.hero .swiper-wrapper .swiper-slide { display: none; }
+.hero .swiper-wrapper .swiper-slide.swiper-slide-active,
+.hero .swiper-wrapper .swiper-slide.slide-enter-right,
+.hero .swiper-wrapper .swiper-slide.slide-enter-left { display: flex; }
+
+.hero .swiper-wrapper .swiper-slide { opacity: 0; transform: translateX(100%); transition: transform 0.6s cubic-bezier(.2,.9,.2,1), opacity 0.6s; }
+.hero .swiper-wrapper .swiper-slide.swiper-slide-active { opacity: 1; transform: translateX(0); }
+
+/* Enter from right (next) */
+.hero .swiper-wrapper .swiper-slide.slide-enter-right { transform: translateX(100%); opacity: 1; }
+.hero .swiper-wrapper .swiper-slide.slide-enter-right.swiper-slide-active { transform: translateX(0); }
+
+/* Enter from left (prev) */
+.hero .swiper-wrapper .swiper-slide.slide-enter-left { transform: translateX(-100%); opacity: 1; }
+.hero .swiper-wrapper .swiper-slide.slide-enter-left.swiper-slide-active { transform: translateX(0); }
+
+/* Exit helpers */
+.hero .swiper-wrapper .swiper-slide.slide-exit-left { transform: translateX(-100%); opacity: 0; }
+.hero .swiper-wrapper .swiper-slide.slide-exit-right { transform: translateX(100%); opacity: 0; }
+
+/* Dot indicators (centered at bottom of hero) */
+.hero .slider-dots { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 6; }
+.hero .slider-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.25); cursor: pointer; border: 2px solid rgba(0,0,0,0.15); transition: transform .18s ease, background .18s ease, border-color .18s ease; }
+.hero .slider-dots .dot.active { background: linear-gradient(90deg, #ff6600, #ff6a07); transform: scale(1.25); border-color: rgba(255,255,255,0.95); }
 .swiper-slide .container h1 {width: 100%;display: block;font-size: 55px;margin-top: -90px;margin-bottom: 10px;font-weight: 800;color: #ffffff;margin-top: 46px;margin-left: -3rem;}
 .swiper-slide .container h1 {font-family: 'Minecraft', monospace;font-weight: 800;color: #ff6600;}
 .swiper-slide .container p {width: 100%;display: block;color: #ffffff;margin-bottom: 50px !important;font-size: 17px;font-family: 'Minecraft', monospace;margin-left: -3rem !important;}
