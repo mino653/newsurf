@@ -7,16 +7,16 @@ import {
     redirect,
     fetchWithTimeout,
     setState
-} from './util.js';
-import './halloween-easter-egg.js';
-import { halloweenBats, halloweenFog } from './halloween-easter-egg.js';
+} from '/js/util.js';
+import '/js/halloween-easter-egg.js';
+import { halloweenBats, halloweenFog } from '/js/halloween-easter-egg.js';
 
 EQuery(async function () {
-    // Initialize all features
-    
     initLoadingScreen();
     // initThemeToggle();
     initContactForm();
+
+    EQuery.includeHTML()
 
     let userdata;
     getDB(state => {
@@ -53,9 +53,9 @@ EQuery(async function () {
             EQuery.elemt('i', null, 'fas fa-sign-out-alt me-2'), 'Logout'
         ], 'd-block text-decoration-none text-dark py-2');
 
-        btn1.click(() => redirect('./profile.html'));
-        // btn2.click(() => redirect('./profile.html')); IDK
-        btn3.click(() => redirect('./logout.html'));
+        btn1.click(() => redirect('/profile.html'));
+        // btn2.click(() => redirect('/profile.html')); IDK
+        btn3.click(() => redirect('/logout.html'));
 
         const menu = EQuery.elemt('div', [
             EQuery.elemt('div', [
@@ -296,7 +296,7 @@ EQuery(async function () {
     function initNavigation() {
         const hamburger = EQuery('.hamburger');
         const navMenu = EQuery('.nav-menu');
-        const navLinks = EQuery('.nav-link');
+        const navLinks = EQuery('.nav-link[href*=\'#\']');
         const acctBtn = EQuery('#account-btn');
         const dropdownMenu = EQuery('#secondary-dropmenu');
         const logoutBtn = EQuery('.dropdown .logout');
@@ -402,19 +402,17 @@ EQuery(async function () {
         });
 
         // Smooth scrolling for navigation links
-        navLinks.each((index, link) => {
-            EQuery(link).click(function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetSection = EQuery(targetId)[0];
+        navLinks.click(function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = EQuery(targetId)[0];
 
-                if (targetSection) {
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+            if (targetSection) {
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         });
 
         // Navbar background on scroll
@@ -757,7 +755,6 @@ EQuery(async function () {
         window.removeFromCart = function (index) {
             total -= cart[index].price;
             cart.splice(index, 1);
-            console.log(cart);
             updateCartDisplay();
         };
 
@@ -806,7 +803,7 @@ EQuery(async function () {
         // Add animation classes to elements
         const animatedElements = EQuery('.feature-card, .product-card, .contact-item, .stat-card, .feature-item').addClass('fade-in');
         const animatedFadeInUp = EQuery('.h2-baslik, .custom-button, footer .logo, .footer-info, .footer-social').addClass('fadeInUp');
-        const animatedFadeInRight = EQuery('.about-item').addClass('fadeInRight');
+        const animatedFadeInRight = EQuery('.contact-form, .about-item, .footer-quick-links').addClass('fadeInRight');
         animatedElements.each((i, el) => {
             observer.observe(el);
         });
@@ -1170,8 +1167,6 @@ EQuery(async function () {
         konamiCode[codes] = [];
     }
 
-    console.log(konamiCode);
-
     EQuery(document).keydown(function (e) {
         for (let codes in easterEggs) {
             konamiCode[codes].push(e.keyCode);
@@ -1190,8 +1185,8 @@ EQuery(async function () {
         let canvas = new EQuery.canvas();
         let target = EQuery.elemt('div', [
             EQuery.elemt('div', canvas.domElement).css('position: relative;top: 0;left: 0;height: 100%;width: 100%'),
-            EQuery.elemt('img', null, null, {src: './assets/circle-samhain.png'}, 'position: absolute;top: 20px;right: 80px;z-index: 10;height: 20%;width: 20%;')
-        ]).css('position: fixed;top:0;left: 0;height: 100vh;width: 100vw;background: #000000aa;z-index: 999999;animation: fadeIn .3s');
+            EQuery.elemt('img', null, null, {src: '/assets/circle-samhain.png'}, 'position: absolute;top: 20px;right: 80px;z-index: 10;height: 20%;width: 20%;')
+        ]).css('position: fixed;top:0;left: 0;height: 100vh;width: 100vw;background: #00000013;z-index: 999;animation: fadeIn .3s');
         EQuery('body').append(target);
 
         let c = halloweenFog(canvas);

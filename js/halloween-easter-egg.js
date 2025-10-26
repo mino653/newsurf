@@ -111,7 +111,7 @@ const halloweenBats = function (options) {
         isActiveWindow = true,
         bats = [],
         defaults = {
-            image: './assets/bats.png', // Path to the image.
+            image: '/assets/bats.png', // Path to the image.
             zIndex: 10000, // The z-index you need.
             amount: 20, // Bat amount.
             width: 35, // Image width.

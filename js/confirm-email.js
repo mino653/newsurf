@@ -1,10 +1,10 @@
-import './equery.js';
+import '/equery.js';
 import {
     getState,
     getDB,
     setState,
     redirect
-} from './util.js';
+} from '/util.js';
 
 EQuery(function () {
     let verifyForm = EQuery('#verifyCard');
@@ -15,8 +15,8 @@ EQuery(function () {
     let prompt = verifyForm.find('.input-prompt');
 
     getDB(state => {
-        if (state.userdata == undefined) redirect('./login.html');
-        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('./index.html');
+        if (state.userdata == undefined) redirect('/login.html');
+        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('/index.html');
     });
 
     startCountdown();
@@ -125,7 +125,7 @@ EQuery(function () {
                     prompt.hide()
                         .removeClass('error')
                         .text('');
-                    redirect('./index.html');
+                    redirect('/index.html');
                 });
             } else {
                 prompt.show()

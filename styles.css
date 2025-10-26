@@ -517,7 +517,7 @@ img {vertical-align: middle;border-style: none;}
 }
 .scroll-to-top-btn {
     position: fixed;
-    bottom: 30px;
+    top: calc(100vh - 105px);
     right: 30px;
     background: #ff6600;
     color: var(--minecraft-white);
@@ -814,12 +814,12 @@ img {vertical-align: middle;border-style: none;}
 .swiper-wrapper .button-prev, .swiper-wrapper .button-next {background: none;border-image: linear-gradient(to right, #ffffff, #ffffff);background: linear-gradient(#000, #000), linear-gradient(to right, #ff6600, #ff6a07);background-origin: padding-box, border-box;background-repeat: no-repeat;border: 2px solid transparent;}
 .swiper-wrapper .button-prev {width: 60px;height: 60px;line-height: 60px;text-align: center;position: absolute;left: 50px;top: 47%;color: #fff;z-index: 3;font-size: 23px;cursor: pointer;-webkit-transition: all .35s ease-in-out;-moz-transition: all .35s ease-in-out;-ms-transition: all .35s ease-in-out;-o-transition: all .35s ease-in-out;transition: all .35s ease-in-out;border-color: transparent;border-radius: 0.3rem;}
 .swiper-wrapper .button-next {width: 60px;height: 60px;line-height: 60px;text-align: center;position: absolute;right: 50px;top: 47%;color: #fff;z-index: 3;font-size: 23px;cursor: pointer;-webkit-transition: all .35s ease-in-out;-moz-transition: all .35s ease-in-out;-ms-transition: all .35s ease-in-out;-o-transition: all .35s ease-in-out;transition: all .35s ease-in-out;border-color: transparent;border-radius: 0.3rem;}
-.hakkimizda-bolumu-anasayfa {background: url('./assets/halloween-about-bg1.jpg') center center / cover no-repeat scroll;padding: 32px 0 144px;}
+.hakkimizda-bolumu-anasayfa {background: url('/assets/halloween-about-bg1.jpg') center center / cover no-repeat scroll;padding: 32px 0 144px;}
 .tablo {max-width: 119rem;margin: 0 auto;width: 100%;display: flex;justify-content: center;flex-wrap: wrap;}
 .tablo [class^="tablo-"] {float: left;position: relative;}
 .tablo [class^="tablo-"]:not(:last-child) {margin-right: 0;}
-.tablo .tablo-1-ve-2 {width: calc((100% - 50rem) / 2);margin-left: -7rem;}
-.tablo .tablo-1-ve-3 {width: calc((100% - 2* 6rem) / 3);}
+.tablo .tablo-1-ve-2 {width: 45%;}
+.tablo .tablo-1-ve-3 {width: calc((100% / 2) - 127px);}
 .tablo .custom-button {height: 70px;line-height: 70px;display: inline-block;background: #000000;color: #ffffff;border: 1px solid;padding: 0 50px;position: relative;font-size: 16px;border-radius: 0.3rem;}
 .tablo .custom-button {border-image: linear-gradient(to right, #ffffff, #ffffff);background: linear-gradient(#000, #000), linear-gradient(to right, #ff6600, #ff6a07);background-origin: padding-box, border-box;background-repeat: no-repeat;border: 2px solid transparent;font-family: 'Minecraft', monospace;font-weight: 800}
 .galeri1, .galeri {position: absolute;top: 0;width: 100%;height: 100%;}
@@ -1699,7 +1699,6 @@ form {border: none}
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-hero);
     position: relative;
     overflow: hidden;
 }
@@ -1719,7 +1718,7 @@ form {border: none}
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--bg-sky);
+    background: url('/assets/halloween-about-bg1.jpg');
     animation: skyAnimation 20s ease-in-out infinite;
 }
 
@@ -1779,8 +1778,9 @@ form {border: none}
 }
 
 .auth-card {
-    background: var(--card-bg);
-    border: 3px solid var(--border-color);
+    background: #000;
+    color: #fff;
+    border: 3px solid var(--halloween-orange-2);
     border-radius: 0;
     padding: 40px;
     width: 100%;
@@ -1847,20 +1847,17 @@ form {border: none}
     font-family: 'Minecraft', monospace;
     font-size: 2rem;
     font-weight: 700;
-    color: var(--text-primary);
-    text-shadow: 2px 2px 0 var(--bg-primary);
+    text-shadow: 2px 2px 0 #000;
 }
 
 .auth-title {
     font-family: 'Minecraft', monospace;
     font-size: 1.8rem;
-    color: var(--text-primary);
     margin-bottom: 10px;
-    text-shadow: 2px 2px 0 var(--bg-primary);
+    text-shadow: 2px 2px 0 #000;
 }
 
 .auth-subtitle {
-    color: var(--text-secondary);
     font-size: 1rem;
     margin-bottom: 30px;
 }
@@ -1885,8 +1882,8 @@ form {border: none}
 .form-input {
     width: 100%;
     padding: 15px;
-    background: var(--bg-primary);
-    border: 2px solid var(--minecraft-black);
+    background: #000;
+    border: 2px solid var(--halloween-orange-2);
     border-radius: 0;
     color: var(--text-secondary);
     font-size: 16px;
@@ -1927,6 +1924,8 @@ form {border: none}
     color: var(--halloween-orange-2);
 }
 
+#login-form .form-options {justify-content: space-between}
+
 .form-options {
     display: flex;
     justify-content: flex-start;
@@ -1939,8 +1938,8 @@ form {border: none}
 }
 
 .form-options a {
-    font-style: bold;
-    color:rgb(125, 218, 25);
+    font-weight: bold;
+    color: var(--halloween-orange-2);
     text-decoration: none;
 }
 
@@ -1960,7 +1959,6 @@ form {border: none}
 .remember-me label {
     font-family: 'Minecraft', monospace;
     font-size: 14px;
-    color: var(--text-primary);
     cursor: pointer;
 }
 
@@ -1978,9 +1976,9 @@ form {border: none}
 
 .auth-btn {
     width: 100%;
-    background: var(--halloween-orange-2);
-    color: var(--minecraft-white);
-    border: 2px solid var(--minecraft-black);
+    background: #000;
+    color: #fff;
+    border: 2px solid var(--halloween-orange-2);
     border-radius: 0;
     padding: 18px;
     font-family: 'Minecraft', monospace;
@@ -1993,7 +1991,7 @@ form {border: none}
 }
 
 .auth-btn:hover {
-    background: var(--minecraft-dark-green);
+    background: var(--halloween-orange-3);
     transform: translateY(-2px);
     box-shadow: 6px 6px 0 var(--minecraft-shadow);
 }
@@ -2016,16 +2014,16 @@ form {border: none}
     left: 0;
     right: 0;
     height: 2px;
-    background: var(--text-primary);
+    background: var(--halloween-orange-1);
 }
 
 .auth-divider span {
     position: relative;
-    background: var(--card-bg);
+    background: #000;
     padding: 0 20px;
     font-family: 'Minecraft', monospace;
     font-size: 14px;
-    color: var(--text-secondary);
+    color: #fff;
     z-index: 2;
 }
 
@@ -2035,15 +2033,14 @@ form {border: none}
 }
 
 .switch-auth-text {
-    color: var(--text-secondary);
     font-size: 14px;
     margin-bottom: 10px;
 }
 
 .switch-auth-btn {
-    background: var(--minecraft-blue);
+    background: #000;
     color: var(--minecraft-white);
-    border: 2px solid var(--minecraft-black);
+    border: 2px solid var(--halloween-orange-2);
     border-radius: 0;
     padding: 12px 25px;
     font-family: 'Minecraft', monospace;
@@ -2056,7 +2053,7 @@ form {border: none}
 }
 
 .switch-auth-btn:hover {
-    background: var(--minecraft-dark-blue);
+    background: var(--halloween-orange-3);
     transform: translateY(-2px);
     box-shadow: 4px 4px 0 var(--minecraft-shadow);
 }
@@ -2065,17 +2062,19 @@ form {border: none}
     position: absolute;
     top: 20px;
     left: 20px;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 2px solid var(--minecraft-gray);
+    background: #000;
+    color: #fff;
+    border: 2px solid var(--halloween-orange-2);
     border-radius: 0;
     padding: 10px 20px;
-    font-family: 'Minecraft', monospace;
+    font-family:
+    'Minecraft', monospace;
     font-weight: 700;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 2px 2px 0 var(--minecraft-shadow);
+    box-shadow: 2px 2px 0 var(
+    --minecraft-shadow);
     text-decoration: none;
     z-index: 3;
 }
@@ -2351,11 +2350,15 @@ form {border: none}
     .admin-name {
         font-size: 1.1rem;
     }
+    
+    .tablo .tablo-1-ve-2, .tablo .tablo-1-ve-3 {width: 100% !important;padding: 0 32px;}
+    .galeri1, .galeri {position: relative;}
+    .galeri {top: -100%}
 }
 
 /* Footer */
 .footer {
-    background: url('./assets/footer-h.jpg') no-repeat;
+    background: url('/assets/footer-h.jpg') no-repeat;
     color: var(--minecraft-white);
     padding: 60px 0 20px;
     border-top: 2px solid var(--halloween-orange-2);
@@ -2417,6 +2420,9 @@ form {border: none}
 .footer .menu li {width: 100%;display: flex;flex-wrap: wrap;align-items: center;margin: 0;padding: 5px 0;list-style: none;}
 .footer .menu li:before {content: "";width: 11px;height: 4px;display: inline-block;border-radius: 4px;background: #ffffff;margin-right: 9px;}
 .footer .menu li a {color: #fff;}
+@media (max-width: 850px) {
+    .footer .footer-menu {justify-content: flex-start}
+}
 .social-links {
     display: flex;
     gap: 15px;
@@ -2698,6 +2704,7 @@ form {border: none}
 }
 ::selection {
     background-color: #ff6600;
+    color: #fff;
 }
 
 @keyframes slideInDown {

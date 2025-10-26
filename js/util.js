@@ -1,5 +1,5 @@
-import './equery.js';
-import './music-generator.js';
+import '/js/equery.js';
+import '/js/music-generator.js';
 
 let localDB = new EQuery.Storage('surfnetwork-localdb');
 let state, dbReady = false, onDBReady = [];
