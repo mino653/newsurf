@@ -237,6 +237,7 @@ EQuery(async function () {
                 // Start animations after loading
                 setTimeout(() => {
                     initHeroAnimations();
+                    initHeroSlider();
                     initCopyIP();
                     initParticleEffects();
                     // initMusicPlayer();
@@ -290,6 +291,154 @@ EQuery(async function () {
         setTimeout(() => {
             stats.css('animation: fadeIn 1s ease forwards');
         }, 1200);
+    }
+
+    // Simple Hero Slider initializer using existing markup (.swiper-slide, .button-prev, .button-next)
+    function initHeroSlider() {
+        try {
+            const wrapper = document.querySelector('.hero .swiper-wrapper');
+            if (!wrapper) return;
+
+            const slides = Array.from(wrapper.querySelectorAll('.swiper-slide'));
+            if (!slides.length) return;
+
+            // Find initial active slide or default to 0
+            let current = slides.findIndex(s => s.classList.contains('swiper-slide-active'));
+            if (current === -1) current = 0;
+
+            // Animated slide change with enter/exit classes
+            function changeSlide(newIndex, dir) {
+                if (newIndex === current) return;
+                const prev = slides[current];
+                const next = slides[newIndex];
+
+                // Clean classes
+                prev.classList.remove('slide-enter-left', 'slide-enter-right', 'slide-exit-left', 'slide-exit-right');
+                next.classList.remove('slide-enter-left', 'slide-enter-right', 'slide-exit-left', 'slide-exit-right');
+
+                // Direction: 'next' means new slide comes from right -> prev exits left
+                if (dir === 'next') {
+                    next.classList.add('slide-enter-right');
+                    // Force reflow so transition starts
+                    // eslint-disable-next-line no-unused-expressions
+                    next.offsetHeight;
+                    next.classList.add('swiper-slide-active');
+                    prev.classList.add('slide-exit-left');
+                } else {
+                    next.classList.add('slide-enter-left');
+                    // eslint-disable-next-line no-unused-expressions
+                    next.offsetHeight;
+                    next.classList.add('swiper-slide-active');
+                    prev.classList.add('slide-exit-right');
+                }
+
+                // After animation, clean up classes and set current
+                setTimeout(() => {
+                    prev.classList.remove('swiper-slide-active', 'slide-exit-left', 'slide-exit-right');
+                    next.classList.remove('slide-enter-left', 'slide-enter-right');
+                    current = newIndex;
+                    // update dots if present
+                    if (typeof setActiveDot === 'function') setActiveDot(current);
+                }, 620); // matches CSS transition (~600ms)
+            }
+
+            const prevBtn = wrapper.querySelector('.button-prev');
+            const nextBtn = wrapper.querySelector('.button-next');
+
+            if (prevBtn) prevBtn.addEventListener('click', () => {
+                const nextIndex = (current - 1 + slides.length) % slides.length;
+                changeSlide(nextIndex, 'prev');
+                resetAutoplay();
+            });
+
+            if (nextBtn) nextBtn.addEventListener('click', () => {
+                const nextIndex = (current + 1) % slides.length;
+                changeSlide(nextIndex, 'next');
+                resetAutoplay();
+            });
+
+            // Keyboard support
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') prevBtn && prevBtn.click();
+                if (e.key === 'ArrowRight') nextBtn && nextBtn.click();
+            });
+
+            // Autoplay
+            let autoplay = setInterval(() => {
+                const nextIndex = (current + 1) % slides.length;
+                changeSlide(nextIndex, 'next');
+            }, 5000);
+
+            let paused = false;
+
+            function pauseAutoplay() {
+                paused = true;
+                clearInterval(autoplay);
+            }
+
+            function resumeAutoplay() {
+                if (!paused) return; // only resume if previously paused
+                paused = false;
+                autoplay = setInterval(() => {
+                    const nextIndex = (current + 1) % slides.length;
+                    changeSlide(nextIndex, 'next');
+                }, 5000);
+            }
+
+            function resetAutoplay() {
+                clearInterval(autoplay);
+                if (!paused) {
+                    autoplay = setInterval(() => {
+                        const nextIndex = (current + 1) % slides.length;
+                        changeSlide(nextIndex, 'next');
+                    }, 5000);
+                }
+            }
+
+            // Touch/swipe support
+            let startX = 0;
+            wrapper.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+            wrapper.addEventListener('touchend', (e) => {
+                const endX = e.changedTouches[0].clientX;
+                const dx = endX - startX;
+                if (Math.abs(dx) > 50) {
+                    if (dx > 0) prevBtn && prevBtn.click(); else nextBtn && nextBtn.click();
+                }
+            });
+
+            // Pause on hover (desktop) and resume on leave
+            wrapper.addEventListener('mouseenter', () => pauseAutoplay());
+            wrapper.addEventListener('mouseleave', () => resumeAutoplay());
+
+            // Create dot indicators
+            const dotsContainer = document.createElement('div');
+            dotsContainer.className = 'slider-dots';
+            const dots = [];
+            slides.forEach((s, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (i === current ? ' active' : '');
+                dot.addEventListener('click', () => {
+                    changeSlide(i, i > current ? 'next' : 'prev');
+                    resetAutoplay();
+                });
+                dots.push(dot);
+                dotsContainer.appendChild(dot);
+            });
+            wrapper.appendChild(dotsContainer);
+
+            function setActiveDot(idx) {
+                dots.forEach((d, i) => {
+                    if (i === idx) d.classList.add('active'); else d.classList.remove('active');
+                });
+            }
+
+            // Ensure initial state
+            show(current);
+        } catch (err) {
+            console.error('initHeroSlider error', err);
+        }
     }
 
     // Navigation functionality
