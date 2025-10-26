@@ -339,7 +339,7 @@ EQuery(async function () {
                     current = newIndex;
                     // update dots if present
                     if (typeof setActiveDot === 'function') setActiveDot(current);
-                }, 620); // matches CSS transition (~600ms)
+                }, 820); // matches CSS transition (~800ms)
             }
 
             const prevBtn = wrapper.querySelector('.button-prev');
@@ -434,8 +434,15 @@ EQuery(async function () {
                 });
             }
 
-            // Ensure initial state
-            show(current);
+            // Ensure initial state: clear classes and set the initial active slide and dots
+            slides.forEach((s, i) => {
+                s.classList.remove('swiper-slide-active', 'slide-enter-left', 'slide-enter-right', 'slide-exit-left', 'slide-exit-right');
+                if (i !== current) {
+                    // keep non-active slides hidden (CSS will handle display)
+                }
+            });
+            slides[current].classList.add('swiper-slide-active');
+            if (typeof setActiveDot === 'function') setActiveDot(current);
         } catch (err) {
             console.error('initHeroSlider error', err);
         }

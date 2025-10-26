@@ -817,7 +817,7 @@ img {vertical-align: middle;border-style: none;}
 .hero .swiper-wrapper .swiper-slide.slide-enter-right,
 .hero .swiper-wrapper .swiper-slide.slide-enter-left { display: flex; }
 
-.hero .swiper-wrapper .swiper-slide { opacity: 0; transform: translateX(100%); transition: transform 0.6s cubic-bezier(.2,.9,.2,1), opacity 0.6s; }
+.hero .swiper-wrapper .swiper-slide { opacity: 0; transform: translateX(100%); transition: transform 0.8s cubic-bezier(.2,.8,.2,1), opacity 0.8s; }
 .hero .swiper-wrapper .swiper-slide.swiper-slide-active { opacity: 1; transform: translateX(0); }
 
 /* Enter from right (next) */
@@ -831,6 +831,9 @@ img {vertical-align: middle;border-style: none;}
 /* Exit helpers */
 .hero .swiper-wrapper .swiper-slide.slide-exit-left { transform: translateX(-100%); opacity: 0; }
 .hero .swiper-wrapper .swiper-slide.slide-exit-right { transform: translateX(100%); opacity: 0; }
+
+/* Make slide content (text) animate smoothly with the slide for a more cohesive feel */
+.swiper-slide .container { transition: transform 0.8s cubic-bezier(.2,.8,.2,1), opacity 0.8s; }
 
 /* Dot indicators (centered at bottom of hero) */
 .hero .slider-dots { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 6; }
