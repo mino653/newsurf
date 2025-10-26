@@ -1,5 +1,5 @@
-import { getState, getDB, setState, redirect, fetchWithTimeout } from '/util.js';
-import '/script.js';
+import { getState, getDB, setState, redirect, fetchWithTimeout } from '/js/util.js';
+import '/js/script.js';
 
 EQuery(function () {
     const signupForm = EQuery('#signup-form');

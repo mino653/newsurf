@@ -1,10 +1,10 @@
-import '/equery.js';
+import '/js/equery.js';
 import {
     getState,
     getDB,
     setState,
     redirect
-} from '/util.js';
+} from '/js/util.js';
 
 EQuery(function () {
     let verifyForm = EQuery('#verifyCard');

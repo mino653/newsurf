@@ -1032,16 +1032,20 @@
         return elt;
     };
 
-    let removeClass = function (elt, classN) {
+    let removeClass = function (elt) {
         elt = typeof elt == 'string' ? getElemt(elt) : elt;
-        if (elt.classList) {
-            elt.classList.remove(classN);
-        } else {
-            throwIfWhitespace(classN);
-            elt.className = elt.className.split(/\s+/).filter(function (c) {
-                return c !== classN;
-            }).join(' ');
-        }
+        if (arguments.length === 1) return elt;
+        for (let i = 1;i < arguments.length;i++) {
+            let classN = arguments[i];
+            if (elt.classList) {
+                elt.classList.remove(classN);
+            } else {
+                throwIfWhitespace(classN);
+                elt.className = elt.className.split(/\s+/).filter(function (c) {
+                    return c !== classN;
+                }).join(' ');
+            }
+        };
 
         return elt;
     };
@@ -2519,7 +2523,10 @@
         resize: function () { return this.forEach(on, ['resize', ...arguments]) },
         scroll: function () { return this.forEach(on, ['scroll', ...arguments]) },
         search: function () { return this.forEach(on, ['search', ...arguments]) },
-        submit: function () { return this.forEach(on, ['submit', ...arguments]) }
+        submit: function () { return this.forEach(on, ['submit', ...arguments]) },
+        touchend: function () { return this.forEach(on, ['touchend', ...arguments]) },
+        touchmove: function () { return this.forEach(on, ['touchmove', ...arguments]) },
+        touchstart: function () { return this.forEach(on, ['touchstart', ...arguments]) },
     });
 
     q.fn.add({

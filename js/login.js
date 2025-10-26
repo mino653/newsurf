@@ -4,8 +4,8 @@ import {
     setState,
     redirect,
     fetchWithTimeout
-} from '/util.js';
-import '/script.js';
+} from '/js/util.js';
+import '/js/script.js';
 
 EQuery(function () {
     const loginForm = EQuery('#login-form');

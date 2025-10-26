@@ -1,9 +1,9 @@
-import '/equery.js';
+import '/js/equery.js';
 import {
     getDB,
     clear,
     redirect
-} from '/util.js';
+} from '/js/util.js';
 
 EQuery(function () {
     let logoutForm = EQuery('#logoutCard');
