@@ -517,7 +517,7 @@ img {vertical-align: middle;border-style: none;}
 }
 .scroll-to-top-btn {
     position: fixed;
-    bottom: 30px;
+    top: calc(100vh - 105px);
     right: 30px;
     background: #ff6600;
     color: var(--minecraft-white);
@@ -806,6 +806,39 @@ img {vertical-align: middle;border-style: none;}
 .swiper-slide.swiper-slide-active {display: flex;z-index: 2;opacity: 1}
 .slide-image {width: 100%;height: 100%;position: absolute;left: 0;top: 0;background-size: cover !important;background-position: center !important;opacity: 1;}
 .swiper-slide .container {color: #fff;position: relative;z-index: 1;margin: 0;width: 100%;padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;text-align: left;}
+
+/* Hero slider animation helpers
+    - Non-active slides are hidden by default (display:none)
+    - When JS adds .slide-enter-* or .slide-exit-* we temporarily show the slide (display:flex)
+    - .swiper-slide-active represents the currently visible slide
+*/
+.hero .swiper-wrapper .swiper-slide { display: none; }
+.hero .swiper-wrapper .swiper-slide.swiper-slide-active,
+.hero .swiper-wrapper .swiper-slide.slide-enter-right,
+.hero .swiper-wrapper .swiper-slide.slide-enter-left { display: flex; }
+
+.hero .swiper-wrapper .swiper-slide { opacity: 0; transform: translateX(100%); transition: transform 0.8s cubic-bezier(.2,.8,.2,1), opacity 0.8s; }
+.hero .swiper-wrapper .swiper-slide.swiper-slide-active {opacity: 1;transform: translateX(0);}
+
+/* Enter from right (next) */
+.hero .swiper-wrapper .swiper-slide.slide-enter-right {transform: translateX(100%);opacity: 1;}
+.hero .swiper-wrapper .swiper-slide.slide-enter-right.swiper-slide-active {transform: translateX(0);}
+
+/* Enter from left (prev) */
+.hero .swiper-wrapper .swiper-slide.slide-enter-left { transform: translateX(-100%); opacity: 1; }
+.hero .swiper-wrapper .swiper-slide.slide-enter-left.swiper-slide-active { transform: translateX(0); }
+
+/* Exit helpers */
+.hero .swiper-wrapper .swiper-slide.slide-exit-left {transform: translateX(-100vw);opacity: 0;width: 0px;padding: 0;transition: width .8s, padding .8s;}
+.hero .swiper-wrapper .swiper-slide.slide-exit-right { transform: translateX(100vw); opacity: 0;width: 0px;padding: 0;transition: width .8s, padding .8s; }
+
+/* Make slide content (text) animate smoothly with the slide for a more cohesive feel */
+.swiper-slide .container { transition: transform 0.8s cubic-bezier(.2,.8,.2,1), opacity 0.8s; }
+
+/* Dot indicators (centered at bottom of hero) */
+.hero .slider-dots { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 6; }
+.hero .slider-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.25); cursor: pointer; border: 2px solid rgba(0,0,0,0.15); transition: transform .18s ease, background .18s ease, border-color .18s ease; }
+.hero .slider-dots .dot.active { background: linear-gradient(90deg, #ff6600, #ff6a07); transform: scale(1.25); border-color: rgba(255,255,255,0.95); }
 .swiper-slide .container h1 {width: 100%;display: block;font-size: 55px;margin-top: -90px;margin-bottom: 10px;font-weight: 800;color: #ffffff;margin-top: 46px;margin-left: -3rem;}
 .swiper-slide .container h1 {font-family: 'Minecraft', monospace;font-weight: 800;color: #ff6600;}
 .swiper-slide .container p {width: 100%;display: block;color: #ffffff;margin-bottom: 50px !important;font-size: 17px;font-family: 'Minecraft', monospace;margin-left: -3rem !important;}
@@ -814,18 +847,18 @@ img {vertical-align: middle;border-style: none;}
 .swiper-wrapper .button-prev, .swiper-wrapper .button-next {background: none;border-image: linear-gradient(to right, #ffffff, #ffffff);background: linear-gradient(#000, #000), linear-gradient(to right, #ff6600, #ff6a07);background-origin: padding-box, border-box;background-repeat: no-repeat;border: 2px solid transparent;}
 .swiper-wrapper .button-prev {width: 60px;height: 60px;line-height: 60px;text-align: center;position: absolute;left: 50px;top: 47%;color: #fff;z-index: 3;font-size: 23px;cursor: pointer;-webkit-transition: all .35s ease-in-out;-moz-transition: all .35s ease-in-out;-ms-transition: all .35s ease-in-out;-o-transition: all .35s ease-in-out;transition: all .35s ease-in-out;border-color: transparent;border-radius: 0.3rem;}
 .swiper-wrapper .button-next {width: 60px;height: 60px;line-height: 60px;text-align: center;position: absolute;right: 50px;top: 47%;color: #fff;z-index: 3;font-size: 23px;cursor: pointer;-webkit-transition: all .35s ease-in-out;-moz-transition: all .35s ease-in-out;-ms-transition: all .35s ease-in-out;-o-transition: all .35s ease-in-out;transition: all .35s ease-in-out;border-color: transparent;border-radius: 0.3rem;}
-.hakkimizda-bolumu-anasayfa {background: url('./assets/halloween-about-bg1.jpg') center center / cover no-repeat scroll;padding: 32px 0 144px;}
+.hakkimizda-bolumu-anasayfa {background: url('/assets/halloween-about-bg1.jpg') center center / cover no-repeat scroll;padding: 32px 0 144px;}
 .tablo {max-width: 119rem;margin: 0 auto;width: 100%;display: flex;justify-content: center;flex-wrap: wrap;}
 .tablo [class^="tablo-"] {float: left;position: relative;}
 .tablo [class^="tablo-"]:not(:last-child) {margin-right: 0;}
-.tablo .tablo-1-ve-2 {width: calc((100% - 50rem) / 2);margin-left: -7rem;}
-.tablo .tablo-1-ve-3 {width: calc((100% - 2* 6rem) / 3);}
+.tablo .tablo-1-ve-2 {width: 45%;}
+.tablo .tablo-1-ve-3 {width: calc((100% / 2) - 127px);}
 .tablo .custom-button {height: 70px;line-height: 70px;display: inline-block;background: #000000;color: #ffffff;border: 1px solid;padding: 0 50px;position: relative;font-size: 16px;border-radius: 0.3rem;}
 .tablo .custom-button {border-image: linear-gradient(to right, #ffffff, #ffffff);background: linear-gradient(#000, #000), linear-gradient(to right, #ff6600, #ff6a07);background-origin: padding-box, border-box;background-repeat: no-repeat;border: 2px solid transparent;font-family: 'Minecraft', monospace;font-weight: 800}
 .galeri1, .galeri {position: absolute;top: 0;width: 100%;height: 100%;}
 .galeri {display: flex;align-items: center;justify-content: center;}
 .galeri img {width: -webkit-fill-available;max-width: 604px;}
-.h2-baslik {background-image: linear-gradient(to right, #ff812d, #ff6a07);font-family: 'Minecraft', monospace;font-size: 30px;font-weight: 700;display: inline-block;-webkit-background-clip: text;color: transparent;margin-top: 0;}
+.h2-baslik {background-image: linear-gradient(to right, #ff812d, #ff6a07);font-family: 'Minecraft', monospace;font-size: 30px;font-weight: 700;display: inline-block;background-clip: text;-webkit-background-clip: text;color: transparent;margin-top: 0;}
 h3.baslik-3s {color: #ff812d;font-family: 'Minecraft', monospace;font-size: 1.8rem;font-weight: 600;margin: 0;}
 .imagerotate {position: absolute;top: 0%;-webkit-animation: spin 15s linear infinite;-moz-animation: spin 15s linear infinite;animation: spin 15s linear infinite;width: 100%;height: 100%;}
 .zoomIn {-webkit-animation-name: zoomOn;animation-name: zoomIn}
@@ -1266,6 +1299,235 @@ section {
     background: #000;
 }
 
+/* Events Section */
+.events {
+    background: url('./assets/halloween-pattern.jpg') repeat;
+    padding: 100px 0;
+    position: relative;
+}
+
+.events::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.events .container {
+    position: relative;
+    z-index: 1;
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.event-card {
+    background: #000;
+    border: 2px solid var(--halloween-orange-2);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 102, 0, 0.2);
+}
+
+.event-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(255, 102, 0, 0.3);
+}
+
+.event-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.event-card:hover .event-image img {
+    transform: scale(1.1);
+}
+
+.event-date {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--halloween-orange-2);
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: 'Minecraft', monospace;
+}
+
+.event-date .day {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.event-date .month {
+    display: block;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.event-content {
+    padding: 25px;
+}
+
+.event-content h3 {
+    font-family: 'Minecraft', monospace;
+    font-size: 1.5rem;
+    color: var(--halloween-orange-1);
+    margin-bottom: 15px;
+}
+
+.event-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    margin-bottom: 15px;
+    font-family: 'Minecraft', monospace;
+}
+
+.event-time .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--halloween-orange-2);
+}
+
+.event-content p {
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.event-content .minecraft-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Forums Section */
+.forum {
+    background: #000;
+    padding: 100px 0;
+}
+
+.forum-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.forum-category {
+    background: #000;
+    border: 2px solid var(--halloween-orange-2);
+    border-radius: 8px;
+    padding: 25px;
+    transition: all 0.3s ease;
+}
+
+.forum-category:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(255, 102, 0, 0.2);
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.category-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--halloween-orange-2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.category-icon .material-symbols-outlined {
+    font-size: 24px;
+}
+
+.category-header h3 {
+    font-family: 'Minecraft', monospace;
+    font-size: 1.3rem;
+    color: var(--halloween-orange-1);
+    margin: 0;
+}
+
+.category-stats {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    color: #fff;
+    font-family: 'Minecraft', monospace;
+    font-size: 0.9rem;
+}
+
+.latest-post {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.post-title {
+    color: #fff;
+    font-weight: 500;
+}
+
+.post-time {
+    color: var(--halloween-orange-2);
+    font-size: 0.9rem;
+}
+
+.forum-cta {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.forum-cta .minecraft-btn {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .events-grid,
+    .forum-categories {
+        grid-template-columns: 1fr;
+    }
+    
+    .event-card,
+    .forum-category {
+        margin: 0 15px;
+    }
+    
+    .category-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1699,7 +1961,6 @@ form {border: none}
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-hero);
     position: relative;
     overflow: hidden;
 }
@@ -1719,7 +1980,7 @@ form {border: none}
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--bg-sky);
+    background: url('/assets/halloween-about-bg1.jpg');
     animation: skyAnimation 20s ease-in-out infinite;
 }
 
@@ -1779,8 +2040,9 @@ form {border: none}
 }
 
 .auth-card {
-    background: var(--card-bg);
-    border: 3px solid var(--border-color);
+    background: #000;
+    color: #fff;
+    border: 3px solid var(--halloween-orange-2);
     border-radius: 0;
     padding: 40px;
     width: 100%;
@@ -1847,20 +2109,17 @@ form {border: none}
     font-family: 'Minecraft', monospace;
     font-size: 2rem;
     font-weight: 700;
-    color: var(--text-primary);
-    text-shadow: 2px 2px 0 var(--bg-primary);
+    text-shadow: 2px 2px 0 #000;
 }
 
 .auth-title {
     font-family: 'Minecraft', monospace;
     font-size: 1.8rem;
-    color: var(--text-primary);
     margin-bottom: 10px;
-    text-shadow: 2px 2px 0 var(--bg-primary);
+    text-shadow: 2px 2px 0 #000;
 }
 
 .auth-subtitle {
-    color: var(--text-secondary);
     font-size: 1rem;
     margin-bottom: 30px;
 }
@@ -1885,8 +2144,8 @@ form {border: none}
 .form-input {
     width: 100%;
     padding: 15px;
-    background: var(--bg-primary);
-    border: 2px solid var(--minecraft-black);
+    background: #000;
+    border: 2px solid var(--halloween-orange-2);
     border-radius: 0;
     color: var(--text-secondary);
     font-size: 16px;
@@ -1927,6 +2186,8 @@ form {border: none}
     color: var(--halloween-orange-2);
 }
 
+#login-form .form-options {justify-content: space-between}
+
 .form-options {
     display: flex;
     justify-content: flex-start;
@@ -1939,8 +2200,8 @@ form {border: none}
 }
 
 .form-options a {
-    font-style: bold;
-    color:rgb(125, 218, 25);
+    font-weight: bold;
+    color: var(--halloween-orange-2);
     text-decoration: none;
 }
 
@@ -1960,7 +2221,6 @@ form {border: none}
 .remember-me label {
     font-family: 'Minecraft', monospace;
     font-size: 14px;
-    color: var(--text-primary);
     cursor: pointer;
 }
 
@@ -1978,9 +2238,9 @@ form {border: none}
 
 .auth-btn {
     width: 100%;
-    background: var(--halloween-orange-2);
-    color: var(--minecraft-white);
-    border: 2px solid var(--minecraft-black);
+    background: #000;
+    color: #fff;
+    border: 2px solid var(--halloween-orange-2);
     border-radius: 0;
     padding: 18px;
     font-family: 'Minecraft', monospace;
@@ -1993,7 +2253,7 @@ form {border: none}
 }
 
 .auth-btn:hover {
-    background: var(--minecraft-dark-green);
+    background: var(--halloween-orange-3);
     transform: translateY(-2px);
     box-shadow: 6px 6px 0 var(--minecraft-shadow);
 }
@@ -2016,16 +2276,16 @@ form {border: none}
     left: 0;
     right: 0;
     height: 2px;
-    background: var(--text-primary);
+    background: var(--halloween-orange-1);
 }
 
 .auth-divider span {
     position: relative;
-    background: var(--card-bg);
+    background: #000;
     padding: 0 20px;
     font-family: 'Minecraft', monospace;
     font-size: 14px;
-    color: var(--text-secondary);
+    color: #fff;
     z-index: 2;
 }
 
@@ -2035,15 +2295,14 @@ form {border: none}
 }
 
 .switch-auth-text {
-    color: var(--text-secondary);
     font-size: 14px;
     margin-bottom: 10px;
 }
 
 .switch-auth-btn {
-    background: var(--minecraft-blue);
+    background: #000;
     color: var(--minecraft-white);
-    border: 2px solid var(--minecraft-black);
+    border: 2px solid var(--halloween-orange-2);
     border-radius: 0;
     padding: 12px 25px;
     font-family: 'Minecraft', monospace;
@@ -2056,7 +2315,7 @@ form {border: none}
 }
 
 .switch-auth-btn:hover {
-    background: var(--minecraft-dark-blue);
+    background: var(--halloween-orange-3);
     transform: translateY(-2px);
     box-shadow: 4px 4px 0 var(--minecraft-shadow);
 }
@@ -2065,17 +2324,19 @@ form {border: none}
     position: absolute;
     top: 20px;
     left: 20px;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 2px solid var(--minecraft-gray);
+    background: #000;
+    color: #fff;
+    border: 2px solid var(--halloween-orange-2);
     border-radius: 0;
     padding: 10px 20px;
-    font-family: 'Minecraft', monospace;
+    font-family:
+    'Minecraft', monospace;
     font-weight: 700;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 2px 2px 0 var(--minecraft-shadow);
+    box-shadow: 2px 2px 0 var(
+    --minecraft-shadow);
     text-decoration: none;
     z-index: 3;
 }
@@ -2351,11 +2612,15 @@ form {border: none}
     .admin-name {
         font-size: 1.1rem;
     }
+    
+    .tablo .tablo-1-ve-2, .tablo .tablo-1-ve-3 {width: 100% !important;padding: 0 32px;}
+    .galeri1, .galeri {position: relative;}
+    .galeri {top: -100%}
 }
 
 /* Footer */
 .footer {
-    background: url('./assets/footer-h.jpg') no-repeat;
+    background: url('/assets/footer-h.jpg') no-repeat;
     color: var(--minecraft-white);
     padding: 60px 0 20px;
     border-top: 2px solid var(--halloween-orange-2);
@@ -2410,13 +2675,16 @@ form {border: none}
 .footer .footer-social li {display: inline-block;margin-right: 10px;padding: 0;list-style: none;}
 .footer .footer-social li a {width: 53px;height: 40px;line-height: 46px;display: inline-block;border: 1px solid rgba(255, 255, 255, 0.3);color: #ffffff;text-align: center;font-size: 21px;}
 .footer .footer-social li a {border-image: linear-gradient(to right, #ffffff, #ffffff);background: linear-gradient(#000, #000), linear-gradient(to right, #ff6600, #ff6a07);background-origin: padding-box, border-box;background-repeat: no-repeat;border: 2px solid transparent;}
-.footer .widget-title {background-image: linear-gradient(to right, #ff812d, #ff6a07);-webkit-background-clip: text;color: transparent;font-size: 28px;font-weight: 700;font-family: 'Minecraft', monospace;}
+.footer .widget-title {background-image: linear-gradient(to right, #ff812d, #ff6a07);background-clip: text;-webkit-background-clip: text;color: transparent;font-size: 28px;font-weight: 700;font-family: 'Minecraft', monospace;}
 .footer .widget-title {width: 100%;display: block;font-weight: 500;font-size: 26px;margin-top: 10px;margin-bottom: 15px;}
 .footer .footer-menu {width: 100%;display: flex;flex-wrap: wrap;margin: 0;padding: 0;justify-content: center;}
 .footer .menu {margin: 0;padding: 0;}
 .footer .menu li {width: 100%;display: flex;flex-wrap: wrap;align-items: center;margin: 0;padding: 5px 0;list-style: none;}
 .footer .menu li:before {content: "";width: 11px;height: 4px;display: inline-block;border-radius: 4px;background: #ffffff;margin-right: 9px;}
 .footer .menu li a {color: #fff;}
+@media (max-width: 850px) {
+    .footer .footer-menu {justify-content: flex-start}
+}
 .social-links {
     display: flex;
     gap: 15px;
@@ -2698,6 +2966,7 @@ form {border: none}
 }
 ::selection {
     background-color: #ff6600;
+    color: #fff;
 }
 
 @keyframes slideInDown {

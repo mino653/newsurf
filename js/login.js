@@ -4,8 +4,8 @@ import {
     setState,
     redirect,
     fetchWithTimeout
-} from './util.js';
-import './script.js';
+} from '/js/util.js';
+import '/js/script.js';
 
 EQuery(function () {
     const loginForm = EQuery('#login-form');
@@ -18,7 +18,7 @@ EQuery(function () {
     let canShowPsw = false;
 
     getDB(state => {
-        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('./index.html');
+        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('/index.html');
     });
 
     showPsw.click(function () {
@@ -107,8 +107,8 @@ EQuery(function () {
                 setState(state, function () {
                     info.show().css('animation: slideInDown 0.3s ease').text('Login successful!');
                     error.hide().text('');
-                    if (!state.userdata.confirm_email) redirect('./confirm-email.html');
-                    else redirect('./index.html');
+                    if (!state.userdata.confirm_email) redirect('/confirm-email.html');
+                    else redirect('/index.html');
                 });
             } else {
                 error.show().css('animation: slideInDown 0.3s ease').text(response.detail.error || "An error occured while processing your request");
@@ -121,5 +121,5 @@ EQuery(function () {
         }
     });
 
-    EQuery('#toSignup').click(() => redirect('./signup.html'));
+    EQuery('#toSignup').click(() => redirect('/signup.html'));
 });

@@ -1,5 +1,5 @@
-import { getState, getDB, setState, redirect, fetchWithTimeout } from './util.js';
-import './script.js';
+import { getState, getDB, setState, redirect, fetchWithTimeout } from '/js/util.js';
+import '/js/script.js';
 
 EQuery(function () {
     const signupForm = EQuery('#signup-form');
@@ -23,7 +23,7 @@ EQuery(function () {
     showPsw.find('span').text(canShowPsw ? 'visibility_off' : 'visibility');
 
     getDB(state => {
-        if (state.userdata !== undefined) redirect('./index.html');
+        if (state.userdata !== undefined) redirect('/index.html');
     });
 
     function validPsw(input) {
@@ -201,7 +201,7 @@ EQuery(function () {
                     setState(state, function () {
                         error.hide().text('');
                         info.show().css('animation: slideInDown 0.3s ease').text('Registration successful! Redirecting...');
-                        redirect('./confirm-email.html');
+                        redirect('/confirm-email.html');
                     });
                 } else {
                     error.show().css('animation: slideInDown 0.3s ease').text(response.error);
@@ -217,5 +217,5 @@ EQuery(function () {
         }
     });
 
-    EQuery('#toLogin').click(() => redirect('./login.html'));
+    EQuery('#toLogin').click(() => redirect('/login.html'));
 });

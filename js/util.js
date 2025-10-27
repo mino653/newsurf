@@ -33,7 +33,7 @@ function setState(newState, cb) {
 function logout() {
     state.logged_in = false;
     reload();
-};
+}
 
 async function fetchWithTimeout(url, options = {}, timeout = 5000) {
     const controller = new AbortController();
@@ -59,6 +59,26 @@ async function fetchWithTimeout(url, options = {}, timeout = 5000) {
     }
 }
 
+function extractQuery() {
+    let arr = {};
+    let query = new URLSearchParams(window.location.search);
+    query.forEach((v, k) => {
+        arr[k] = v;
+    });
+    return arr;
+}
+
+function remainderQuery(d) {
+    let query = extractQuery();
+    let s = '';
+    delete query[d];
+    for (let key in query) {
+        s += `&${key}=${query[key]}`;
+    }
+    return s;
+}
+
+
 function reload() {
     save();
     setTimeout(function () {window.location.reload()}, 2000)};
@@ -80,4 +100,4 @@ function redirect(href) {
     setTimeout(() => window.location = href, 500);
 }
 
-export { getState, getDB, clear, setState, redirect, reload, fetchWithTimeout };
+export { getState, getDB, clear, setState, redirect, reload, extractQuery, remainderQuery, fetchWithTimeout };
