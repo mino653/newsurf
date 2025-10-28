@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SurfNetwork </title>
     <meta name="description" content="Join SurfNetwork - The ultimate Minecraft server experience with custom maps, ranks, and amazing community!">
-    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
     <link rel="stylesheet" href="./css/equery.css">
     <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/events-forums.css">
 </head>
 
 <body>
-    <div class="preloader">
-        <figure> <img src="./assets/pumkin.png" alt="Pumkin"> </figure>
-    </div>        <div class="nav-container">
+      <div class="nav-container">
             <div class="e-flex justify-between item-center">
                 <div class="hamburger">
                     <span class="bar"></span>
@@ -68,7 +67,6 @@
         <button id="scroll-to-top" class="scroll-to-top-btn">
             <img src="./assets/top.png" alt="top">
         </button>
-        
     <!-- Music Player -->
     <div id="music-player" class="music-player">
         <div class="music-controls">
@@ -79,7 +77,7 @@
                 <span class="music-icon"><span class="material-symbols-outlined">skip_next</span></span>
             </button>
             <button id="volume-toggle" class="minecraft-btn music-btn">
-                <span class="music-icon"><span class="material-symbols-outlined">volume_up</span></span>\
+                <span class="music-icon"><span class="material-symbols-outlined">volume_up</span></span>
             </button>
         </div>
         <div class="music-info">
@@ -101,64 +99,530 @@
     </div>
     <!-- Navigation -->
     <nav class="navbar" include-html="./nav.html"></nav>
-    <!-- About Section -->
-    <section id="about-us" class="about-us"></section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Get In Touch</h2>
-                <div class="section-subtitle">We'd love to hear from you</div>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
             </div>
-
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon"><span class="material-symbols-outlined">language</span></div>
-                        <div class="contact-content">
-                            <h4>Server IP</h4>
-                            <p>play.surfnetwork.xyz</p>
-                        </div>
+        </div>
+        <div class="hero-content">
+            <div class="swiper-wrapper" style="transition-duration: 0ms;">
+                <div class="swiper-slide swiper-slide-active">
+                    <div class="slide-image" style="background: url(&quot;/assets/samhain-slider-2.jpg&quot;);"></div>
+                        <div class="container">
+                        <h1>Have Fun With <br>Us On Halloween </h1>
+                        <p>Join our party at the end of this summer. </p>
+                        <div class="bosluk1112"></div>
+                        <a href="/events/halloween-event-2025.html">Learn More →</a>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-icon"><span class="material-symbols-outlined">chat</span></div>
-                        <div class="contact-content">
-                            <h4>Discord</h4>
-                            <p>Join our Discord community</p>
-                        </div>
+                </div>            
+                <div class="swiper-slide">
+                    <div class="slide-image" style="background: url(&quot;./assets/samhain-slider-3.jpg&quot;);"></div>
+                        <div class="container">
+                        <h1>31th Octobar 2022 <br>Halloween Party </h1>
+                        <p>Scary fun party on halloween. </p>
+                        <div class="bosluk1112"></div>
+                        <a href="./events/halloween-event-2025.html">Learn More →</a>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-icon"><span class="material-symbols-outlined">mail</span></div>
-                        <div class="contact-content">
-                            <h4>Email</h4>
-                            <p>admin@surfnetwork.xyz</p>
-                        </div>
+                </div>
+                <!-- User added slides (place the two images into ./assets/ with these filenames) -->
+                <div class="swiper-slide">
+                    <div class="slide-image" style="background: url(&quot;./assets/halloween-attach-1.png&quot;);"></div>
+                    <div class="container">
+                        <h1>Pumpkin Overlord<br>Haunted Heights</h1>
+                        <p>Explore the floating pumpkin fortress in our spooky map.</p>
+                        <div class="bosluk1112"></div>
+                        <a href="./events/halloween-event-2025.html">Explore Map →</a>
                     </div>
                 </div>
 
-                <div class="contact-form">
-                    <form id="contact-form">
-                        <div class="form-group">
-                            <input type="text" placeholder="Your Name" required>
+                <div class="swiper-slide">
+                    <div class="slide-image" style="background: url(&quot;./assets/halloween-attach-2.png&quot;);"></div>
+                    <div class="container">
+                        <h1>Jack's Courtyard<br>Pumpkin Patch</h1>
+                        <p>Gather friends and complete seasonal challenges together.</p>
+                        <div class="bosluk1112"></div>
+                        <a href="./events/halloween-event-2025.html">Join Event →</a>
+                    </div>
+                </div>
+                <!-- (Duplicate slides removed) -->
+                <div class="button-prev">❮</div>
+                <div class="button-next">❯</div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+            <span class="scroll-text">Scroll Down</span>
+        </div>
+    </section>
+    <section id="about" class="hakkimizda-bolumu-anasayfa">
+        <div class="tablo">
+            <div class="tablo-1-ve-2">
+                <div class="galeri1 zoomIn">
+                    <img class="imagerotate" src="./assets/circle-samhain.png" alt="Red moon">
+                </div>
+                <div class="galeri slideInUp">
+                    <img src="./assets/about-samhain1.png" alt="Webone about">
+                </div>
+            </div>
+            <div class="tablo-1-ve-3">
+                <h2 class="h2-baslik  e-margin-bottom">Have an awesome scary experience with out Halloween Features.</h2>
+                <p>You will enjoy the 31st of October with special features with our special party for Halloween. You can make your loved ones, colleagues and employees have an unforgettable day at this magnificent festival.</p>
+                <img class="divider e-margin-bottom" height="15" width="120" alt="Divider" src="./assets/divider.jpg">
+                <div class="e-row about-item ">
+                    <div class="e-col s2 e-padding">
+                        <div class="iconLeft">
+                            <i class="floaticon-medal"></i>
                         </div>
-                        <div class="form-group">
-                            <input type="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="e-col s10 e-padding">
+                        <h3 class="baslik-3s">In-game cosmetics</h3>
+                        <p>Enjoy this season wit custom in-game cosmetics and items for Halloween.</p>
+                    </div>
+                </div>
+                <div class="e-row about-item ">
+                    <div class="e-col s2 e-padding">
+                        <div class="iconLeft">
+                            <i class="floaticon-medal"></i>
                         </div>
-                        <div class="form-group">
-                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                    </div>
+                    <div class="e-col s10 e-padding">
+                        <h3 class="baslik-3s">Custom Maps</h3>
+                        <p>Fun themed maps to play with your friends!</p>
+                    </div>
+                </div>
+                <div class="e-row e-margin-bottom about-item ">
+                    <div class="e-col s2 e-padding">
+                        <div class="iconLeft">
+                            <i class="floaticon-medal"></i>
                         </div>
-                        <button type="submit" class="minecraft-btn submit-btn">Send Message</button>
-                    </form>
+                    </div>
+                    <div class="e-col s10 e-padding">
+                        <h3 class="baslik-3s">Community</h3>
+                        <p>Active and friendly player community</p>
+                    </div>
+                </div>
+                <a href="./about-us.html" class="custom-button wow ">Get to know us →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Server Features</h2>
+                <div class="section-subtitle">31 October 2025</div>
+            </div>
+            <div class="features-container">
+                <div class="e-row">
+                    <div class="e-col l-12">
+                        <div class="swiper-container-horizontal">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide swiper-dulicate">
+                                    <div class="component-tabs">
+                                        <div class="tab-content current">
+                                            <div class="cards">
+                                                <div class="card">
+                                                    <img src="./assets/features-h.jpg" alt="Features">
+                                                    <div class="card-content">
+                                                        <h2>Feature name</h2>
+                                                        <button>View</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="button-prev1">❮</div>
+                            <div class="button-next1">❯</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="admin-messages" class="admin-messages">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Here's What the Admins Had to Say</h2>
+                <div class="section-subtitle">Messages from our amazing admin team</div>
+            </div>
+            <div class="card members-card">
+                <div class="card-header header-theme">Staff members</div>
+                <div id="admin-message-list" class="card-body">
+                    <div style="margin-bottom: 32px" id="member_list_staff_members">
+                        <div class="e-margin-bottom list-container">
+                            <div class="list-content">
+                                <div class="admin-message">No messages!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination">
+                        <a class="" href="javascript:void(0)">«</a>
+                        <a class="" href="javascript:void(0)">0</a>
+                        <a class="" href="javascript:void(0)">»</a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Events Section -->
+    <section id="events" class="events">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Halloween Events</h2>
+                <div class="section-subtitle">Join our spooky celebrations!</div>
+            </div>
+            <div class="events-grid">
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="./assets/pumpkin-hunt.jpg" alt="Pumpkin Hunt">
+                        <div class="event-date">
+                            <span class="day">31</span>
+                            <span class="month">OCT</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3>Great Pumpkin Hunt</h3>
+                        <p class="event-time"><span class="material-symbols-outlined">schedule</span> 8:00 PM EST</p>
+                        <p>Search for magical pumpkins across our Halloween-themed maps and win exclusive rewards!</p>
+                        <button class="minecraft-btn">Join Event</button>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="./assets/halloween-attach-1.png" alt="Haunted Heights">
+                        <div class="event-date">
+                            <span class="day">30</span>
+                            <span class="month">OCT</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3>Haunted Heights</h3>
+                        <p class="event-time"><span class="material-symbols-outlined">schedule</span> 9:00 PM EST</p>
+                        <p>Explore the floating pumpkin fortress in our spooky map!</p>
+                        <button class="minecraft-btn">Join Event</button>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="./assets/halloween-attach-2.png" alt="Jack's Courtyard">
+                        <div class="event-date">
+                            <span class="day">31</span>
+                            <span class="month">OCT</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3>Jack's Courtyard</h3>
+                        <p class="event-time"><span class="material-symbols-outlined">schedule</span> 10:00 PM EST</p>
+                        <p>Gather friends and complete seasonal challenges together!</p>
+                        <button class="minecraft-btn">Join Event</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forums Section -->
+    <section class="forums-page">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Community Forums</h2>
+                <div class="section-subtitle">Join the discussion!</div>
+            </div>
+
+            <div class="forum-actions">
+                <button id="new-topic-btn" class="minecraft-btn">
+                    <span class="material-symbols-outlined">add</span>
+                    New Topic
+                </button>
+            </div>
+
+            <div class="forum-categories">
+                <div class="forum-category" data-category="announcements">
+                    <div class="category-header">
+                        <span class="category-icon"><span class="material-symbols-outlined">campaign</span></span>
+                        <h3>Announcements</h3>
+                    </div>
+                    <div class="topics-list">
+                        <!-- Topics will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="forum-category" data-category="help">
+                    <div class="category-header">
+                        <span class="category-icon"><span class="material-symbols-outlined">help</span></span>
+                        <h3>Help & Support</h3>
+                    </div>
+                    <div class="topics-list">
+                        <!-- Topics will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="forum-category" data-category="community">
+                    <div class="category-header">
+                        <span class="category-icon"><span class="material-symbols-outlined">groups</span></span>
+                        <h3>Community</h3>
+                    </div>
+                    <div class="topics-list">
+                        <!-- Topics will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Store Section -->
+    <section id="store" class="store">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Server Store</h2>
+                <div class="section-subtitle">Support the server and unlock exclusive perks!</div>
+            </div>
+
+            <div class="store-categories">
+                <button class="category-btn active" data-category="ranks">
+                    <span class="btn-icon"><span class="material-symbols-outlined">ranks</span></span>
+                    <span class="btn-text">Ranks</span>
+                </button>
+                <button class="category-btn" data-category="coins">
+                    <span class="btn-icon"><span class="material-symbols-outlined">cash</span></span>
+                    <span class="btn-text">Coins</span>
+                </button>
+                <button class="category-btn" data-category="cosmetics">
+                    <span class="btn-icon"><span class="material-symbols-outlined">cosmetics</span></span>
+                    <span class="btn-text">Cosmetics</span>
+                </button>
+                <button class="category-btn" data-category="boosters">
+                    <span class="btn-icon"><span class="material-symbols-outlined">bolt</span></span>
+                    <span class="btn-text">Boosters</span>
+                </button>
+            </div>
+
+            <div class="store-grid" id="store-grid">
+                <!-- Ranks -->
+                <div class="product-card" data-category="ranks">
+                    <div class="product-badge popular">Popular</div>
+                    <div class="product-header">
+                        <div class="product-icon">👑</div>
+                        <h3>VIP Rank</h3>
+                    </div>
+                    <div class="product-price">$9.99</div>
+                    <div class="product-content">
+                        <ul class="product-features">
+                            <li>Access to VIP-only areas</li>
+                            <li>Custom chat prefix</li>
+                            <li>Priority queue</li>
+                            <li>Exclusive pets</li>
+                            <li>VIP commands</li>
+                        </ul>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="vip">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="ranks">
+                    <div class="product-header">
+                        <div class="product-icon">💎</div>
+                        <h3>MVP Rank</h3>
+                    </div>
+                    <div class="product-price">$19.99</div>
+                    <div class="product-content">
+                        <ul class="product-features">
+                            <li>All VIP features</li>
+                            <li>Fly ability</li>
+                            <li>Creative mode access</li>
+                            <li>Custom particle effects</li>
+                            <li>MVP commands</li>
+                        </ul>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="mvp">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="ranks">
+                    <div class="product-badge premium">Premium</div>
+                    <div class="product-header">
+                        <div class="product-icon">🌟</div>
+                        <h3>Elite Rank</h3>
+                    </div>
+                    <div class="product-price">$39.99</div>
+                    <div class="product-content">
+                        <ul class="product-features">
+                            <li>All MVP features</li>
+                            <li>WorldEdit access</li>
+                            <li>Custom commands</li>
+                            <li>Exclusive events</li>
+                            <li>Elite commands</li>
+                        </ul>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="elite">Purchase</button>
+                </div>
+
+                <!-- Coins -->
+                <div class="product-card" data-category="coins">
+                    <div class="product-header">
+                        <div class="product-icon">🪙</div>
+                        <h3>1000 Coins</h3>
+                    </div>
+                    <div class="product-price">$4.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Perfect for small purchases and upgrades</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="coins-1000">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="coins">
+                    <div class="product-badge best-value">Best Value</div>
+                    <div class="product-header">
+                        <div class="product-icon">💰</div>
+                        <h3>5000 Coins</h3>
+                    </div>
+                    <div class="product-price">$19.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Great value for regular players</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="coins-5000">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="coins">
+                    <div class="product-header">
+                        <div class="product-icon">💎</div>
+                        <h3>10000 Coins</h3>
+                    </div>
+                    <div class="product-price">$34.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Maximum value for power users</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="coins-10000">Purchase</button>
+                </div>
+
+                <!-- Cosmetics -->
+                <div class="product-card" data-category="cosmetics">
+                    <div class="product-header">
+                        <div class="product-icon">🌈</div>
+                        <h3>Rainbow Trail</h3>
+                    </div>
+                    <div class="product-price">$2.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Leave a colorful trail wherever you go</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="rainbow-trail">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="cosmetics">
+                    <div class="product-header">
+                        <div class="product-icon">🎆</div>
+                        <h3>Firework Cape</h3>
+                    </div>
+                    <div class="product-price">$4.99</div>
+                    <div class="product-content">
+                        <p class="product-description">Stunning cape with firework effects</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="firework-cape">Purchase</button>
+                </div>
+
+                <!-- Boosters -->
+                <div class="product-card" data-category="boosters">
+                    <div class="product-header">
+                        <div class="product-icon">⚡</div>
+                        <h3>XP Booster</h3>
+                    </div>
+                    <div class="product-price">$7.99</div>
+                    <div class="product-content">
+                        <p class="product-description">2x XP for 7 days</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="xp-booster">Purchase</button>
+                </div>
+
+                <div class="product-card" data-category="boosters">
+                    <div class="product-header">
+                        <div class="product-icon">💰</div>
+                        <h3>Coin Booster</h3>
+                    </div>
+                    <div class="product-price">$7.99</div>
+                    <div class="product-content">
+                        <p class="product-description">2x Coins for 7 days</p>
+                    </div>
+                    <button class="minecraft-btn buy-btn" data-product="coin-booster">Purchase</button>
+                </div>
+            </div>
+
+            <div class="cart-summary" id="cart-summary" style="display: none;">
+                <div class="cart-header">
+                    <h3>Shopping Cart</h3>
+                    <div class="cart-icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+                </div>
+                <div id="cart-items" class="cart-items"></div>
+                <div class="cart-total">
+                    <div class="total-label">Total:</div>
+                    <div class="total-amount">$<span id="cart-total">0.00</span></div>
+                </div>
+                <button class="minecraft-btn checkout-btn" id="checkout-btn">Checkout</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact" include-html="./contact.html"></section>
+
     <!-- Footer -->
-    <footer class="footer" include-html="./footer.html"></footer>
+    <div class="container">
+            <div class="e-row row-padding">
+                <div class="e-col m3 e-padding">
+                    <div class="logo e-margin-bottom">
+                        <img src="./assets/halloween-logo1.png" alt="Logo">
+                    </div>
+                    <div class="footer-info e-margin-bottom ">
+                        <p><i class="flaticon-call iconpfooter2"></i>&nbsp;&nbsp;&nbsp;+1 (234) 567 89 10</p>
+                        <p><i class="flaticon-email iconpfooter3"></i>&nbsp;&nbsp;&nbsp;support@surfnetwork.xyz</p>
+                    </div>
+                    <ul class="footer-social">
+                        <li>
+                            <a href="#"><i class="fi fi-brands-facebook"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fi fi-brands-discord"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fi fi-brands-youtube"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="e-col m7 e-padding"></div>
+                <div class="e-col m2 e-padding footer-quick-links">
+                    <h6 class="widget-title">Quick Links</h6>
+                    <div class="footer-menu">
+                        <div class="menu-quick-links-container">
+                            <ul id="menu-quick-links" class="menu">
+                                <li class="menu-item"><a href="./">Home</a></li>
+                                <li class="menu-item"><a href="./about-us.html">About Us</a></li>
+                                <li class="menu-item"><a href="./team.html">Team</a></li>
+                                <li class="menu-item"><a href="./events/halloween-event-2025.html">Halloween</a></li>
+                                <li class="menu-item"><a href="#contact">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SurfNetwork. All rights reserved.<br>Made with ❤️ by the SurfNetwork Team, Powered by EQuery.</p>
+            </div>
+        </div>
     <!-- Scripts -->
     <script type="module" src="./js/script.js"></script>
+
+    <!-- Audio Resources -->
+    <audio id="evil-laugh" src="./assets/evil-laugh.mp3" preload="auto"></audio>
 </body>
 
 </html>
