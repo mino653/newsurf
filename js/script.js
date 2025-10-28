@@ -107,47 +107,69 @@ EQuery(async function () {
 
    // Loading Screen with rotating messages - stops when loading is done
     function initLoadingScreen() {
-        const loadingScreen = EQuery('loading-screen');
+        const loadingScreen = EQuery('#loading-screen');
+        const preloader = EQuery('.preloader');
         let isLoading = true;
 
         // Function to stop loading
         function stopLoading() {
+            if (!isLoading) return; // Prevent multiple calls
             isLoading = false;
             
-            // Hide loading screen after showing final message
+            // Add fade-out animation class
             EQuery('body').addClass('loaded');
+            
+            // Smoothly fade out the preloader
+            preloader.css('opacity: 0;transition: opacity 0.5s ease');
+            
             setTimeout(() => {
-                // loadingScreen.classList.add('hidden');
-                EQuery('.preloader').css('display: none');
-                // Start animations after loading
-                setTimeout(() => {
-                    initHeroAnimations();
-                    initHeroSlider();
-                    initCopyIP();
-                    initParticleEffects();
-                    // initMusicPlayer();
-                    initStore();
-                    initScrollAnimations();
-                    initNavigation();
-                    initAdminMessages();
-                    initServerStats();
-                    initMinecraftEffects();
-                    initHeroAnimations();
-                    initEvents();
-                    updateForumList();
-                    if (window.location.pathname.indexOf('forums') !== -1) initForum();
-                }, 500);
-            }, 1000);
+                preloader.css('display: none');
+                
+                // Initialize all components in sequence to prevent blocking
+                const initSequence = [
+                    initHeroAnimations,
+                    initHeroSlider,
+                    initCopyIP,
+                    initParticleEffects,
+                    initStore,
+                    initScrollAnimations,
+                    initNavigation,
+                    initAdminMessages,
+                    initServerStats,
+                    initMinecraftEffects,
+                    initEvents,
+                    updateForumList
+                ];
+
+                // Execute each init function with a small delay
+                initSequence.forEach((initFn, index) => {
+                    setTimeout(() => {
+                        try {
+                            initFn();
+                        } catch (err) {
+                            console.error(`Error initializing ${initFn.name}:`, err);
+                        }
+                    }, index * 100);
+                });
+
+                // Initialize forum if on forum page
+                if (window.location.pathname.indexOf('forums') !== -1) {
+                    initForum();
+                }
+            }, 500);
         }
         
-        // Check if page is fully loaded
+        // Check if page is already loaded
         if (document.readyState === 'complete') {
             stopLoading();
         } else {
-            window.addEventListener('load', function() {
-                // Small delay to ensure everything is loaded
+            // Listen for both DOMContentLoaded and load events
+            const loadHandler = () => {
                 setTimeout(stopLoading, 500);
-            });
+            };
+            
+            window.addEventListener('DOMContentLoaded', loadHandler);
+            window.addEventListener('load', loadHandler);
         }
     }
 
