@@ -178,11 +178,7 @@ EQuery(async function () {
             initForum();
         }
 
-        // Hide loading screen with fade effect
-        loadingScreen.addClass('hidden');
-        setTimeout(() => {
-            loadingScreen.css('display: none');
-        }, 500);
+        // Loading overlay removed — nothing to hide. Initializers complete.
     }
 
     // Hero Animations
