@@ -108,69 +108,72 @@ EQuery(async function () {
    // Loading Screen with rotating messages - stops when loading is done
     function initLoadingScreen() {
         const loadingScreen = EQuery('#loading-screen');
-        const preloader = EQuery('.preloader');
-        let isLoading = true;
+        let loadingComplete = false;
 
-        // Function to stop loading
-        function stopLoading() {
-            if (!isLoading) return; // Prevent multiple calls
-            isLoading = false;
-            
-            // Add fade-out animation class
-            EQuery('body').addClass('loaded');
-            
-            // Smoothly fade out the preloader
-            preloader.css('opacity: 0;transition: opacity 0.5s ease');
-            
-            setTimeout(() => {
-                preloader.css('display: none');
+        function initializeComponents() {
+            try {
+                // Initialize core components first
+                initHeroSlider();
+                initNavigation();
+                initHeroAnimations();
                 
-                // Initialize all components in sequence to prevent blocking
-                const initSequence = [
-                    initHeroAnimations,
-                    initHeroSlider,
-                    initCopyIP,
-                    initParticleEffects,
-                    initStore,
-                    initScrollAnimations,
-                    initNavigation,
-                    initAdminMessages,
-                    initServerStats,
-                    initMinecraftEffects,
-                    initEvents,
-                    updateForumList
-                ];
-
-                // Execute each init function with a small delay
-                initSequence.forEach((initFn, index) => {
-                    setTimeout(() => {
-                        try {
-                            initFn();
-                        } catch (err) {
-                            console.error(`Error initializing ${initFn.name}:`, err);
-                        }
-                    }, index * 100);
-                });
+                // Then initialize visual elements
+                initParticleEffects();
+                initScrollAnimations();
+                initMinecraftEffects();
+                
+                // Finally initialize interactive elements
+                initStore();
+                initAdminMessages();
+                initServerStats();
+                initEvents();
+                updateForumList();
+                initCopyIP();
 
                 // Initialize forum if on forum page
-                if (window.location.pathname.indexOf('forums') !== -1) {
+                if (window.location.pathname.includes('forums')) {
                     initForum();
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Initialization error:', error);
+                return false;
+            }
+        }
+
+        function completeLoading() {
+            if (loadingComplete) return;
+            loadingComplete = true;
+            
+            // Add hidden class to trigger fade out
+            loadingScreen.addClass('hidden');
+            
+            // Remove from DOM after animation
+            setTimeout(() => {
+                loadingScreen.css('display: none');
+                // Initialize components after preloader is hidden
+                if (!initializeComponents()) {
+                    console.error('Failed to initialize components');
                 }
             }, 500);
         }
-        
-        // Check if page is already loaded
-        if (document.readyState === 'complete') {
-            stopLoading();
+
+        // Start loading sequence when document is ready
+        if (document.readyState !== 'loading') {
+            completeLoading();
         } else {
-            // Listen for both DOMContentLoaded and load events
-            const loadHandler = () => {
-                setTimeout(stopLoading, 500);
-            };
-            
-            window.addEventListener('DOMContentLoaded', loadHandler);
-            window.addEventListener('load', loadHandler);
+            document.addEventListener('DOMContentLoaded', completeLoading);
         }
+
+        // Fallback if something goes wrong
+        setTimeout(() => {
+            if (!loadingComplete) {
+                console.warn('Loading screen timeout - forcing completion');
+                completeLoading();
+            }
+        }, 5000);
+    }
     }
 
     // Hero Animations
