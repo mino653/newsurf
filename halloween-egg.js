@@ -24,7 +24,7 @@
             position: fixed;
             width: 100px;
             height: 100px;
-            background-image: url('./assets/icon.pumpkin.png');
+            background-image: url('./assets/icon_pumkin.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;

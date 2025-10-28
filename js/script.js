@@ -16,9 +16,15 @@ import { initForum, updateForumList } from './forums.js';
 EQuery(async function () {
     initLoadingScreen();
     // initThemeToggle();
-    initContactForm();
 
-    EQuery.includeHTML()
+    // Load include-html fragments (nav, contact, footer). Initialize
+    // features that depend on included DOM in the includeHTML callback.
+    EQuery.includeHTML(function () {
+        // contact form and copy-ip button are inside included fragments
+        // so initialize them after the include completes.
+        initContactForm();
+        initCopyIP();
+    });
 
     let userdata;
     getDB(state => {
@@ -174,7 +180,6 @@ EQuery(async function () {
         setTimeout(() => {
             loadingScreen.css('display: none');
         }, 500);
-    }
     }
 
     // Hero Animations

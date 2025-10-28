@@ -1369,7 +1369,8 @@ section {
 
 /* Events Section */
 .events {
-    background: url('./assets/halloween-pattern.jpg') repeat;
+    /* corrected path: CSS file is in /css, assets are in /assets */
+    background: url('../assets/halloween-pattern.jpg') repeat;
     padding: 100px 0;
     position: relative;
 }

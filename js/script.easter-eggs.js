@@ -19,7 +19,7 @@ function triggerPumpkinEasterEgg() {
         position: fixed;
         width: 100px;
         height: 100px;
-        background: url('./assets/icon.pumpkin.png') no-repeat center/contain;
+    background: url('./assets/icon_pumkin.png') no-repeat center/contain;
         z-index: 99999;
         transform: translate(-50%, -50%) scale(0.1);
         top: 50%;
