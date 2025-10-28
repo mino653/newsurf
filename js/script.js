@@ -27,24 +27,51 @@ EQuery(async function () {
         }
     });
 
-    getStats();
-    setInterval(getStats, 30000);
+    // Initialize server stats and start polling
+    async function initServerPolling() {
+        // Initial stats fetch
+        await getStats();
+        await updateServerStatus();
+
+        // Set up polling intervals
+        setInterval(getStats, 30000);
+        setInterval(updateServerStatus, 30000);
+    }
 
     async function getStats() {
         try {    
-            let response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/get-server-stats')
+            const response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/get-server-stats', {
+                timeout: 5000 // 5 second timeout
+            });
 
-            EQuery('#ip').text(response.ip);
-            EQuery('#serverStatus').addClass(response.status.online ? 'bg-success' : 'bg-fail').text(response.status.online ? 'Online' : 'Offline');
-            animateNumber(EQuery('#online-players')[0], Number(EQuery('#online-players').text()), response.status.count, 200);
-            EQuery('#serverVersion').text(response.status.version);
-            EQuery('#serverUptime').text(response.status.uptime);
-            EQuery('#totalPlayers').text(response.status.total);
-            EQuery('#playerCount').text(response.status.count);
-            EQuery('#playersAvg').text(response.status.average);
+            if (!response || !response.status) {
+                throw new Error('Invalid server response');
+            }
+
+            // Update UI elements
+            EQuery('#ip').text(response.ip || 'Unavailable');
+            EQuery('#serverStatus')
+                .removeClass('bg-success bg-fail')
+                .addClass(response.status.online ? 'bg-success' : 'bg-fail')
+                .text(response.status.online ? 'Online' : 'Offline');
+            
+            // Animate player count
+            const currentPlayers = Number(EQuery('#online-players').text()) || 0;
+            animateNumber(EQuery('#online-players')[0], currentPlayers, response.status.count, 200);
+            
+            // Update other stats
+            EQuery('#serverVersion').text(response.status.version || '1.21.5');
+            EQuery('#serverUptime').text(response.status.uptime || '0');
+            EQuery('#totalPlayers').text(response.status.total || '0');
+            EQuery('#playerCount').text(response.status.count || '0');
+            EQuery('#playersAvg').text(response.status.average || '0');
+
         } catch (e) {
-            EQuery('#ip').text('Unavaliable');
-            EQuery('#serverStatus').addClass('bg-fail').text('Offline');
+            console.error('Failed to fetch server stats:', e);
+            
+            // Set offline state
+            EQuery('#ip').text('Unavailable');
+            EQuery('#serverStatus').removeClass('bg-success').addClass('bg-fail').text('Offline');
             EQuery('#online-players').text('0');
             EQuery('#uptime').text('0');
             EQuery('#rating').text('0');
@@ -53,25 +80,40 @@ EQuery(async function () {
             EQuery('#totalPlayers').text('0');
             EQuery('#playerCount').text('0');
             EQuery('#playersAvg').text('0');
-            showMessage('Failed to fetch server stats. Timedout 30000ms.', 'error');
+            
+            showMessage('Server status unavailable. Please try again later.', 'error');
         }
     }
 
     async function updateServerStatus() {
-        const playerCountElement = document.getElementById('playerCount');
-        if (playerCountElement) {
-            setInterval(async function () {
-                try {
-                    let response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/player-count', { method: 'post' })
-                    const currentCount = response.status.count;
-                    const maxCount = response.status.max;
-                    playerCountElement.textContent = `${currentCount}/${maxCount} Players`;
-                } catch {
-                    showMessage('Failed to fetch server stats. Timedout 30000ms.', 'error');
-                }
-            }, 30000);
+        try {
+            const response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/player-count', {
+                method: 'post',
+                timeout: 5000
+            });
+
+            if (!response || !response.status) {
+                throw new Error('Invalid response');
+            }
+
+            const currentCount = response.status.count;
+            const maxCount = response.status.max;
+            
+            const playerCountElements = document.querySelectorAll('#playerCount');
+            playerCountElements.forEach(element => {
+                element.textContent = `${currentCount}/${maxCount} Players`;
+            });
+
+        } catch (e) {
+            console.error('Failed to update player count:', e);
         }
     }
+
+    // Start server polling
+    initServerPolling().catch(err => {
+        console.error('Failed to initialize server polling:', err);
+        showMessage('Unable to connect to server. Please refresh the page.', 'error');
+    });
 
     // Theme Toggle
     function initThemeToggle() {
@@ -105,50 +147,34 @@ EQuery(async function () {
         themeIcon.find('span').text(theme === 'dark' ? 'clear_day' : 'bedtime');
     }
 
-   // Loading Screen with rotating messages - stops when loading is done
+    // Simple loading screen implementation
     function initLoadingScreen() {
-        const loadingScreen = EQuery('loading-screen');
-        let isLoading = true;
+        const loadingScreen = EQuery('#loading-screen');
 
-        // Function to stop loading
-        function stopLoading() {
-            isLoading = false;
-            
-            // Hide loading screen after showing final message
-            EQuery('body').addClass('loaded');
-            setTimeout(() => {
-                // loadingScreen.classList.add('hidden');
-                EQuery('.preloader').css('display: none');
-                // Start animations after loading
-                setTimeout(() => {
-                    initHeroAnimations();
-                    initHeroSlider();
-                    initCopyIP();
-                    initParticleEffects();
-                    // initMusicPlayer();
-                    initStore();
-                    initScrollAnimations();
-                    initNavigation();
-                    initAdminMessages();
-                    initServerStats();
-                    initMinecraftEffects();
-                    initHeroAnimations();
-                    initEvents();
-                    updateForumList();
-                    if (window.location.pathname.indexOf('forums') !== -1) initForum();
-                }, 500);
-            }, 1000);
-        }
+        // Initialize all components
+        initHeroSlider();
+        initNavigation();
+        initHeroAnimations();
+        initParticleEffects();
+        initScrollAnimations();
+        initMinecraftEffects();
+        initStore();
+        initAdminMessages();
+        initServerStats();
+        initEvents();
+        updateForumList();
+        initCopyIP();
         
-        // Check if page is fully loaded
-        if (document.readyState === 'complete') {
-            stopLoading();
-        } else {
-            window.addEventListener('load', function() {
-                // Small delay to ensure everything is loaded
-                setTimeout(stopLoading, 500);
-            });
+        if (window.location.pathname.includes('forums')) {
+            initForum();
         }
+
+        // Hide loading screen with fade effect
+        loadingScreen.addClass('hidden');
+        setTimeout(() => {
+            loadingScreen.css('display: none');
+        }, 500);
+    }
     }
 
     // Hero Animations
@@ -591,7 +617,7 @@ EQuery(async function () {
         // Volume toggle
         volumeToggleBtn.click(function () {
             isMuted = !isMuted;
-            volumeToggleBtn.find('.music-icon span').text(isMuted ? 'voulume_up' : 'volume_off');
+            volumeToggleBtn.find('.music-icon span').text(isMuted ? 'volume_off' : 'volume_up');
         });
 
         // Close music player
@@ -1005,8 +1031,8 @@ EQuery(async function () {
             pages.forEach(page => {
                 let badges = [];
 
-                for (let j = 0;j < page.badges;j++) {
-                    badges.push(EQuery.elemt('span', page.badge[k].content, `badge ${page.badge[j].badgeType}`));
+                for (let j = 0; j < page.badges; j++) {
+                    badges.push(EQuery.elemt('span', page.badge[j].content, `badge ${page.badge[j].badgeType}`));
                 }
 
                 let elt = EQuery.elemt('div', [
