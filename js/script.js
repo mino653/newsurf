@@ -149,72 +149,39 @@ EQuery(async function () {
 
    // Loading Screen with rotating messages - stops when loading is done
     function initLoadingScreen() {
-        const loadingScreen = EQuery('#loading-screen');
-        let loadingComplete = false;
+        // Initialize all components directly
+        try {
+            // Initialize core components first
+            initHeroSlider();
+            initNavigation();
+            initHeroAnimations();
+            
+            // Then initialize visual elements
+            initParticleEffects();
+            initScrollAnimations();
+            initMinecraftEffects();
+            
+            // Finally initialize interactive elements
+            initStore();
+            initAdminMessages();
+            initServerStats();
+            initEvents();
+            updateForumList();
+            initCopyIP();
 
-        function initializeComponents() {
-            try {
-                // Initialize core components first
-                initHeroSlider();
-                initNavigation();
-                initHeroAnimations();
-                
-                // Then initialize visual elements
-                initParticleEffects();
-                initScrollAnimations();
-                initMinecraftEffects();
-                
-                // Finally initialize interactive elements
-                initStore();
-                initAdminMessages();
-                initServerStats();
-                initEvents();
-                updateForumList();
-                initCopyIP();
-
-                // Initialize forum if on forum page
-                if (window.location.pathname.includes('forums')) {
-                    initForum();
-                }
-                
-                return true;
-            } catch (error) {
-                console.error('Initialization error:', error);
-                return false;
+            // Initialize forum if on forum page
+            if (window.location.pathname.includes('forums')) {
+                initForum();
             }
-        }
 
-        function completeLoading() {
-            if (loadingComplete) return;
-            loadingComplete = true;
-            
-            // Add hidden class to trigger fade out
-            loadingScreen.addClass('hidden');
-            
-            // Remove from DOM after animation
-            setTimeout(() => {
+            // Hide loading screen immediately
+            const loadingScreen = EQuery('#loading-screen');
+            if (loadingScreen) {
                 loadingScreen.css('display: none');
-                // Initialize components after preloader is hidden
-                if (!initializeComponents()) {
-                    console.error('Failed to initialize components');
-                }
-            }, 500);
-        }
-
-        // Start loading sequence when document is ready
-        if (document.readyState !== 'loading') {
-            completeLoading();
-        } else {
-            document.addEventListener('DOMContentLoaded', completeLoading);
-        }
-
-        // Fallback if something goes wrong
-        setTimeout(() => {
-            if (!loadingComplete) {
-                console.warn('Loading screen timeout - forcing completion');
-                completeLoading();
             }
-        }, 5000);
+        } catch (error) {
+            console.error('Initialization error:', error);
+        }
     }
     }
 
@@ -658,7 +625,7 @@ EQuery(async function () {
         // Volume toggle
         volumeToggleBtn.click(function () {
             isMuted = !isMuted;
-            volumeToggleBtn.find('.music-icon span').text(isMuted ? 'voulume_up' : 'volume_off');
+            volumeToggleBtn.find('.music-icon span').text(isMuted ? 'volume_off' : 'volume_up');
         });
 
         // Close music player
@@ -1072,8 +1039,8 @@ EQuery(async function () {
             pages.forEach(page => {
                 let badges = [];
 
-                for (let j = 0;j < page.badges;j++) {
-                    badges.push(EQuery.elemt('span', page.badge[k].content, `badge ${page.badge[j].badgeType}`));
+                for (let j = 0; j < page.badges; j++) {
+                    badges.push(EQuery.elemt('span', page.badge[j].content, `badge ${page.badge[j].badgeType}`));
                 }
 
                 let elt = EQuery.elemt('div', [
