@@ -147,41 +147,33 @@ EQuery(async function () {
         themeIcon.find('span').text(theme === 'dark' ? 'clear_day' : 'bedtime');
     }
 
-   // Loading Screen with rotating messages - stops when loading is done
+    // Simple loading screen implementation
     function initLoadingScreen() {
-        // Initialize all components directly
-        try {
-            // Initialize core components first
-            initHeroSlider();
-            initNavigation();
-            initHeroAnimations();
-            
-            // Then initialize visual elements
-            initParticleEffects();
-            initScrollAnimations();
-            initMinecraftEffects();
-            
-            // Finally initialize interactive elements
-            initStore();
-            initAdminMessages();
-            initServerStats();
-            initEvents();
-            updateForumList();
-            initCopyIP();
+        const loadingScreen = EQuery('#loading-screen');
 
-            // Initialize forum if on forum page
-            if (window.location.pathname.includes('forums')) {
-                initForum();
-            }
-
-            // Hide loading screen immediately
-            const loadingScreen = EQuery('#loading-screen');
-            if (loadingScreen) {
-                loadingScreen.css('display: none');
-            }
-        } catch (error) {
-            console.error('Initialization error:', error);
+        // Initialize all components
+        initHeroSlider();
+        initNavigation();
+        initHeroAnimations();
+        initParticleEffects();
+        initScrollAnimations();
+        initMinecraftEffects();
+        initStore();
+        initAdminMessages();
+        initServerStats();
+        initEvents();
+        updateForumList();
+        initCopyIP();
+        
+        if (window.location.pathname.includes('forums')) {
+            initForum();
         }
+
+        // Hide loading screen with fade effect
+        loadingScreen.addClass('hidden');
+        setTimeout(() => {
+            loadingScreen.css('display: none');
+        }, 500);
     }
     }
 
