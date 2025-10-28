@@ -14,7 +14,6 @@ import { initEvents } from './events.js';
 import { initForum, updateForumList } from './forums.js';
 
 EQuery(async function () {
-    initLoadingScreen();
     // initThemeToggle();
 
     // Load include-html fragments (nav, contact, footer). Initialize
@@ -24,6 +23,10 @@ EQuery(async function () {
         // so initialize them after the include completes.
         initContactForm();
         initCopyIP();
+
+        // Run the main initializers after includes are injected so any
+        // DOM they provide (nav, contact, footer) is available.
+        initLoadingScreen();
     });
 
     let userdata;
