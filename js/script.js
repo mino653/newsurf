@@ -1223,7 +1223,7 @@ EQuery(async function () {
         let canvas = new EQuery.canvas();
         let target = EQuery.elemt('div', [
             EQuery.elemt('div', canvas.domElement).css('position: relative;top: 0;left: 0;height: 100%;width: 100%'),
-            EQuery.elemt('img', null, null, {src: '/assets/circle-samhain.png'}, 'position: absolute;top: 20px;right: 80px;z-index: 10;height: 20%;width: 20%;')
+            EQuery.elemt('img', null, null, {src: './assets/circle-samhain.png'}, 'position: absolute;top: 20px;right: 80px;z-index: 10;height: 20%;width: 20%;')
         ]).css('position: fixed;top:0;left: 0;height: 100vh;width: 100vw;background: #00000013;z-index: 999;animation: fadeIn .3s');
         EQuery('body').append(target);
 

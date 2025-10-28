@@ -18,7 +18,7 @@
 <body>
     <div id="loading-screen" class="loading-screen">
         <div class="preloader">
-            <figure><img src="./assets/icon-pumpkin.png" alt="Pumpkin"></figure>
+            <figure><img src="./assets/icon_pumkin.png" alt="Pumpkin"></figure>
             <div class="loading-text">Loading...</div>
         </div>
     </div>
@@ -240,7 +240,7 @@
             <div class="events-grid">
                 <div class="event-card">
                     <div class="event-image">
-                        <img src="./assets/pumpkin-hunt.jpg" alt="Pumpkin Hunt">
+                        <img src="./assets/pumkin.png" alt="Pumpkin Hunt">
                         <div class="event-date">
                             <span class="day">31</span>
                             <span class="month">OCT</span>
@@ -527,8 +527,56 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact" include-html="./contact.html"></section>
+    <!-- Contact Section (inlined to avoid include-html issues) -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <div class="section-subtitle">We'd love to hear from you</div>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon"><span class="material-symbols-outlined">language</span></div>
+                        <div class="contact-content">
+                            <h4>Server IP</h4>
+                            <p>play.surfnetwork.xyz</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><span class="material-symbols-outlined">chat</span></div>
+                        <div class="contact-content">
+                            <h4>Discord</h4>
+                            <p>Join our Discord community</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><span class="material-symbols-outlined">mail</span></div>
+                        <div class="contact-content">
+                            <h4>Email</h4>
+                            <p>admin@surfnetwork.xyz</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="minecraft-btn submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer" include-html="./footer.html"></footer>
