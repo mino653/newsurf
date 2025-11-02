@@ -977,10 +977,11 @@ function initLoadingScreen() {
     // Render cart page (cart.html) when loaded
     function initCartPage() {
         // load cart from storage (if logged) or keep in-memory
-        const container = document.getElementById('cart-container');
-        const emptyEl = document.getElementById('cart-empty');
+        const container = document.getElementById('cart-items');
+        const emptyEl = document.getElementById('empty-cart');
         const summaryEl = document.getElementById('cart-summary');
         const subtotalEl = document.getElementById('cart-subtotal');
+        const itemTemplate = document.getElementById('cart-item-template');
 
         // If this page was opened via navigation from same tab (guest cart in memory), cart variable may reflect it.
         // For logged users, reload from localStorage to ensure persistence.
@@ -1002,66 +1003,74 @@ function initLoadingScreen() {
 
             let subtotal = 0;
             cart.forEach(item => {
-                const row = document.createElement('div');
-                row.className = 'cart-item';
-                row.style.display = 'flex';
-                row.style.justifyContent = 'space-between';
-                row.style.alignItems = 'center';
-                row.style.padding = '12px 8px';
-                row.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+                const cartItem = itemTemplate.content.cloneNode(true);
+                const itemEl = cartItem.querySelector('.cart-item');
+                
+                // Set data attributes and content
+                itemEl.dataset.productId = item.id;
+                const img = itemEl.querySelector('.cart-item-image');
+                img.src = item.image || './assets/pumkin.png'; // fallback to pumpkin if no image
+                img.alt = item.name;
+                
+                itemEl.querySelector('.cart-item-title').textContent = item.name;
+                itemEl.querySelector('.cart-item-description').textContent = item.description || `${item.name} - Halloween Store Item`; // fallback description
+                itemEl.querySelector('.cart-item-price').textContent = `$${(item.price * (item.qty || 1)).toFixed(2)}`;
+                itemEl.querySelector('.quantity-display').textContent = item.qty || 1;
 
-                row.innerHTML = `
-                    <div style="display:flex;gap:12px;align-items:center;">
-                        <div style="width:56px;height:56px;background:#111;display:flex;align-items:center;justify-content:center;border-radius:8px;">🛒</div>
-                        <div>
-                            <div style="font-weight:700">${escapeHtml(item.name)}</div>
-                            <div style="opacity:.7;font-size:13px">Qty: <input type="number" min="1" value="${item.qty}" data-id="${item.id}" class="cart-qty" style="width:60px"></div>
-                        </div>
-                    </div>
-                    <div style="text-align:right;min-width:130px">
-                        <div style="font-weight:700">$${(item.price * item.qty).toFixed(2)}</div>
-                        <button class="minecraft-btn remove-from-cart" data-id="${item.id}" style="margin-top:6px">Remove</button>
-                    </div>
-                `;
-                container.appendChild(row);
-                subtotal += (item.price * item.qty);
-            });
-
-            if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-
-            // attach remove handlers & qty handlers
-            container.querySelectorAll('.remove-from-cart').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.dataset.id;
-                    cart = cart.filter(p => p.id !== id);
+                // Wire up quantity buttons
+                const qtyDisplay = itemEl.querySelector('.quantity-display');
+                itemEl.querySelector('.decrease-quantity').addEventListener('click', () => {
+                    let qty = parseInt(qtyDisplay.textContent) - 1;
+                    if (qty < 1) qty = 1;
+                    qtyDisplay.textContent = qty;
+                    item.qty = qty;
                     saveCart();
                     render();
                     renderCartCount();
                 });
+
+                itemEl.querySelector('.increase-quantity').addEventListener('click', () => {
+                    let qty = parseInt(qtyDisplay.textContent) + 1;
+                    qtyDisplay.textContent = qty;
+                    item.qty = qty;
+                    saveCart();
+                    render();
+                    renderCartCount();
+                });
+
+                // Wire up remove button
+                itemEl.querySelector('.remove-btn').addEventListener('click', () => {
+                    cart = cart.filter(p => p.id !== item.id);
+                    saveCart();
+                    render();
+                    renderCartCount();
+                    showMessage(`${item.name} removed from cart`, 'info');
+                });
+
+                container.appendChild(cartItem);
+                subtotal += (item.price * (item.qty || 1));
             });
 
-            container.querySelectorAll('.cart-qty').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const id = input.dataset.id;
-                    let v = parseInt(input.value) || 1;
-                    if (v < 1) v = 1; input.value = v;
-                    const it = cart.find(p => p.id === id);
-                    if (it) it.qty = v;
-                    saveCart(); render(); renderCartCount();
-                });
-            });
+            if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
         }
 
         render();
 
-        const checkout = document.getElementById('checkout-btn');
-        if (checkout) {
-            checkout.addEventListener('click', () => {
+        const checkoutBtn = document.querySelector('.checkout-btn');
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener('click', () => {
                 if (!cart || cart.length === 0) {
-                    if (typeof showMessage === 'function') showMessage('Your cart is empty', 'error');
+                    showMessage('Your cart is empty', 'error');
                     return;
                 }
-                if (typeof showMessage === 'function') showMessage('Checkout not implemented in this demo', 'info');
+                showMessage('Thank you for your purchase! Processing order...', 'success');
+                // Here you would typically redirect to checkout/payment
+                setTimeout(() => {
+                    cart = [];
+                    saveCart();
+                    render();
+                    renderCartCount();
+                }, 2000);
             });
         }
     }
