@@ -24,8 +24,15 @@ EQuery(async function () {
                 .removeAttr('href')
                 .click(showUserMenu)
                 .append([EQuery.elemt('i', null, 'fas fa-user me-2'), userdata.username]);
+
+            // If user data becomes available, (re)load the persisted cart
+            try { loadCart(); } catch (e) { /* ignore */ }
         }
     });
+
+    // Initialize cart for guests (in-memory) and attach handlers for Add-to-cart buttons
+    try { loadCart(); } catch (e) { /* ignore */ }
+    try { attachAddToCartHandlers(); } catch (e) { /* ignore */ }
 
     const ipRevealBtn = EQuery('#ipRevealBtn');
     const ipDisplay = EQuery('#ipDisplay');
@@ -871,6 +878,198 @@ function initLoadingScreen() {
         }
 
         requestAnimationFrame(updateNumber);
+    }
+
+    /* -----------------------------
+       Shopping cart functionality
+       - Guest cart is kept in-memory (lost on page refresh)
+       - Logged-in cart is persisted to localStorage under key cart_user_<id>
+       - Buttons with class `add-to-cart` will add the related product
+       ----------------------------- */
+
+    let cart = [];
+
+    function getCartStorageKey() {
+        if (typeof userdata !== 'undefined' && userdata && userdata.id) {
+            return `cart_user_${userdata.id}`;
+        }
+        return null;
+    }
+
+    function loadCart() {
+        const key = getCartStorageKey();
+        if (key) {
+            try {
+                const raw = localStorage.getItem(key);
+                cart = raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                cart = [];
+            }
+        } else {
+            // guest cart lives only in memory and will be reset on reload
+            cart = [];
+        }
+        renderCartCount();
+    }
+
+    function saveCart() {
+        const key = getCartStorageKey();
+        if (key) {
+            localStorage.setItem(key, JSON.stringify(cart));
+        }
+        // guests: do not persist (cleared on refresh as requested)
+    }
+
+    function renderCartCount() {
+        const el = document.getElementById('cart-count');
+        const totalItems = cart.reduce((s, p) => s + (p.qty || 1), 0);
+        if (el) el.textContent = String(totalItems);
+    }
+
+    function findProductInfoFromButton(btn) {
+        // walk up to .product-card
+        let card = btn.closest('.product-card');
+        if (!card) {
+            // Fallback: try to parse from nearby elements
+            return null;
+        }
+        const id = btn.dataset.product || card.dataset.product || (card.querySelector('[data-product]') && card.querySelector('[data-product]').dataset.product) || null;
+        const nameEl = card.querySelector('h3') || card.querySelector('h2') || card.querySelector('.product-header h3');
+        const priceEl = card.querySelector('.product-price');
+        let name = nameEl ? nameEl.textContent.trim() : (id || 'Item');
+        let price = 0;
+        if (priceEl) {
+            const txt = priceEl.textContent || priceEl.innerText;
+            const match = txt.replace(/[^0-9.\-]/g, '');
+            price = parseFloat(match) || 0;
+        }
+        return { id: id || name.toLowerCase().replace(/\s+/g, '-'), name, price };
+    }
+
+    function addToCart(product, qty = 1) {
+        if (!product) return;
+        const existing = cart.find(p => p.id === product.id);
+        if (existing) {
+            existing.qty = (existing.qty || 1) + qty;
+        } else {
+            cart.push({ id: product.id, name: product.name, price: product.price, qty: qty });
+        }
+        saveCart();
+        renderCartCount();
+        if (typeof showMessage === 'function') showMessage(`${product.name} added to cart.`, 'success');
+    }
+
+    function attachAddToCartHandlers() {
+        // attach to existing buttons (called after includes and initializers)
+        const buttons = document.querySelectorAll('.add-to-cart');
+        buttons.forEach(btn => {
+            // avoid attaching twice
+            if (btn.dataset.cartBound) return;
+            btn.dataset.cartBound = '1';
+            btn.addEventListener('click', (e) => {
+                const info = findProductInfoFromButton(btn);
+                if (!info) return;
+                addToCart(info, 1);
+            });
+        });
+    }
+
+    // Render cart page (cart.html) when loaded
+    function initCartPage() {
+        // load cart from storage (if logged) or keep in-memory
+        const container = document.getElementById('cart-container');
+        const emptyEl = document.getElementById('cart-empty');
+        const summaryEl = document.getElementById('cart-summary');
+        const subtotalEl = document.getElementById('cart-subtotal');
+
+        // If this page was opened via navigation from same tab (guest cart in memory), cart variable may reflect it.
+        // For logged users, reload from localStorage to ensure persistence.
+        const key = getCartStorageKey();
+        if (key) {
+            loadCart();
+        }
+
+        function render() {
+            if (!container) return;
+            container.innerHTML = '';
+            if (!cart || cart.length === 0) {
+                if (emptyEl) emptyEl.style.display = '';
+                if (summaryEl) summaryEl.style.display = 'none';
+                return;
+            }
+            if (emptyEl) emptyEl.style.display = 'none';
+            if (summaryEl) summaryEl.style.display = '';
+
+            let subtotal = 0;
+            cart.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'cart-item';
+                row.style.display = 'flex';
+                row.style.justifyContent = 'space-between';
+                row.style.alignItems = 'center';
+                row.style.padding = '12px 8px';
+                row.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+
+                row.innerHTML = `
+                    <div style="display:flex;gap:12px;align-items:center;">
+                        <div style="width:56px;height:56px;background:#111;display:flex;align-items:center;justify-content:center;border-radius:8px;">🛒</div>
+                        <div>
+                            <div style="font-weight:700">${escapeHtml(item.name)}</div>
+                            <div style="opacity:.7;font-size:13px">Qty: <input type="number" min="1" value="${item.qty}" data-id="${item.id}" class="cart-qty" style="width:60px"></div>
+                        </div>
+                    </div>
+                    <div style="text-align:right;min-width:130px">
+                        <div style="font-weight:700">$${(item.price * item.qty).toFixed(2)}</div>
+                        <button class="minecraft-btn remove-from-cart" data-id="${item.id}" style="margin-top:6px">Remove</button>
+                    </div>
+                `;
+                container.appendChild(row);
+                subtotal += (item.price * item.qty);
+            });
+
+            if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+
+            // attach remove handlers & qty handlers
+            container.querySelectorAll('.remove-from-cart').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    cart = cart.filter(p => p.id !== id);
+                    saveCart();
+                    render();
+                    renderCartCount();
+                });
+            });
+
+            container.querySelectorAll('.cart-qty').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const id = input.dataset.id;
+                    let v = parseInt(input.value) || 1;
+                    if (v < 1) v = 1; input.value = v;
+                    const it = cart.find(p => p.id === id);
+                    if (it) it.qty = v;
+                    saveCart(); render(); renderCartCount();
+                });
+            });
+        }
+
+        render();
+
+        const checkout = document.getElementById('checkout-btn');
+        if (checkout) {
+            checkout.addEventListener('click', () => {
+                if (!cart || cart.length === 0) {
+                    if (typeof showMessage === 'function') showMessage('Your cart is empty', 'error');
+                    return;
+                }
+                if (typeof showMessage === 'function') showMessage('Checkout not implemented in this demo', 'info');
+            });
+        }
+    }
+
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>\"]+/g, function(s){
+            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[s];
+        });
     }
 
     function initAdminMessages() {

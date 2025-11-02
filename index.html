@@ -89,7 +89,11 @@
                     <span class="material-symbols-outlined">bedtime</span>
                 </div>
             </button>
-            <div style="position: relative;">
+            <div style="position: relative; display:flex; gap:8px; align-items:center;">
+                <a href="./cart.html" id="cart-link" class="minecraft-btn cart-btn" style="position: relative;">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span id="cart-count" class="cart-count" style="margin-left:6px;">0</span>
+                </a>
                 <button id="account-btn" class="minecraft-btn account-btn dropdown"><span>Account</span> <span class="material-symbols-outlined">keyboard_arrow_down</span></button>
                 <div id="secondary-dropmenu" class="nav-bar-dropdown secondary-menu dropdown">
                     <ul>
@@ -440,7 +444,7 @@
                             <li>VIP commands</li>
                         </ul>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="vip">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="vip">Add to Cart</button>
                 </div>
 
                 <div class="product-card" data-category="ranks">
@@ -458,7 +462,7 @@
                             <li>MVP commands</li>
                         </ul>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="mvp">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="mvp">Add to Cart</button>
                 </div>
 
                 <div class="product-card" data-category="ranks">
@@ -477,7 +481,7 @@
                             <li>Elite commands</li>
                         </ul>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="elite">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="elite">Add to Cart</button>
                 </div>
 
                 <!-- Coins -->
@@ -490,7 +494,7 @@
                     <div class="product-content">
                         <p class="product-description">Perfect for small purchases and upgrades</p>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="coins-1000">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="coins-1000">Add to Cart</button>
                 </div>
 
                 <div class="product-card" data-category="coins">
@@ -503,7 +507,7 @@
                     <div class="product-content">
                         <p class="product-description">Great value for regular players</p>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="coins-5000">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="coins-5000">Add to Cart</button>
                 </div>
 
                 <div class="product-card" data-category="coins">
@@ -515,7 +519,7 @@
                     <div class="product-content">
                         <p class="product-description">Maximum value for power users</p>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="coins-10000">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="coins-10000">Add to Cart</button>
                 </div>
 
                 <!-- Cosmetics -->
@@ -528,7 +532,7 @@
                     <div class="product-content">
                         <p class="product-description">Leave a colorful trail wherever you go</p>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="rainbow-trail">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="rainbow-trail">Add to Cart</button>
                 </div>
 
                 <div class="product-card" data-category="cosmetics">
@@ -540,7 +544,7 @@
                     <div class="product-content">
                         <p class="product-description">Stunning cape with firework effects</p>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="firework-cape">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="firework-cape">Add to Cart</button>
                 </div>
 
                 <!-- Boosters -->
@@ -553,7 +557,7 @@
                     <div class="product-content">
                         <p class="product-description">2x XP for 7 days</p>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="xp-booster">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="xp-booster">Add to Cart</button>
                 </div>
 
                 <div class="product-card" data-category="boosters">
@@ -565,7 +569,7 @@
                     <div class="product-content">
                         <p class="product-description">2x Coins for 7 days</p>
                     </div>
-                    <button class="minecraft-btn buy-btn" data-product="coin-booster">Purchase</button>
+                    <button class="minecraft-btn buy-btn add-to-cart" data-product="coin-booster">Add to Cart</button>
                 </div>
             </div>
 
