@@ -1,49 +1,400 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Shopping Cart - SurfNetwork</title>
-    <link rel="stylesheet" href="./css/cart.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Shopping Cart</title>
+  <style>
+    /* -----------------------------
+       GLOBAL STYLES
+    ----------------------------- */
+    :root {
+      --primary: #007bff;
+      --primary-dark: #0056b3;
+      --success: #28a745;
+      --success-dark: #218838;
+      --light-bg: #f5f7fa;
+      --text-main: #333;
+      --text-muted: #666;
+      --radius: 12px;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      --transition: all 0.25s ease;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--light-bg);
+      margin: 0;
+      padding: 0;
+      color: var(--text-main);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    /* -----------------------------
+       CART CONTAINER
+    ----------------------------- */
+    .cart-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 25px 30px 40px;
+      transition: var(--transition);
+    }
+
+    /* -----------------------------
+       TABLE STYLING
+    ----------------------------- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #fafafa;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9em;
+      color: var(--text-muted);
+    }
+
+    tr:hover {
+      background-color: #f9fbff;
+    }
+
+    input[type="number"] {
+      width: 70px;
+      padding: 6px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    /* -----------------------------
+       REMOVE ICON
+    ----------------------------- */
+    .remove-item {
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .remove-item:hover {
+      transform: scale(1.15);
+    }
+
+    /* -----------------------------
+       COUPON SECTION
+    ----------------------------- */
+    .coupon-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 25px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .coupon-section input {
+      padding: 12px;
+      width: 220px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .coupon-section input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .coupon-section button {
+      padding: 12px 20px;
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .coupon-section button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* -----------------------------
+       TOTALS SECTION
+    ----------------------------- */
+    .totals {
+      margin-top: 25px;
+      text-align: right;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+
+    .totals p {
+      font-size: 1.05em;
+      margin: 6px 0;
+    }
+
+    .totals strong {
+      font-size: 1.2em;
+    }
+
+    /* -----------------------------
+       CHECKOUT BUTTON
+    ----------------------------- */
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      margin-top: 25px;
+      background-color: var(--success);
+      color: #fff;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .checkout-btn:hover {
+      background-color: var(--success-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    /* -----------------------------
+       EMPTY CART SECTION
+    ----------------------------- */
+    .empty-cart {
+      text-align: center;
+      padding: 40px;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .empty-cart.show {
+      display: block;
+      opacity: 1;
+    }
+
+    .empty-cart img {
+      width: 200px;
+      opacity: 0.9;
+      margin-bottom: 15px;
+    }
+
+    .empty-cart p {
+      font-size: 1.2em;
+      color: var(--text-muted);
+    }
+
+    /* -----------------------------
+       RESPONSIVE DESIGN
+    ----------------------------- */
+    @media (max-width: 700px) {
+      th, td {
+        font-size: 0.9em;
+      }
+
+      .coupon-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .coupon-section input, .coupon-section button {
+        width: 100%;
+      }
+
+      .checkout-btn {
+        font-size: 1em;
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar" include-html="./nav.html"></nav>
 
-    <main class="container" style="padding: 48px 16px;">
-        <div class="section-header">
-            <h2 class="section-title">Cart</h2>
-            <div class="section-subtitle">checkout from here</div>
-        </div>
+  <div class="cart-container">
+    <h1>Your Cart</h1>
 
-        <div id="cart-container" class="cart-container" style="margin-top: 24px;">
-            <!-- Cart items will be injected here -->
-        </div>
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price ($)</th>
+          <th>Quantity</th>
+          <th>Total ($)</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Wireless Mouse</td>
+          <td class="price">25.00</td>
+          <td><input type="number" value="1" min="1" class="qty"></td>
+          <td class="item-total">25.00</td>
+          <td><img src="download.png" class="remove-item" alt="Remove" title="Remove item"></td>
+        </tr>
+        <tr>
+          <td>Keyboard</td>
+          <td class="price">45.00</td>
+          <td><input type="number" value="1" min="1" class="qty"></td>
+          <td class="item-total">45.00</td>
+          <td><img src="download.png" class="remove-item" alt="Remove" title="Remove item"></td>
+        </tr>
+        <tr>
+          <td>USB-C Cable</td>
+          <td class="price">10.00</td>
+          <td><input type="number" value="2" min="1" class="qty"></td>
+          <td class="item-total">20.00</td>
+          <td><img src="download.png" class="remove-item" alt="Remove" title="Remove item"></td>
+        </tr>
+      </tbody>
+    </table>
 
-        <div id="cart-empty" style="display:none;text-align:center;margin-top: 48px;">
-            <img src="./assetsforcart/emptycart.png" alt="Empty cart" style="width:220px;opacity:.8;margin-bottom:16px;">
-            <h3>Your cart is empty</h3>
-            <p>Add items from the store to see them here.</p>
-        </div>
+    <div class="empty-cart" id="empty-cart">
+      <img src="emptycart.png" alt="Empty Cart">
+      <p>Your cart is empty.</p>
+    </div>
 
-        <div id="cart-summary" style="display:none;margin-top: 24px;">
-            <div style="display:flex;justify-content:flex-end;gap:16px;align-items:center;">
-                <div style="text-align:right;">
-                    <div style="font-weight:700">Subtotal:</div>
-                    <div id="cart-subtotal" style="font-size:20px;font-weight:800">$0.00</div>
-                </div>
-                <button id="checkout-btn" class="minecraft-btn">Checkout</button>
-            </div>
-        </div>
-    </main>
+    <div class="coupon-section">
+      <input type="text" id="coupon-code" placeholder="Enter coupon code">
+      <button onclick="applyCoupon()">Apply Coupon</button>
+    </div>
 
-    <footer class="footer" include-html="./footer.html"></footer>
+    <div class="totals">
+      <p>Subtotal: $<span id="subtotal">0.00</span></p>
+      <p>Discount: $<span id="discount">0.00</span></p>
+      <p><strong>Total: $<span id="total">0.00</span></strong></p>
+    </div>
 
-    <script type="module" src="./js/script.js"></script>
-    <script>
-        // cart page-specific rendering will be handled by script.js via initCartPage
-        document.addEventListener('DOMContentLoaded', function(){
-            if (typeof initCartPage === 'function') initCartPage();
+    <button class="checkout-btn">Proceed to Checkout</button>
+  </div>
+
+  <script>
+    const coupons = {
+      "BLACKFRIDAY": { discount: 0.25, expires: "2025-11-30" },
+      "WELCOME10": { discount: 0.10, expires: "2025-12-31" },
+      "SUMMER25": { discount: 0.25, expires: "2025-08-31" }
+    };
+
+    function updateTotals() {
+      let subtotal = 0;
+      const rows = document.querySelectorAll("tbody tr");
+      rows.forEach(row => {
+        const price = parseFloat(row.querySelector(".price").textContent);
+        const qty = parseInt(row.querySelector(".qty").value);
+        const total = price * qty;
+        row.querySelector(".item-total").textContent = total.toFixed(2);
+        subtotal += total;
+      });
+      document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+      updateFinalTotal();
+      checkEmptyCart();
+    }
+
+    function updateFinalTotal() {
+      const subtotal = parseFloat(document.getElementById("subtotal").textContent);
+      const discount = parseFloat(document.getElementById("discount").textContent);
+      const total = subtotal - discount;
+      document.getElementById("total").textContent = total.toFixed(2);
+    }
+
+    function applyCoupon() {
+      const code = document.getElementById("coupon-code").value.trim().toUpperCase();
+      const subtotal = parseFloat(document.getElementById("subtotal").textContent);
+      let discount = 0;
+
+      if (!coupons[code]) {
+        alert("Invalid coupon code!");
+        return;
+      }
+
+      const coupon = coupons[code];
+      const expiryDate = new Date(coupon.expires);
+      const today = new Date();
+
+      if (today > expiryDate) {
+        alert(`Sorry, the coupon "${code}" has expired on ${coupon.expires}.`);
+        return;
+      }
+
+      if (localStorage.getItem(`coupon_used_${code}`)) {
+        alert(`You have already used the coupon "${code}".`);
+        return;
+      }
+
+      discount = subtotal * coupon.discount;
+      document.getElementById("discount").textContent = discount.toFixed(2);
+      localStorage.setItem(`coupon_used_${code}`, true);
+      updateFinalTotal();
+
+      alert(`Coupon "${code}" applied! You saved $${discount.toFixed(2)}.`);
+    }
+
+    function setupRemoveButtons() {
+      document.querySelectorAll(".remove-item").forEach(btn => {
+        btn.addEventListener("click", e => {
+          e.target.closest("tr").remove();
+          updateTotals();
         });
-    </script>
+      });
+    }
+
+    function checkEmptyCart() {
+      const rows = document.querySelectorAll("tbody tr");
+      const emptyCart = document.getElementById("empty-cart");
+      const table = document.getElementById("cart-table");
+
+      if (rows.length === 0) {
+        table.style.display = "none";
+        emptyCart.classList.add("show");
+        document.querySelector(".coupon-section").style.display = "none";
+        document.querySelector(".totals").style.display = "none";
+        document.querySelector(".checkout-btn").style.display = "none";
+      } else {
+        table.style.display = "table";
+        emptyCart.classList.remove("show");
+        document.querySelector(".coupon-section").style.display = "flex";
+        document.querySelector(".totals").style.display = "block";
+        document.querySelector(".checkout-btn").style.display = "block";
+      }
+    }
+
+    document.querySelectorAll(".qty").forEach(input => {
+      input.addEventListener("change", updateTotals);
+    });
+
+    setupRemoveButtons();
+    updateTotals();
+  </script>
 </body>
 </html>
