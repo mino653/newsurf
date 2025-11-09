@@ -5,8 +5,11 @@
  */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('global/window'), require('global/document')) : typeof define === 'function' && define.amd ? define(['global/window', 'global/document'], factory) : (global = global || self,
-        global.EQuery = factory(global.window, global.document));
+    typeof exports === 'object' && typeof module !== 'undefined'
+        ? module.exports = factory(require('global/window'), require('global/document'))
+        : typeof define === 'function' && define.amd
+            ? define(['global/window', 'global/document'], factory)
+            : (global = global || self, global.EQuery = factory(global.window, global.document));
     if (!global.document) { throw new Error('EQuery need a window and a document'); }
 }(this, (function (window$1, document) {
 
@@ -925,7 +928,7 @@
 
     let spinner = function (parent) {
         if (!(this instanceof spinner)) return new spinner(parent);
-        parent = typeof parent == 'string' ? parent = getElemt(parent) : parent = parent;
+        parent = typeof parent == 'string' ? getElemt(parent) : parent;
 
         this.rightCircle = elemt('div', null, 'e-spinner-circle');
         this.leftCircle = elemt('div', null, 'e-spinner-circle');
@@ -1032,16 +1035,20 @@
         return elt;
     };
 
-    let removeClass = function (elt, classN) {
+    let removeClass = function (elt) {
         elt = typeof elt == 'string' ? getElemt(elt) : elt;
-        if (elt.classList) {
-            elt.classList.remove(classN);
-        } else {
-            throwIfWhitespace(classN);
-            elt.className = elt.className.split(/\s+/).filter(function (c) {
-                return c !== classN;
-            }).join(' ');
-        }
+        if (arguments.length === 1) return elt;
+        for (let i = 1;i < arguments.length;i++) {
+            let classN = arguments[i];
+            if (elt.classList) {
+                elt.classList.remove(classN);
+            } else {
+                throwIfWhitespace(classN);
+                elt.className = elt.className.split(/\s+/).filter(function (c) {
+                    return c !== classN;
+                }).join(' ');
+            }
+        };
 
         return elt;
     };
@@ -1127,7 +1134,7 @@
     let getElements = function (elt) {
         if (typeof elt == 'object') { return [elt] }
         else {
-            return q.find(elt)
+            return q(elt)
         }
     };
 
@@ -1145,10 +1152,9 @@
 
     let removeChild = function (parent, child) {
         if (typeof parent == 'string') {
-            for (let i = 0; i < getElements(parent).length; i++) {
-                let elt = getElements(parent)[i];
+            getElements(parent).each((i, elt) => {
                 for (let i = 0; i < child.length; i++) { elt.removeChild(child[i]); }
-            }
+            });
         } else {
             for (let i = 0; i < child.length; i++) {
                 if (parent.elt) parent.elt.removeChild(child[i]);
@@ -1327,69 +1333,142 @@
     };
 
     let select = function (place, data) {
+        let _this = this;
         if (!(this instanceof select)) return new select(place, data);
-        place = typeof place == 'string' ? getElemt(place) : place;
+        place = typeof place == 'string' ? getElemt(place) : place instanceof q ? place[0] : place;
         data = data ? copyObj(data) : {}
 
         if (data.select) {
             this.select = elemt('select');
             for (let i = 0; i < data.select.length; i++) {
                 this.option = elemt('option', data.select[i], null, { 'value': i });
-                append(this.select, this.option);
+                this.select.append(this.option);
             }
         }
         else { this.select = null }
-        this.panel = elemt('div', [this.select], 'e-select', null, 'margin-bottom: 10px;padding: 5px')
-        append(place, this.pane);
+        this.input = EQuery.elemt('input', null, 'e-select-input', { name: data.name });
+        this.panel = elemt('div', [this.select, this.input], 'e-select', null, 'margin-bottom: 10px;padding: 5px')
+        this.input.on('input', function () {
+            let txt = this.value;
+            _this.panel.find('.e-select-item>div').each((i, elt) => {
+                if (elt.innerHTML.toLowerCase().indexOf(txt.toLowerCase()) === -1) {
+                    hide(elt);
+                } else {
+                    show(elt);
+                }
+            });
+        });
+        append(place, this.panel);
         editSelect(this.panel);
         return this;
     };
 
     let editSelect = function (place) {
-        let elt = place.querySelector('select');
+        let elt = place.find('select')[0];
+        let input = place.find('input');
         let a = elemt('div', elt.options[0].innerText, 'e-selected');
         let b = elemt('div', null, 'e-select-item e-select-hidden');
+
+        a.text(elt.options[0].innerText);
+        input.css(`width: ${place.find('.e-selected').getStyleValue('width')}`);
         for (let i = 0; i < elt.options.length; i++) {
             let c = elemt('div', elt.options[i].innerHTML);
-            append(b, c);
+            b.append(c);
         }
-        addClass(b.firstChild, 'e-same-as-selected');
-        append(place, [a, b]);
-        on(a, 'click', function (event) {
+        b[0].firstChild.classList.add('e-same-as-selected');
+        place.append(a);
+        place.append(b);
+        a.click(function(event) {
             event.stopPropagation();
-            closeAllSelect(this);
-            toggleClass(this.nextSibling, 'e-select-hidden');
-            toggleClass(this, 'e-select-arrow-active');
-            let d = place.querySelectorAll('.e-select-item div');
-            for (let i = 0; i < d.length; i++) {
-                d[i].addEventListener('click', function () {
-                    this.parentElement.parentElement.children[1].innerHTML = this.innerHTML;
-                    for (let i = 0; i < place.querySelectorAll('.e-select-item div').length; i++) {
-                        removeClass(place.querySelectorAll('.e-select-item div')[i], 'e-same-as-selected');
-                    }
-                    addClass(this, 'e-same-as-selected');
+            input.val(' ');
+            input[0].focus();
+            closeAllSelect();
+            input.css('z-index: 1');
+            this.nextSibling.classList.toggle('e-select-hidden');
+            this.classList.toggle('e-select-arrow-active');
+            let d = place.find('.e-select-item>div');
+            d.click(function(i) {
+                input.val(this.innerHTML);
+                this.parentElement.parentElement.children[2].innerHTML = this.innerHTML;
+                place.find('.e-select-item>div').each((i, elt) => {
+                    removeClass(elt, 'e-same-as-selected');
                 });
-            }
+                this.classList.add('e-same-as-selected');
+            });
         });
+
+        updateSelect(place);
         on(document, 'click', closeAllSelect);
     };
+
+    let updateSelect = function (place) {
+        let elt = place.find('select')[0];
+        let selects = [];
+
+        for (let i = 0; i < elt.options.length; i++) {
+            selects.push(elt.options[i].innerText);
+        }
+
+        on(elt, 'click', function() {
+            let index = selects.indexOf(this.selectedOptions[0].innerText);
+            place.find('.e-selected').text(elt.selectedOptions[0].innerText);
+            getElements('.e-select-item>div').each((i, _elt) => {
+                removeClass(_elt, 'e-same-as-selected');
+                addClass(getElements('.e-select-item>div')[index], 'e-same-as-selected');
+            });
+        });
+
+        place.find('.e-select-item').click(function() {
+            let selected = place.find('.e-same-as-selected')[0];
+            elt.value = selects.indexOf(selected.innerText);
+        });
+
+        on(window$1, 'load', function() {
+            if (window$1.innerHeight > 520) {
+                let height = this.innerHeight / 4;
+                place.find('.e-select-item').css(`max-height: ${height}px`);
+            } else {
+                place.find('.e-select-item').css('max-height: 300px');
+            }
+            place.find('input').css(`width: ${place.find('.e-selected').width()}`);
+        });
+
+        on(window$1, ['resize', 'click'], function() {
+            if (window$1.innerHeight > 520) {
+                let height = this.innerHeight / 4;
+                place.find('.e-select-item').css(`max-height: ${height}px`);
+            } else {
+                place.find('.e-select-item').css('max-height: 300px');
+            }
+            place.find('input').css(`width: ${place.find('.e-selected').width()}`);
+        });
+
+        if (window$1.innerHeight > 520) {
+            let height = window$1.innerHeight / 4;
+            place.find('.e-select-item').css(`max-height: ${height}px`);
+        } else {
+            place.find('.e-select-item').css('max-height: 300px');
+        }
+    }
 
     let closeAllSelect = function (elt) {
         let arrNo = [];
         let x = getElements('.e-select-item');
         let y = getElements('.e-selected');
-        for (let i = 0; i < y.length; i++) {
-            if (elt == y[i]) {
+        y.each((i, _elt) => {
+            if (elt == _elt) {
                 arrNo.push(i)
             } else {
-                removeClass(y[i], 'e-select-arrow-active');
+                removeClass(_elt, 'e-select-arrow-active');
             }
-        }
-        for (let i = 0; i < x.length; i++) {
+        });
+        x.each((i, _elt) => {
             if (arrNo.indexOf(i)) {
-                addClass(x[i], 'e-select-hidden');
+                addClass(_elt, 'e-select-hidden');
             }
-        }
+        });
+        css('.e-select-input', 'z-index: 0');
+        show('.e-select-item>div');
     };
 
     let input = function (place, data) {
@@ -1477,18 +1556,18 @@
 
     let includeHTML = function (callback) {
         let elemt, file, xHttp;
-        for (let i = 0; i < getElements('*').length; i++) {
-            elemt = getElements('*')[i];
-            file = elemt.getAttribute('include-html');
+        elemt = getElements('*');
+        elemt.each((i, elt) => {
+            file = elt.getAttribute('include-html');
             if (file) {
                 xHttp = new XMLHttpRequest();
                 xHttp.onreadystatechange = function () {
                     if (this.readyState == 4) {
-                        elemt.innerHTML = this.responseText;
-                        if (this.status == 200) { elemt.innerHTML = this.responseText; }
-                        if (this.status == 403) { elemt.innerHTML = 'Access Denied.'; }
-                        if (this.status == 404) { elemt.innerHTML = 'Page not found.'; }
-                        elemt.removeAttribute('include-html');
+                        html(elt, this.responseText);
+                        if (this.status == 200) { html(elt, this.responseText); }
+                        if (this.status == 403) { html(elt, 'Access Denied.'); }
+                        if (this.status == 404) { html(elt, 'Page not found.'); }
+                        elt.removeAttribute('include-html');
                         if (callback) callback();
                     }
                 }
@@ -1496,7 +1575,7 @@
                 xHttp.send();
                 return;
             }
-        }
+        });
     };
 
     let getHttp = function (url, callback, onload, onerror) {
@@ -1645,33 +1724,31 @@
     };
 
     let filterHTML = function (elemt, sel, val) {
-        elemt = typeof elemt == 'string' ? getElemt(elemt) : elemt;
         let hit;
-        elemt = typeof elemt == 'string' ? getElements(elemt) : elemt;
-        for (let i = 0; i < elemt.length; i++) {
-            sel = typeof sel == 'string' ? getElements(sel) : sel;
-            for (let a = 0; a < sel.length; a++) {
+        elemt = getElements(elemt);
+        elemt.each((i, _elemt) => {
+            sel = getElements(sel);
+            sel.each((j, _sel) => {
                 hit = 0;
-                if (sel[a].innerText.toLowerCase().indexOf(val.toLowerCase) > -1) {
+                if (_sel.innerText.toLowerCase().indexOf(val.toLowerCase) > -1) {
                     hit = 1;
                 }
-                let elt = getElemt(`${sel} *`);
-                for (let b = 0; b < elt.length; b++) {
-                    if (elt[b].innerText.toLowerCase().indexOf(val.toLowerCase) > -1) {
+                let elt = getElements(`${sel} *`);
+                elt.each((b, _elt) => {
+                    if (_elt.innerText.toLowerCase().indexOf(val.toLowerCase) > -1) {
                         hit = 1;
                     }
-                }
+                });
                 if (hit == 1) {
-                    hide(sel[a]);
+                    hide(_sel);
                 } else {
-                    show(sel[a]);
+                    show(_sel);
                 }
-            }
-        }
+            });
+        });
     };
 
     let sortHTML = function (elemt, sel, val) {
-        elemt = typeof elemt == 'string' ? getElemt(elemt) : elemt;
         let cc, y, by, val1, val2;
         elemt = typeof elemt == 'string' ? getElements(elemt) : elemt;
         for (let i = 0; i < elemt.length; i++) {
@@ -1726,7 +1803,7 @@
 
     let append = function (elt, content) {
         elt = typeof elt == 'string' ? getElemt(elt) : elt;
-        if (window.chowE) console.log(elt, content);
+
         if (typeof content == 'string') elt.appendChild(document.createTextNode(content));
         else if (content) {
             if (content.nodeType) elt.appendChild(content);
@@ -1778,7 +1855,7 @@
         elt = typeof elt == 'string' ? getElemt(elt) : elt;
         if (typeof val == 'string') css(elt, `width: ${val}`);
         else if (val) css(elt, `width: ${toCssPx(val)}`);
-        else return getStyleValue(elt, 'width');
+        else return Number(getStyleValue(elt, 'width').replaceAll('px', ''));
     };
 
     class SVG {
@@ -2458,7 +2535,7 @@
         clearElemt: function () { return this.forEach(clearElemt, arguments) },
         appendContent: function () { return this.forEach(appendContent, arguments) },
         insertContent: function () { return this.forEach(insertContent, arguments) },
-        select: function () { return this.forEach(select, arguments) },
+        select: function (data) { for (let i = 0; i < this.length; i++) return select(this[i], data) },
         input: function () { return this.forEach(input, arguments) },
         table: function () { return this.forEach(table, arguments) },
         spinner: function () { return this.forEach(spinner, arguments) }
@@ -2515,13 +2592,17 @@
         mouseenter: function () { return this.forEach(on, ['mouseenter', ...arguments]) },
         mouseleave: function () { return this.forEach(on, ['mouseleave', ...arguments]) },
         mousemove: function () { return this.forEach(on, ['mousemove', ...arguments]) },
+        mouseup: function () { return this.forEach(on, ['mouseup', ...arguments]) },
         mousewheel: function () { return this.forEach(on, ['mousewheel', ...arguments]) },
         paste: function () { return this.forEach(on, ['paste', ...arguments]) },
         reset: function () { return this.forEach(on, ['reset', ...arguments]) },
         resize: function () { return this.forEach(on, ['resize', ...arguments]) },
         scroll: function () { return this.forEach(on, ['scroll', ...arguments]) },
         search: function () { return this.forEach(on, ['search', ...arguments]) },
-        submit: function () { return this.forEach(on, ['submit', ...arguments]) }
+        submit: function () { return this.forEach(on, ['submit', ...arguments]) },
+        touchend: function () { return this.forEach(on, ['touchend', ...arguments]) },
+        touchmove: function () { return this.forEach(on, ['touchmove', ...arguments]) },
+        touchstart: function () { return this.forEach(on, ['touchstart', ...arguments]) },
     });
 
     q.fn.add({

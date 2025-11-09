@@ -8,6 +8,7 @@ EQuery(function () {
     const pswField = signupForm.find('#password');
     const cpswField = signupForm.find('#confirmPassword');
     const showPsw = signupForm.find('.password-toggle-btn');
+    const showCpsw = signupForm.find('.cpassword-toggle-btn');
     const termsCheckbox = signupForm.find('#terms');
     const subCheckbox = signupForm.find('#newsletter');
     const submitBtn = signupForm.find('button[type=submit]');
@@ -17,10 +18,12 @@ EQuery(function () {
     let validpsw = false;
     let equalpsw = false;
     let canShowPsw = false;
+    let canShowCpsw = false;
 
     pswField.attr({ type: canShowPsw ? 'text' : 'password' });
-    cpswField.attr({ type: canShowPsw ? 'text' : 'password' });
-    showPsw.find('span').text(canShowPsw ? 'visibility_off' : 'visibility');
+    cpswField.attr({ type: canShowCpsw ? 'text' : 'password' });
+    showPsw.find('span').text(canShowPsw ? 'visibility_off' : 'visibility');    
+    showCpsw.find('span').text(canShowCpsw ? 'visibility_off' : 'visibility');
 
     getDB(state => {
         if (state.userdata !== undefined) redirect('./index.html');
@@ -94,8 +97,14 @@ EQuery(function () {
         canShowPsw = !canShowPsw;
 
         pswField.attr({ type: canShowPsw ? 'text' : 'password' });
-        cpswField.attr({ type: canShowPsw ? 'text' : 'password' });
         showPsw.find('span').text(canShowPsw ? 'visibility_off' : 'visibility');
+    });
+
+    showCpsw.click(function () {
+        canShowCpsw = !canShowCpsw;
+
+        cpswField.attr({ type: canShowCpsw ? 'text' : 'password' });
+        showCpsw.find('span').text(canShowCpsw ? 'visibility_off' : 'visibility');
     });
 
     validPsw(pswField);
@@ -190,18 +199,18 @@ EQuery(function () {
                 headers.append('Content-Type', 'application/json');
                 const raw = JSON.stringify(requestJSON);
                 const requestOptions = { method: 'POST', headers: headers, body: raw, redirect: 'follow' };
-                const response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/register/ppsecure', requestOptions);
+                const response = await fetchWithTimeout(`/register/ppsecure`, requestOptions);
 
                 spinner.find('.e-spinner').remove();
                 this.disabled = false;
 
                 if (response.error === undefined) {
                     const state = getState();
-                    state.userdata = response;
+                    state.userdata = response.userdata;
                     setState(state, function () {
                         error.hide().text('');
                         info.show().css('animation: slideInDown 0.3s ease').text('Registration successful! Redirecting...');
-                        redirect('./confirm-email.html');
+                        redirect('/confirm-email.html');
                     });
                 } else {
                     error.show().css('animation: slideInDown 0.3s ease').text(response.error);

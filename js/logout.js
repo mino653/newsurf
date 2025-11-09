@@ -1,9 +1,9 @@
-import './equery.js';
+import '/js/equery.js';
 import {
     getDB,
     clear,
     redirect
-} from './util.js';
+} from '/js/util.js';
 
 EQuery(function () {
     let logoutForm = EQuery('#logoutCard');
@@ -14,7 +14,7 @@ EQuery(function () {
     let canShowPsw = false;
 
     getDB(state => {
-        if (state.userdata == undefined) redirect('./index.html');
+        if (state.userdata == undefined) redirect('/index.html');
     });
 
     showPsw.click(function() {
@@ -45,7 +45,7 @@ EQuery(function () {
             body: raw,
             redirect: 'follow'
         };
-        let response = await(await fetch('https://surfnetwork-api.onrender.com/logout/ppsecure', requestOptions)).json().catch(e => {
+        let response = await(await fetch(`${apiURL}/logout/ppsecure`, requestOptions)).json().catch(e => {
             throw new Error(e)
         });
 
@@ -57,7 +57,7 @@ EQuery(function () {
             prompt.hide()
                 .removeClass('error')
                 .text('');
-            setTimeout(() => redirect('./index.html'));
+            setTimeout(() => redirect('/index.html'));
         } else {
             prompt.show()
             .addClass('error')
