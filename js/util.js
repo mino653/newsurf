@@ -1,7 +1,7 @@
 import './equery.js';
 import './music-generator.js';
 
-const apiURL = 'http://surfnetwork-api.onrender.com';
+const apiURL = 'https://surfnetwork-api.onrender.com';
 let localDB = new EQuery.Storage('surfnetwork-localdb');
 let state, dbReady = false, onDBReady = [];
 localDB.init(() => {
@@ -162,5 +162,6 @@ function clear() {
 function redirect(href) {
     setTimeout(() => window.location = href, 500);
 }
+
 
 export { apiURL, getState, getDB, clear, setState, redirect, reload, logout, extractQuery, remainderQuery, fetchWithTimeout, showMessage, fetchData , setChunk, popup};
