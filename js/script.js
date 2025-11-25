@@ -6,20 +6,16 @@ import {
     clear,
     showMessage,
     fetchWithTimeout,
-    setState
+    setChunk
 } from './util.js';
-import { PumpkinEasterEgg } from './pumpkin-easter-egg.js';
-import { halloweenBats, halloweenFog } from './halloween-easter-egg.js';
 import { initEvents } from './events.js';
 import { initForum, updateForumList } from './forums.js';
 import { initCartPage, appendShopProducts } from './cart.js';
 
 EQuery(async function () {
+    EQuery.includeHTML();
     initLoadingScreen();
-    // initThemeToggle();
     initContactForm();
-
-    EQuery.includeHTML()
 
     let userdata;
     getDB(state => {
@@ -62,6 +58,7 @@ EQuery(async function () {
     function initThemeToggle() {
         const themeToggle = EQuery('#theme-toggle');
         const themeIcon = themeToggle.find('.theme-icon');
+        console.log(themeToggle)
 
         // Load saved theme
         const savedTheme = localStorage.getItem('theme') || 'light';
@@ -70,6 +67,7 @@ EQuery(async function () {
 
         // Theme toggle functionality
         themeToggle.click(function () {
+            console.log('q')
             const currentTheme = EQuery(document.documentElement).getAttr('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
@@ -111,6 +109,8 @@ EQuery(async function () {
                 initStore();
                 initScrollAnimations();
                 initNavigation();
+                initThemeToggle();
+                initAdminList();
                 initAdminMessages();
                 initServerStats();
                 initMinecraftEffects();
@@ -327,8 +327,8 @@ EQuery(async function () {
         const acctBtn = EQuery('#account-btn');
         const dropdownMenu = EQuery('#secondary-dropmenu');
         const logoutBtn = EQuery('.dropdown .logout');
-        const pointerRing = EQuery.elemt('div').css('left: 0;top: 0;width: 0;height: 0;padding: 1.5rem;border: .1px solid #f1f1f1;position: fixed;border-radius: 10rem;transition: transform .1s;pointer-events: none;z-index: 9999;')
-        const pointerDot = EQuery.elemt('div').css('left: 0;top: 0;margin-top: -.5rem;margin-left: -.3rem;width: 0;height: 0;border: 2.5px solid #b29a7b;position: fixed;border-radius: .4rem;pointer-events: none;transition: border-color 0.5s, transform;z-index: 9999;')
+        const pointerRing = EQuery.elemt('div').css('left: 0;top: 0;width: 0;height: 0;padding: 1.5rem;border: .1px solid #616161;position: fixed;border-radius: 10rem;transition: transform .1s;pointer-events: none;z-index: 9999;')
+        const pointerDot = EQuery.elemt('div').css('left: 0;top: 0;margin-top: -.5rem;margin-left: -.3rem;width: 0;height: 0;border: 2.5px solid #616161;position: fixed;border-radius: .4rem;pointer-events: none;transition: border-color 0.5s, transform;z-index: 9999;')
         let state = getState();
         let pointerdown = false;
         let expandNav = false;
@@ -392,7 +392,7 @@ EQuery(async function () {
                         dropdown = false;
                         dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
                         setTimeout(function () {dropdownMenu.hide()}, 300);
-                        acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_down');
+                        acctBtn.find('span.material-symbols-outlined.arrow').text('keyboard_arrow_down');
                     }
 
                     if (navExceptions.indexOf(elts[i]) === -1) {
@@ -406,7 +406,7 @@ EQuery(async function () {
                     dropdown = false;
                     dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
                     setTimeout(function () {dropdownMenu.hide()}, 300);
-                    acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_down');
+                    acctBtn.find('span.material-symbols-outlined.arrow').text('keyboard_arrow_down');
                 }
                 
                 if (navExceptions.indexOf(e.target) === -1) {
@@ -680,7 +680,7 @@ EQuery(async function () {
             });
         });
 
-        appendShopProducts();
+        appendShopProducts(Number(EQuery('#store-grid').getAttr('data-item-count')));
 
         shoppingBtn.click(function () {
             scrollToSection('store');
@@ -736,7 +736,7 @@ EQuery(async function () {
     function initContactForm() {
         const contactForm = EQuery('#contact-form');
 
-        contactForm.submit(function (e) {
+        contactForm.submit(async function (e) {
             e.preventDefault();
 
             const submitBtn = this.querySelector('button[type="submit"]');
@@ -746,12 +746,23 @@ EQuery(async function () {
             submitBtn.innerHTML = '<div class="loading"></div> Sending...';
             submitBtn.disabled = true;
 
-            setTimeout(() => {
-                showMessage('Message sent successfully! We\'ll get back to you soon.', 'success');
-                this.reset();
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }, 2000);
+           try {
+                const headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+                const requestOptions = { method: 'POST', headers: headers, body: new FormData(contactForm), redirect: 'follow' };
+                const response = await fetchWithTimeout(`/contact/send`, requestOptions);
+                if (response.detail !== undefined) {
+                    showMessage(`Failed to send message: ${response.detail}`, 'error');
+                } else {    
+                    showMessage('Message sent successfully! We\'ll get back to you soon.', 'success');
+                    this.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (e) {
+                showMessage(`Failed to send message: ${e}`, 'error');
+                return;
+            }
         });
     }
 
@@ -828,6 +839,40 @@ EQuery(async function () {
         requestAnimationFrame(updateNumber);
     }
 
+    async function initAdminList() {
+        const list = EQuery('.team-list');
+        let amdinList = []
+        try {
+            const response = await fetchWithTimeout(`/admin/get-list`);
+            if (response.detail !== undefined) {
+                showMessage(`Failed to fetch admin list: ${response.detail}`, 'error');
+            } else {
+                amdinList = response;
+            }
+        } catch (e) {
+            showMessage(`Failed to fetch admin list: ${e}`, 'error');
+        }
+        amdinList.forEach(admin => {
+            let elt = EQuery.elemt('div', [
+                EQuery.elemt('div', [
+                    EQuery.elemt('img', null, 'avatar-img members-staff-av e-round-medium', {src: page.imageSource}),
+                    EQuery.elemt('div', [
+                        EQuery.elemt('span', [
+                            page.name,
+                            ...badges
+                        ], 'username', null, `color: ${page.assentColor}`),
+                        EQuery.elemt('div', [EQuery.elemt('span', page.playerDetails, 'ui e-opacity e-small')], 'description')
+                    ], 'flex-grow-1')
+                ], 'e-flex list-header'),
+                EQuery.elemt('div', [
+                    EQuery.elemt('div', page.messageContent, 'admin-message'),
+                    EQuery.elemt('div', page.timeDiff, 'message-details e-small e-opacity')
+                ], 'list-content')
+            ], 'e-marin-bottom list-container');
+            list.append(elt);
+        });
+    }
+
     async function initAdminMessages() {
         const list = EQuery('#member_list_staff_members');
         const prevBtn = EQuery('#admin-message-list .pagination a:first-child');
@@ -843,12 +888,12 @@ EQuery(async function () {
         try {
             const response = await fetchWithTimeout(`/admin/get-messages`);
             if (response.detail !== undefined) {
-                showMessage(`Failed to fetch admin data: ${response.detail}`, 'error');
+                showMessage(`Failed to fetch admin messages: ${response.detail}`, 'error');
             } else {
                 messages = response;
             }
         } catch (e) {
-            showMessage(`Failed to fetch admin data: ${e}`, 'error');
+            showMessage(`Failed to fetch admin messages: ${e}`, 'error');
         }
 
         const pageCount = messages.pageCount;
@@ -905,18 +950,6 @@ EQuery(async function () {
             index += index !== chunk.length - 1 ? 1 : 0;
             updateAdminMessages(index, chunk);
         });
-
-        function setChunk(start, count, items) {
-            let arr = [];
-            
-            while (items.length > count) {
-                arr.push([...items.splice(start, count)]);
-            }
-
-            arr.push([...items]);
-            
-            return arr;
-        }
     }
 
     // Minecraft-specific effects
@@ -1012,11 +1045,6 @@ EQuery(async function () {
                 EQuery('body>* *').css('animation: none');
             }, 6000);
         },
-        'ArrowUp,ArrowRight,ArrowUp,ArrowRight,ArrowDown,ArrowLeft,ArrowDown,ArrowLeft,h,a,l,l,o,w,e,e,n': halloweenEasterEgg,
-        '3,1,h,a,l,l,o,w,e,e,n': function () {
-            const easterEgg = new PumpkinEasterEgg();
-            easterEgg.triggerPumpkinAnimation();
-        }
     }
 
     for (let codes in easterEggs) {
@@ -1036,29 +1064,6 @@ EQuery(async function () {
             }
         }
     });
-
-    function halloweenEasterEgg() {
-        let canvas = new EQuery.canvas();
-        let target = EQuery.elemt('div', [
-            EQuery.elemt('div', canvas.domElement).css('position: relative;top: 0;left: 0;height: 100%;width: 100%'),
-            EQuery.elemt('img', null, null, {src: './assets/circle-samhain.png'}, 'position: absolute;top: 20px;right: 80px;z-index: 10;height: 20%;width: 20%;')
-        ]).css('position: fixed;top:0;left: 0;height: 100vh;width: 100vw;background: #00000013;z-index: 999;animation: fadeIn .3s');
-        EQuery('body').append(target);
-
-        let c = halloweenFog(canvas);
-        let h = halloweenBats({
-            target: target
-        });
-        setTimeout(function () {
-            target.css('animation: .5s fadeOut');
-            setTimeout(() => {
-                target.remove();
-                h.stop();
-            }, 500);
-        }, 30000);
-        
-        showMessage('Happy Halloween!', 'halloween');
-    }
 
     // Add rainbow animation for easter egg
     const rainbowStyle = EQuery.elemt('style', `
@@ -1096,9 +1101,6 @@ EQuery(async function () {
         // Show a welcome message with server info
         const welcomeMessages = [
             "Welcome to SurfNetwork! 🏄‍♂️",
-            "Happy Halloween 🎃",
-            "Join us in out Halloween party",
-            "The frights are here!"
         ];
 
         const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];

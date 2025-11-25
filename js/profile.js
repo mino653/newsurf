@@ -98,11 +98,12 @@ EQuery(function () {
 
     saveBtn.click(async function () {
         const raw = {
+            'id': getState().userdata.id,
             'email': emailInput.val(),
             'username': usernameInput.val(),
             'bio': bioInput.val()
         };
-        sendPayload('', raw, refresh);
+        sendPayload('user/update', raw, refresh);
     });
 
     async function update() {

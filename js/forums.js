@@ -1,4 +1,4 @@
-import { getState, extractQuery, fetchWithTimeout, redirect, showMessage, remainderQuery } from './util.js';
+import { getState, extractQuery, fetchWithTimeout, redirect, showMessage, setChunk, remainderQuery } from './util.js';
 
 const categories = ['announcements', 'help', 'community'];
 const categoryName = ['Announcements', 'Help & Support', 'Community'];
@@ -254,18 +254,6 @@ function clearList() {
     for (let i = 0, list = ['announcements', 'help', 'community'];i < list.length;i++) {
         EQuery(`.forum-category[data-category="${list[i]}"] .topics-list`).html(`<div class="topic-preview e-opacity">Be the first to create a topic</div>`);
     }
-}
-
-function setChunk(start, count, items) {
-    let arr = [];
-    
-    while (items.length > count) {
-        arr.push([...items.splice(start, count)]);
-    }
-
-    arr.push([...items]);
-    
-    return arr;
 }
 
 export {updateForumList, initForum}

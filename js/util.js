@@ -1,7 +1,7 @@
 import './equery.js';
 import './music-generator.js';
 
-const apiURL = 'http://localhost:5729';
+const apiURL = 'http://surfnetwork-api.onrender.com';
 let localDB = new EQuery.Storage('surfnetwork-localdb');
 let state, dbReady = false, onDBReady = [];
 localDB.init(() => {
@@ -51,7 +51,7 @@ async function fetchData() {
                 body: raw,
                 redirect: 'follow'
             };
-            const response = await fetchWithTimeout('https://surfnetwork-api.onrender/user/fetch', options);
+            const response = await fetchWithTimeout('/user/fetch', options);
             if (response.detail === undefined) {
                 state.userdata = response.userdata;
                 state.mc = response.mc;
@@ -68,9 +68,41 @@ function showMessage(text, type = 'info') {
     existingMessages.each((i, msg) => msg.remove());
     const message = EQuery.elemt('div', text, `message ${type}`, null, 'position: fixed;top: 40px;left: 12px;z-index: 9999');
     EQuery('body').prepend(message);
+    if (type == 'error') console.error(text)
     setTimeout(() => {
         message.remove();
     }, 5000);
+}
+
+function popup(data) {
+    const closeBtn = EQuery.elemt('button', '×', 'close-popup')
+    const content = EQuery.elemt('div', null, 'popup-content');
+    const elt = EQuery.elemt('div', null, 'popup show');
+
+    if (data.header) {
+        content.append(EQuery.elemt('div', [EQuery.elemt('h3', data.header), closeBtn], 'popup-header'));
+    }
+
+    if (data.body) {
+        const body = EQuery.elemt('div', null, 'popup-body');
+        data.body.forEach(body.append);
+    }
+    EQuery('body').append(elt);
+    closeBtn.click(() => {
+        popup.remove();
+    });
+}
+
+function setChunk(start, count, items) {
+    let arr = [];
+    
+    while (items.length > count) {
+        arr.push([...items.splice(start, count)]);
+    }
+
+    arr.push([...items]);
+    
+    return arr;
 }
 
 async function fetchWithTimeout(url, options = {}, timeout = 5000) {
@@ -131,4 +163,4 @@ function redirect(href) {
     setTimeout(() => window.location = href, 500);
 }
 
-export { apiURL, getState, getDB, clear, setState, redirect, reload, logout, extractQuery, remainderQuery, fetchWithTimeout, showMessage, fetchData };
+export { apiURL, getState, getDB, clear, setState, redirect, reload, logout, extractQuery, remainderQuery, fetchWithTimeout, showMessage, fetchData , setChunk, popup};

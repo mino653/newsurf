@@ -1,76 +1,73 @@
-import './equery.js';
+import { fetchWithTimeout, getState, showMessage } from "./util.js";
+
+const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
 // Event join functionality
-function initEvents() {
-    const eventButtons = EQuery('.event-card .minecraft-btn');
+async function initEvents() {
+    const eventsGrid = EQuery('.events-grid');
+    let events = [];
     
-    // Create popup template
-    const popup = EQuery.elemt('div', null, 'event-popup');
-    popup.html(`
-        <div class="event-popup-content">
-            <div class="event-popup-header">
-                <h3>Event Joined!</h3>
-                <button class="close-popup">&times;</button>
-            </div>
-            <div class="event-popup-body">
-                <p>You've successfully joined the event! A reminder will be sent before the event starts.</p>
-                <div class="event-details">
-                    <p class="event-name"></p>
-                    <p class="event-time"></p>
-                </div>
-            </div>
-        </div>
-    `);
-    EQuery('body').append(popup);
-
-    const closePopup = popup.find('.close-popup');
-    closePopup.click(() => {
-        popup.removeClass('show');
-    });
-
-    // Event join handler
-    eventButtons.click(function() {
-        const eventCard = this.closest('.event-card');
-        const eventName = EQuery(eventCard).find('h3').text();
-        const eventTime = EQuery(eventCard).find('.event-time').text();
-        
-        // Store event in localStorage
-        const joinedEvents = JSON.parse(localStorage.getItem('joinedEvents') || '[]');
-        const eventData = {
-            name: eventName,
-            time: eventTime,
-            date: new Date().toISOString()
-        };
-        
-        if (!joinedEvents.find(event => event.name === eventName)) {
-            joinedEvents.push(eventData);
-            localStorage.setItem('joinedEvents', JSON.stringify(joinedEvents));
-            
-            // Update popup content
-            popup.find('.event-name').test(eventName);
-            popup.find('.event-time').text(eventTime);
-            
-            // Show popup
-            popup.addClass('show');
-            
-            // Update button state
-            this.disabled = true;
-            EQuery(this).addClass('joined').text('Joined');
+    try {
+        const requestJSON = {'order': 'desc', 'count': eventsGrid.getAttr('data-count') || 4};
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const raw = JSON.stringify(requestJSON);
+        const requestOptions = { method: 'POST', headers: headers, body: raw, redirect: 'follow' };
+        const response = await fetchWithTimeout(`/events/get-events`, requestOptions);
+        if (response.detail !== undefined) {
+            showMessage(`Failed to fetch events: ${response.detail}`, 'error');
+        } else {
+            events = response;
         }
-    });
-    
-    // Check and restore button states for previously joined events
-    const joinedEvents = JSON.parse(localStorage.getItem('joinedEvents') || '[]');
-    joinedEvents.forEach(event => {
-        const eventCard = Array.from(document.querySelectorAll('.event-card')).find(
-            card => card.querySelector('h3').textContent === event.name
-        );
-        if (eventCard) {
-            const button = eventCard.querySelector('.minecraft-btn');
-            button.textContent = 'Joined';
-            button.disabled = true;
-            button.classList.add('joined');
-        }
+    } catch (e) {
+        showMessage(`Failed to fetch events: ${e}`, 'error');
+        return;
+    }
+
+    eventsGrid.removeChildren();
+
+    events.forEach(event => {
+        const joined = getState().joinedEvents || {}
+        const hasJoined = joined[event.id] !== undefined || joined[event.id].active;
+        const datetime = new Date(event.datetime);
+        const btn = hasJoined ? EQuery.elemt('button', 'Joined', 'minecraft-btn joined', {disabled: true}) : EQuery.elemt('button', 'Join Event', 'minecraft-btn')
+        const image = EQuery.elemt('div', [
+            EQuery.elemt('img').attr({src: event.imgSrc, alt: event.imgSlt}),
+            EQuery.elemt('div', [EQuery.elemt('span', datetime.getDay(), 'day'), EQuery.elemt('span', months[datetime.getMonth()], 'month')], 'event-date')
+        ], 'event-imaeg');
+        const content = EQuery.elemt('div', [
+            EQuery.elemt('h3', event.title),
+            EQuery.elemt('p', [EQuery.elemt('span', 'scedule', 'material-symbols-outline'), `${datetime.getHours()}:${datetime.getMinutes()} GMT+00:00`], 'event-time'),
+            EQuery.elemt('p', event.details), btn
+        ], 'event-content');
+        const card = EQuery.elemt('div', [image, content], 'event-card');
+
+        btn.click(async function () {
+            let state = getState();
+            if (state.userdata == undefined) 
+                { showMessage('You must be logged in to join an event!', 'error'); return; }
+            try {
+                const requestJSON = {id: event.id, user_id: state.userdata.id};
+                const headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+                const raw = JSON.stringify(requestJSON);
+                const requestOptions = { method: 'POST', headers: headers, body: raw, redirect: 'follow' };
+                const response = await fetchWithTimeout(`/events/join`, requestOptions);
+                if (response.detail !== undefined) {
+                    showMessage(`Failed to fetch events: ${response.detail}`, 'error');
+                } else {
+                    popup({header: 'Event Joined!', body: [EQuery.elemt('p', 'You\'ve successfult joined the event! A reminder will be send before the event starts.'), EQuery.elemt('div', [EQuery.elemt('p', event.title, 'event-name'), EQuery.elemt('p', datetime.toISOString())])]})
+                    btn.addClass('joined').attr({disabled: true}).text('Joined');
+                    if (state.joinedEvents == undefined) state.joinedEvents = {};
+                    state.joinedEvents[event.id] = {eventId: event.id, name: event.name, datetime: datetime};
+                    setState(state);
+                }
+            } catch (e) {
+                showMessage(`Failed to process your request: ${e}`, 'error');
+            }
+        });
+
+        eventsGrid.append(card);
     });
 };
 
