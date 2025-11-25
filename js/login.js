@@ -18,7 +18,7 @@ EQuery(function () {
     let canShowPsw = false;
 
     getDB(state => {
-        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('./index.html');
+        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('/index.html');
     });
 
     showPsw.click(function () {
@@ -97,29 +97,25 @@ EQuery(function () {
             redirect: 'follow'
         };
 
-        try {
-            const response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/login/ppsecure', requestOptions);
-            spinner.find('.e-spinner').remove();
+        const response = await fetchWithTimeout(`/login/ppsecure`, requestOptions);
+        spinner.find('.e-spinner').remove();
 
-            if (response.detail === undefined) {
-                let state = getState();
-                state.userdata = response;
-                setState(state, function () {
-                    info.show().css('animation: slideInDown 0.3s ease').text('Login successful!');
-                    error.hide().text('');
-                    if (!state.userdata.confirm_email) redirect('./confirm-email.html');
-                    else redirect('./index.html');
-                });
-            } else {
-                error.show().css('animation: slideInDown 0.3s ease').text(response.detail.error || "An error occured while processing your request");
-            }
-            EQuery(this).css('cursor: default').attr({disbled: false});
-        } catch (e) {
-            spinner.find('.e-spinner').remove();
-            error.show().css('animation: slideInDown 0.3s ease').text(e);
-            EQuery(this).css('cursor: default').attr({disbled: false});
+        if (response.detail === undefined) {
+            let state = getState();
+            state.userdata = response;
+            setState(state, function () {
+                info.show().css('animation: slideInDown 0.3s ease').text('Login successful!');
+                error.hide().text('');
+                if (!state.userdata.confirm_email) redirect('/confirm-email.html');
+                else redirect('./');
+            });
+        } else {
+            error.show().css('animation: slideInDown 0.3s ease').text(response.detail.error || "An error occured while processing your request");
         }
+        spinner.find('.e-spinner').remove();
+        EQuery(this).css('cursor: default').attr({disbled: false});
     });
 
+    EQuery('.forgot-password').click(() => redirect('./forget-password.html'));
     EQuery('#toSignup').click(() => redirect('./signup.html'));
 });

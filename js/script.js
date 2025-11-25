@@ -4,99 +4,32 @@ import {
     getDB,
     getState,
     clear,
-    redirect,
-    fetchWithTimeout
+    showMessage,
+    fetchWithTimeout,
+    setChunk
 } from './util.js';
+import { initEvents } from './events.js';
+import { initForum, updateForumList } from './forums.js';
+import { initCartPage, appendShopProducts } from './cart.js';
 
 EQuery(async function () {
-    // Initialize all features
-    
+    EQuery.includeHTML();
     initLoadingScreen();
-    initThemeToggle();
     initContactForm();
 
     let userdata;
     getDB(state => {
         if (state !== undefined && state.userdata !== undefined) {
-            const loginLink = EQuery('#loginNavLink');
             userdata = state.userdata;
-            loginLink.removeChildren()
-                .removeAttr('href')
-                .click(showUserMenu)
-                .append([EQuery.elemt('i', null, 'fas fa-user me-2'), userdata.username]);
-
-            // If user data becomes available, (re)load the persisted cart
-            try { loadCart(); } catch (e) { /* ignore */ }
         }
     });
 
-    // Initialize cart for guests (in-memory) and attach handlers for Add-to-cart buttons
-    try { loadCart(); } catch (e) { /* ignore */ }
-    try { attachAddToCartHandlers(); } catch (e) { /* ignore */ }
-
-    const ipRevealBtn = EQuery('#ipRevealBtn');
-    const ipDisplay = EQuery('#ipDisplay');
-    const themeIcon = EQuery('#themeIcon');
-
-    function showUserMenu(e) {
-        e.preventDefault();
-        // Create dropdown menu for user options
-        const existingMenu = EQuery('.user-menu');
-        if (existingMenu[0]) {
-            existingMenu.remove();
-            return;
-        }
-
-        const btn1 = EQuery.elemt('a', [
-            EQuery.elemt('i', null, 'fas fa-user me-2'), 'Profile'
-        ], 'd-block text-decoration-none text-dark py-2');
-        const btn2 = EQuery.elemt('a', [
-            EQuery.elemt('i', null, 'fas fa-shopping-bag me-2'), 'My Purchases'
-        ], 'd-block text-decoration-none text-dark py-2');
-        const btn3 = EQuery.elemt('a', [
-            EQuery.elemt('i', null, 'fas fa-sign-out-alt me-2'), 'Logout'
-        ], 'd-block text-decoration-none text-dark py-2');
-
-        btn1.click(() => redirect('./profile.html'));
-        // btn2.click(() => redirect('./profile.html')); IDK
-        btn3.click(() => redirect('./logout.html'));
-
-        const menu = EQuery.elemt('div', [
-            EQuery.elemt('div', [
-                EQuery.elemt('div', [
-                    EQuery.elemt('i', null, 'fas fa-user text-white')
-                ], 'avatar bg-primary rounded-circle d-flex align-items-center justify-content-center me-3', null, 'width: 40px;height: 40px'),
-                EQuery.elemt('div'[
-                    EQuery.elemt('div', userdata.username, 'fw-bold'),
-                    EQuery.elemt('small', userdata.email, 'text-muted')
-                ])
-            ], 'd-flex align-items-center mb-3'),
-            EQuery.elemt('hr'),
-            btn1, btn2, btn3
-        ], 'user-menu position-absolute bg-white border rounded shadow-lg p-3', null, 'top: 100%; right: 0; min-width: 200px; z-index: 1000;');
-
-        const navbar = EQuery('.navbar-nav');
-        const loginItem = navbar.find('li:last-child');
-        loginItem.css('position: relative')
-        loginItem.append(menu);
-
-        // Close menu when clicking outside
-        setTimeout(() => {
-            EQuery(document).click(function closeMenu(e) {
-                if (!menu[0].contains(e.target)) {
-                    menu.remove();
-                    EQuery(document).off('click')
-                }
-            });
-        }, 100);
-    }
-
     getStats();
-    setInterval(getStats, 30000);
+    setInterval(getStats, 60000);
 
     async function getStats() {
         try {    
-            let response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/get-server-stats', { method: 'post' })
+            let response = await fetchWithTimeout(`/get-server-stats`)
 
             EQuery('#ip').text(response.ip);
             EQuery('#serverStatus').addClass(response.status.online ? 'bg-success' : 'bg-fail').text(response.status.online ? 'Online' : 'Offline');
@@ -121,26 +54,11 @@ EQuery(async function () {
         }
     }
 
-    async function updateServerStatus() {
-        const playerCountElement = document.getElementById('playerCount');
-        if (playerCountElement) {
-            setInterval(async function () {
-                try {
-                    let response = await fetchWithTimeout('https://surfnetwork-api.onrender.com/player-count', { method: 'post' })
-                    const currentCount = response.status.count;
-                    const maxCount = response.status.max;
-                    playerCountElement.textContent = `${currentCount}/${maxCount} Players`;
-                } catch {
-                    showMessage('Failed to fetch server stats. Timedout 30000ms.', 'error');
-                }
-            }, 30000);
-        }
-    }
-
     // Theme Toggle
     function initThemeToggle() {
         const themeToggle = EQuery('#theme-toggle');
         const themeIcon = themeToggle.find('.theme-icon');
+        console.log(themeToggle)
 
         // Load saved theme
         const savedTheme = localStorage.getItem('theme') || 'light';
@@ -149,6 +67,7 @@ EQuery(async function () {
 
         // Theme toggle functionality
         themeToggle.click(function () {
+            console.log('q')
             const currentTheme = EQuery(document.documentElement).getAttr('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
@@ -170,105 +89,49 @@ EQuery(async function () {
     }
 
    // Loading Screen with rotating messages - stops when loading is done
-function initLoadingScreen() {
-    const loadingScreen = document.getElementById('loading-screen');
-    const loadingText = document.getElementById('loading-text');
-    
-    // Array of loading messages
-    const loadingMessages = [
-        'Loading chunks...',
-        'Spawning entities...',
-        'Generating terrain...',
-        'Building structures...',
-        'Loading textures...',
-        'Preparing world...',
-        'Initializing server...',
-        'Connecting to database...',
-        'Loading player data...',
-        'Almost there...'
-    ];
-    
-    let messageIndex = 0;
-    let isFirstLoad = true;
-    let messageTimer = null;
-    let isLoading = true;
-    
-    // Function to change loading message
-    function changeLoadingMessage() {
-        if (!isLoading) return; // Stop if loading is done
-        
-        if (isFirstLoad) {
-            // First message stays longer
-            messageTimer = setTimeout(() => {
-                isFirstLoad = false;
-                messageIndex = 1;
-                loadingText.textContent = loadingMessages[messageIndex];
-                changeLoadingMessage();
-            }, 2000);
-        } else {
-            // Cycle through messages
-            messageTimer = setTimeout(() => {
-                if (!isLoading) return; // Check again before changing
-                
-                messageIndex = (messageIndex + 1) % loadingMessages.length;
-                loadingText.textContent = loadingMessages[messageIndex];
-                
-                // Keep cycling every 2 seconds
-                changeLoadingMessage();
-            }, 2000);
-        }
-    }
-    
-    // Start cycling messages
-    changeLoadingMessage();
-    
-    // Function to stop loading
-    function stopLoading() {
-        isLoading = false;
-        clearTimeout(messageTimer); // Stop message cycling
-        
-        // Show final message
-        loadingText.textContent = 'Done!';
-        loadingText.style.animation = 'none';
-        
-        // Hide loading screen after showing final message
-        setTimeout(() => {
-            loadingScreen.classList.add('hidden');
+    function initLoadingScreen() {
+        const loadingScreen = EQuery('loading-screen');
+        let isLoading = true;
+
+        // Function to stop loading
+        function stopLoading() {
+            isLoading = false;
             
-            // Start animations after loading
+            // Hide loading screen after showing final message
+            EQuery('body').addClass('loaded');
             setTimeout(() => {
+                EQuery('.preloader').css('display: none');
                 initHeroAnimations();
+                initHeroSlider();
                 initCopyIP();
                 initParticleEffects();
                 // initMusicPlayer();
                 initStore();
                 initScrollAnimations();
                 initNavigation();
+                initThemeToggle();
+                initAdminList();
                 initAdminMessages();
                 initServerStats();
                 initMinecraftEffects();
                 initHeroAnimations();
-            }, 500);
-        }, 1000);
-    }
-    
-    // Check if page is fully loaded
-    if (document.readyState === 'complete') {
-        stopLoading();
-    } else {
-        window.addEventListener('load', function() {
-            // Small delay to ensure everything is loaded
-            setTimeout(stopLoading, 500);
-        });
-    }
-    
-    // Fallback: stop loading after maximum time (10 seconds)
-    setTimeout(() => {
-        if (isLoading) {
-            stopLoading();
+                initEvents();
+                updateForumList();
+                if (window.location.pathname.indexOf('forums') !== -1) initForum();
+                if (window.location.pathname.indexOf('cart') !== -1) initCartPage();
+            }, 1000);
         }
-    }, 10000);
-}
+        
+        // Check if page is fully loaded
+        if (document.readyState === 'complete') {
+            stopLoading();
+        } else {
+            window.addEventListener('load', function() {
+                // Small delay to ensure everything is loaded
+                setTimeout(stopLoading, 500);
+            });
+        }
+    }
 
     // Hero Animations
     function initHeroAnimations() {
@@ -300,21 +163,189 @@ function initLoadingScreen() {
         }, 1200);
     }
 
+    // Simple Hero Slider initializer using existing markup (.swiper-slide, .button-prev, .button-next)
+    function initHeroSlider() {
+        try {
+            const wrapper = EQuery('.hero .swiper-wrapper');
+            const slides = Array.from(wrapper.find('.swiper-slide'));
+            if (!slides.length) return;
+
+            // Find initial active slide or default to 0
+            let current = slides.findIndex(s => EQuery(s).hasClass('swiper-slide-active'));
+            if (current === -1) current = 0;
+
+            // Animated slide change with enter/exit classes
+            function changeSlide(newIndex, dir) {
+                if (newIndex === current) return;
+                const prev = EQuery(slides[current]);
+                const next = EQuery(slides[newIndex]);
+
+                wrapper.css('display:block');
+
+                // Clean classes
+                prev.removeClass('slide-enter-left', 'slide-enter-right', 'slide-exit-left', 'slide-exit-right');
+                next.removeClass('slide-enter-left', 'slide-enter-right', 'slide-exit-left', 'slide-exit-right');
+
+                // Direction: 'next' means new slide comes from right -> prev exits left
+                if (dir === 'next') {
+                    next.addClass('slide-enter-right');
+                    // Force reflow so transition starts
+                    // eslint-disable-next-line no-unused-expressions
+                    next.offsetHeight;
+                    next.addClass('swiper-slide-active');
+                    prev.addClass('slide-exit-left');
+                } else {
+                    next.addClass('slide-enter-left');
+                    // eslint-disable-next-line no-unused-expressions
+                    next.offsetHeight;
+                    next.addClass('swiper-slide-active');
+                    prev.addClass('slide-exit-right');
+                }
+
+                // After animation, clean up classes and set current
+                setTimeout(() => {
+                    prev.removeClass('swiper-slide-active', 'slide-exit-left', 'slide-exit-right');
+                    next.removeClass('slide-enter-left', 'slide-enter-right');
+                    current = newIndex;
+                    // update dots if present
+                    if (typeof setActiveDot === 'function') setActiveDot(current);
+                    wrapper.css('display: flex');
+                }, 820); // matches CSS transition (~800ms)
+            }
+
+            const prevBtn = wrapper.find('.button-prev');
+            const nextBtn = wrapper.find('.button-next');
+
+            prevBtn.click(() => {
+                const nextIndex = (current - 1 + slides.length) % slides.length;
+                changeSlide(nextIndex, 'prev');
+                resetAutoplay();
+            });
+
+            nextBtn.click(() => {
+                const nextIndex = (current + 1) % slides.length;
+                changeSlide(nextIndex, 'next');
+                resetAutoplay();
+            });
+
+            // Keyboard support
+            EQuery(document).keydown(e => {
+                if (e.key === 'ArrowLeft') prevBtn && prevBtn[0].click();
+                if (e.key === 'ArrowRight') nextBtn && nextBtn[0].click();
+            });
+
+            // Autoplay
+            let autoplay = setInterval(() => {
+                const nextIndex = (current + 1) % slides.length;
+                changeSlide(nextIndex, 'next');
+            }, 5000);
+
+            let paused = false;
+
+            function pauseAutoplay() {
+                paused = true;
+                clearInterval(autoplay);
+            }
+
+            function resumeAutoplay() {
+                if (!paused) return; // only resume if previously paused
+                paused = false;
+                autoplay = setInterval(() => {
+                    const nextIndex = (current + 1) % slides.length;
+                    changeSlide(nextIndex, 'next');
+                }, 5000);
+            }
+
+            function resetAutoplay() {
+                clearInterval(autoplay);
+                if (!paused) {
+                    autoplay = setInterval(() => {
+                        const nextIndex = (current + 1) % slides.length;
+                        changeSlide(nextIndex, 'next');
+                    }, 5000);
+                }
+            }
+
+            // Touch/swipe support
+            let startX = 0;
+            wrapper.touchstart(e => {
+                startX = e.touches[0].clientX;
+            });
+            wrapper.touchend(e => {
+                const endX = e.changedTouches[0].clientX;
+                const dx = endX - startX;
+                if (Math.abs(dx) > 50) {
+                    if (dx > 0) prevBtn[0] && prevBtn[0].click();
+                    else nextBtn[0] && nextBtn[0].click();
+                }
+            });
+
+            // Pause on hover (desktop) and resume on leave
+            wrapper.mouseenter(() => pauseAutoplay());
+            wrapper.mouseleave(() => resumeAutoplay());
+
+            // Create dot indicators
+            const dotsContainer = EQuery.elemt('div', null, 'slider-dots');
+            const dots = [];
+            slides.forEach((s, i) => {
+                const dot = EQuery.elemt('div', null, `dot${i === current ? ' active' : ''}`);
+                dot.click(() => {
+                    changeSlide(i, i > current ? 'next' : 'prev');
+                    resetAutoplay();
+                });
+                dots.push(dot);
+                dotsContainer.append(dot);
+            });
+            wrapper.append(dotsContainer);
+
+            function setActiveDot(idx) {
+                dots.forEach((d, i) => {
+                    if (i === idx) EQuery(d).addClass('active');
+                    else EQuery(d).removeClass('active');
+                });
+            }
+
+            // Ensure initial state: clear classes and set the initial active slide and dots
+            slides.forEach((s, i) => {
+                EQuery(s).removeClass('swiper-slide-active', 'slide-enter-left', 'slide-enter-right', 'slide-exit-left', 'slide-exit-right');
+                if (i !== current) {
+                    // keep non-active slides hidden (CSS will handle display)
+                }
+            });
+            EQuery(slides[current]).addClass('swiper-slide-active');
+            if (typeof setActiveDot === 'function') setActiveDot(current);
+        } catch (err) {
+            console.error('initHeroSlider error', err);
+        }
+    }
+
     // Navigation functionality
     function initNavigation() {
         const hamburger = EQuery('.hamburger');
         const navMenu = EQuery('.nav-menu');
-        const navLinks = EQuery('.nav-link');
+        const navLinks = EQuery('.nav-link[href*=\'#\']');
         const acctBtn = EQuery('#account-btn');
         const dropdownMenu = EQuery('#secondary-dropmenu');
         const logoutBtn = EQuery('.dropdown .logout');
+        const pointerRing = EQuery.elemt('div').css('left: 0;top: 0;width: 0;height: 0;padding: 1.5rem;border: .1px solid #616161;position: fixed;border-radius: 10rem;transition: transform .1s;pointer-events: none;z-index: 9999;')
+        const pointerDot = EQuery.elemt('div').css('left: 0;top: 0;margin-top: -.5rem;margin-left: -.3rem;width: 0;height: 0;border: 2.5px solid #616161;position: fixed;border-radius: .4rem;pointer-events: none;transition: border-color 0.5s, transform;z-index: 9999;')
         let state = getState();
+        let pointerdown = false;
+        let expandNav = false;
         let dropdown = false;
+
+        EQuery('body').prepend([pointerDot, pointerRing]);
 
         // Mobile menu toggle
         hamburger.click(function () {
-            hamburger.toggleClass('active');
-            navMenu.toggleClass('active');
+            expandNav = !expandNav
+            if (expandNav) {
+                hamburger.addClass('active');
+                navMenu.addClass('active');
+            } else {
+                hamburger.removeClass('active');
+                navMenu.removeClass('active');
+            }
 
             // Animate hamburger bars
             const bars = hamburger.find('.bar');
@@ -331,11 +362,11 @@ function initLoadingScreen() {
             dropdown = !dropdown;
             if (dropdown) {
                 dropdownMenu.show().css('animation: slideInDown 0.3s ease forwards');
-                acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_up');
+                acctBtn.find('span.material-symbols-outlined.arrow').text('keyboard_arrow_up');
             } else {
                 dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
                 setTimeout(function () {dropdownMenu.hide()}, 300);
-                acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_down');
+                acctBtn.find('span.material-symbols-outlined.arrow').text('keyboard_arrow_down');
             }
         });
 
@@ -361,7 +392,7 @@ function initLoadingScreen() {
                         dropdown = false;
                         dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
                         setTimeout(function () {dropdownMenu.hide()}, 300);
-                        acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_down');
+                        acctBtn.find('span.material-symbols-outlined.arrow').text('keyboard_arrow_down');
                     }
 
                     if (navExceptions.indexOf(elts[i]) === -1) {
@@ -375,7 +406,7 @@ function initLoadingScreen() {
                     dropdown = false;
                     dropdownMenu.css('animation: slideInDown 0.3s ease forwards reverse');
                     setTimeout(function () {dropdownMenu.hide()}, 300);
-                    acctBtn.find('span.material-symbols-outlined').text('keyboard_arrow_down');
+                    acctBtn.find('span.material-symbols-outlined.arrow').text('keyboard_arrow_down');
                 }
                 
                 if (navExceptions.indexOf(e.target) === -1) {
@@ -398,19 +429,17 @@ function initLoadingScreen() {
         });
 
         // Smooth scrolling for navigation links
-        navLinks.each((index, link) => {
-            EQuery(link).click(function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetSection = EQuery(targetId)[0];
+        navLinks.click(function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = EQuery(targetId)[0];
 
-                if (targetSection) {
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+            if (targetSection) {
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         });
 
         // Navbar background on scroll
@@ -431,6 +460,25 @@ function initLoadingScreen() {
             }
         });
 
+        EQuery(document).mousemove(function (e) {
+            pointerDot.css(`border-color: rgb(171, 171, 171);transform: translate(${e.x}px, ${e.y}px);`);
+            pointerRing.css(`border-color: rgb(241, 241, 241);transform: translate(calc(${e.x}px - ${pointerdown ? 14 : 26}px), calc(${e.y}px - ${pointerdown ? 14 : 26}px));`);
+        });
+
+        EQuery(document).mousedown(function (e) {
+            pointerdown = true;
+            pointerRing.css('padding: 10px');
+            pointerDot.css(`border-color: rgb(171, 171, 171);transform: translate(${e.x}px, ${e.y}px);`);
+            pointerRing.css(`border-color: rgb(241, 241, 241);transform: translate(calc(${e.x}px - ${pointerdown ? 14 : 26}px), calc(${e.y}px - ${pointerdown ? 14 : 26}px));`);
+        });
+
+        EQuery(document).mouseup(function (e) {
+            pointerdown = false;
+            pointerRing.css('padding: 25px');
+            pointerDot.css(`border-color: rgb(171, 171, 171);transform: translate(${e.x}px, ${e.y}px);`);
+            pointerRing.css(`border-color: rgb(241, 241, 241);transform: translate(calc(${e.x}px - ${pointerdown ? 14 : 26}px), calc(${e.y}px - ${pointerdown ? 14 : 26}px));`);
+        })
+
         scrollBtn.click(function() {
             window.scrollTo({
                 top: 0,
@@ -438,7 +486,7 @@ function initLoadingScreen() {
             });
         });
 
-        if (state.userdata !== undefined) {
+        if (state !== undefined && state.userdata !== undefined) {
             EQuery('[data-visibility=loggedin]').show();
             EQuery('[data-visibility=loggedout]').hide();
             EQuery('[data-visibility=invalidemail]').hide();
@@ -448,7 +496,7 @@ function initLoadingScreen() {
             EQuery('[data-visibility=invalidemail]').hide();
         }
 
-        if (state.confirm_email == false) {
+        if (state.confirm_email === false) {
             EQuery('[data-visibility=invalidemail]').show();
         } 
     }
@@ -609,134 +657,30 @@ function initLoadingScreen() {
     async function initStore() {
         const categoryBtns = EQuery('.category-btn');
         const productCards = EQuery('.product-card');
-        const buyBtns = EQuery('.buy-btn');
-        const cartSummary = EQuery('#cart-summary');
-        const cartItems = EQuery('#cart-items');
-        const cartTotal = EQuery('#cart-total');
-        const checkoutBtn = EQuery('#checkout-btn');
         const shoppingBtn = EQuery('#shopping-cart-btn');
 
-        let cart = [];
-        let total = 0;
-
-        // Product data
-        const products = {
-            'vip': { name: 'VIP Rank', price: 9.99, category: 'ranks' },
-            'mvp': { name: 'MVP Rank', price: 19.99, category: 'ranks' },
-            'elite': { name: 'Elite Rank', price: 39.99, category: 'ranks' },
-            'coins-1000': { name: '1000 Coins', price: 4.99, category: 'coins' },
-            'coins-5000': { name: '5000 Coins', price: 19.99, category: 'coins' },
-            'coins-10000': { name: '10000 Coins', price: 34.99, category: 'coins' },
-            'rainbow-trail': { name: 'Rainbow Trail', price: 2.99, category: 'cosmetics' },
-            'firework-cape': { name: 'Firework Cape', price: 4.99, category: 'cosmetics' },
-            'xp-booster': { name: 'XP Booster', price: 7.99, category: 'boosters' },
-            'coin-booster': { name: 'Coin Booster', price: 7.99, category: 'boosters' }
-        };
-
-        // products = await loadProducts();
-
         // Category filtering with animation
-        categoryBtns.each((index, btn) => {
-            EQuery(btn).click(function () {
-                const category = this.getAttribute('data-category');
+        categoryBtns.click(function () {
+            const category = this.getAttribute('data-category');
 
-                // Update active button
-                categoryBtns.each((i, b) => b.removeClass('active'));
-                this.addClass('active');
+            // Update active button
+            categoryBtns.removeClass('active');
+            EQuery(this).addClass('active');
 
-                // Animate category change
-                productCards.each(card => {
-                    if (card.getAttribute('data-category') === category) {
-                        card.style.display = 'block';
-                        card.style.animation = 'fadeIn 0.5s ease';
-                    } else {
-                        card.style.animation = 'fadeOut 0.3s ease';
-                        setTimeout(() => {
-                            card.style.display = 'none';
-                        }, 300);
-                    }
-                });
-            });
-        });
-
-        // Add to cart functionality with animation
-        buyBtns.each(btn => {
-            EQuery(btn).click(function () {
-                const productId = this.getAttribute('data-product');
-                const product = products[productId];
-
-                if (product) {
-                    addToCart(product);
-
-                    // Animate button
-                    this.innerHTML = '<div class="loading"></div> Adding...';
-                    this.style.background = 'var(--minecraft-green)';
-
+            // Animate category change
+            productCards.each((i, card) => {
+                if (card.getAttribute('data-category') === category) {
+                    EQuery(card).show().css('animation: fadeIn .5s ease');
+                } else {
+                    EQuery(card).css('animation: fadeOut .5s ease');
                     setTimeout(() => {
-                        this.innerHTML = 'Purchase';
-                        this.style.background = '';
-                    }, 2000);
+                        EQuery(card).hide();
+                    }, 500);
                 }
             });
         });
 
-        // Add item to cart
-        function addToCart(product) {
-            cart.push(product);
-            total += product.price;
-            updateCartDisplay();
-            showMessage(`${product.name} added to cart!`, 'success');
-
-            // Animate cart
-            cartSummary.css('animation: slideInDown 0.3s ease');
-        }
-
-        // Update cart display
-        function updateCartDisplay() {
-            if (cart.length === 0) {
-                cartSummary.hide();
-                return;
-            }
-
-            cartSummary.show();
-            cartItems.html('');
-
-            cart.each((item, index) => {
-                const cartItem = EQuery.elemt('div', null, 'cart-item', null, 'animation: fadeIn 0.3s ease');
-                cartItem.html(`<div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 2px solid var(--minecraft-black);"><span style="font-family: 'Minecraft', monospace; font-weight: 700;">${item.name}</span><div style="display: flex; align-items: center; gap: 15px;"><span style="font-family: 'Minecraft', monospace; font-weight: 700; color: var(--minecraft-green);">$${item.price.toFixed(2)}</span><button onclick="removeFromCart(${index})" style="background: var(--minecraft-red); border: 2px solid var(--minecraft-black); color: var(--minecraft-white); padding: 8px 15px; font-family: 'Minecraft', monospace; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">Remove</button></div></div>`);
-                cartItems.append(cartItem);
-            });
-
-            cartTotal.textContent = total.toFixed(2);
-        }
-
-        // Remove from cart (global function)
-        window.removeFromCart = function (index) {
-            total -= cart[index].price;
-            cart.splice(index, 1);
-            updateCartDisplay();
-        };
-
-        // Checkout functionality
-        checkoutBtn.click(function () {
-            if (cart.length === 0) {
-                showMessage('Your cart is empty!', 'error');
-                return;
-            }
-
-            // Simulate checkout process
-            this.innerHTML = '<div class="loading"></div> Processing...';
-            this.disabled = true;
-
-            setTimeout(() => {
-                showMessage('Purchase successful! Check your email for confirmation.', 'success');
-                cart = [];
-                total = 0;
-                updateCartDisplay();
-                this.innerHTML = 'Checkout';
-                this.disabled = false;
-            }, 2000);
-        });
+        appendShopProducts(Number(EQuery('#store-grid').getAttr('data-item-count')));
 
         shoppingBtn.click(function () {
             scrollToSection('store');
@@ -752,17 +696,21 @@ function initLoadingScreen() {
 
         const observer = new IntersectionObserver(function (entries) {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    EQuery(entry.target).addClass('visible').css('transform:translateY(0px)');
-                } else {
-                    EQuery(entry.target).removeClass('visible').css('transform:translateY(50px)');
-                }
+                if (entry.isIntersecting) EQuery(entry.target).addClass('visible');
             });
         }, observerOptions);
 
         // Add animation classes to elements
-        const animatedElements = EQuery('.feature-card, .product-card, .contact-item, .stat-card, .feature-item').addClass('fade-in');
+        const animatedElements = EQuery('.feature-card, .product-card, .event-card, .forum-category, .contact-item, .stat-card, .feature-item').addClass('fade-in');
+        const animatedFadeInUp = EQuery('.h2-baslik, .custom-button, footer .logo, .footer-info, .footer-social').addClass('fadeInUp');
+        const animatedFadeInRight = EQuery('.contact-form, .about-item, .footer-quick-links, .forum-cta').addClass('fadeInRight');
         animatedElements.each((i, el) => {
+            observer.observe(el);
+        });
+        animatedFadeInUp.each((i, el) => {
+            observer.observe(el);
+        });
+        animatedFadeInRight.each((i, el) => {
             observer.observe(el);
         });
 
@@ -788,7 +736,7 @@ function initLoadingScreen() {
     function initContactForm() {
         const contactForm = EQuery('#contact-form');
 
-        contactForm.submit(function (e) {
+        contactForm.submit(async function (e) {
             e.preventDefault();
 
             const submitBtn = this.querySelector('button[type="submit"]');
@@ -798,12 +746,23 @@ function initLoadingScreen() {
             submitBtn.innerHTML = '<div class="loading"></div> Sending...';
             submitBtn.disabled = true;
 
-            setTimeout(() => {
-                showMessage('Message sent successfully! We\'ll get back to you soon.', 'success');
-                this.reset();
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }, 2000);
+           try {
+                const headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+                const requestOptions = { method: 'POST', headers: headers, body: new FormData(contactForm), redirect: 'follow' };
+                const response = await fetchWithTimeout(`/contact/send`, requestOptions);
+                if (response.detail !== undefined) {
+                    showMessage(`Failed to send message: ${response.detail}`, 'error');
+                } else {    
+                    showMessage('Message sent successfully! We\'ll get back to you soon.', 'success');
+                    this.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (e) {
+                showMessage(`Failed to send message: ${e}`, 'error');
+                return;
+            }
         });
     }
 
@@ -870,7 +829,7 @@ function initLoadingScreen() {
             const progress = Math.min(elapsed / duration, 1);
 
             const current = Math.floor(start + (end - start) * progress);
-            element.textContent = current;
+            EQuery(element).text(current);
 
             if (progress < 1) {
                 requestAnimationFrame(updateNumber);
@@ -880,239 +839,116 @@ function initLoadingScreen() {
         requestAnimationFrame(updateNumber);
     }
 
-    /* -----------------------------
-       Shopping cart functionality
-       - Guest cart is kept in-memory (lost on page refresh)
-       - Logged-in cart is persisted to localStorage under key cart_user_<id>
-       - Buttons with class `add-to-cart` will add the related product
-       ----------------------------- */
-
-    let cart = [];
-
-    function getCartStorageKey() {
-        if (typeof userdata !== 'undefined' && userdata && userdata.id) {
-            return `cart_user_${userdata.id}`;
-        }
-        return null;
-    }
-
-    function loadCart() {
-        const key = getCartStorageKey();
-        if (key) {
-            try {
-                const raw = localStorage.getItem(key);
-                cart = raw ? JSON.parse(raw) : [];
-            } catch (e) {
-                cart = [];
+    async function initAdminList() {
+        const list = EQuery('.team-list');
+        let amdinList = []
+        try {
+            const response = await fetchWithTimeout(`/admin/get-list`);
+            if (response.detail !== undefined) {
+                showMessage(`Failed to fetch admin list: ${response.detail}`, 'error');
+            } else {
+                amdinList = response;
             }
-        } else {
-            // guest cart lives only in memory and will be reset on reload
-            cart = [];
+        } catch (e) {
+            showMessage(`Failed to fetch admin list: ${e}`, 'error');
         }
-        renderCartCount();
-    }
-
-    function saveCart() {
-        const key = getCartStorageKey();
-        if (key) {
-            localStorage.setItem(key, JSON.stringify(cart));
-        }
-        // guests: do not persist (cleared on refresh as requested)
-    }
-
-    function renderCartCount() {
-        const el = document.getElementById('cart-count');
-        const totalItems = cart.reduce((s, p) => s + (p.qty || 1), 0);
-        if (el) el.textContent = String(totalItems);
-    }
-
-    function findProductInfoFromButton(btn) {
-        // walk up to .product-card
-        let card = btn.closest('.product-card');
-        if (!card) {
-            // Fallback: try to parse from nearby elements
-            return null;
-        }
-        const id = btn.dataset.product || card.dataset.product || (card.querySelector('[data-product]') && card.querySelector('[data-product]').dataset.product) || null;
-        const nameEl = card.querySelector('h3') || card.querySelector('h2') || card.querySelector('.product-header h3');
-        const priceEl = card.querySelector('.product-price');
-        let name = nameEl ? nameEl.textContent.trim() : (id || 'Item');
-        let price = 0;
-        if (priceEl) {
-            const txt = priceEl.textContent || priceEl.innerText;
-            const match = txt.replace(/[^0-9.\-]/g, '');
-            price = parseFloat(match) || 0;
-        }
-        return { id: id || name.toLowerCase().replace(/\s+/g, '-'), name, price };
-    }
-
-    function addToCart(product, qty = 1) {
-        if (!product) return;
-        const existing = cart.find(p => p.id === product.id);
-        if (existing) {
-            existing.qty = (existing.qty || 1) + qty;
-        } else {
-            cart.push({ id: product.id, name: product.name, price: product.price, qty: qty });
-        }
-        saveCart();
-        renderCartCount();
-        if (typeof showMessage === 'function') showMessage(`${product.name} added to cart.`, 'success');
-    }
-
-    function attachAddToCartHandlers() {
-        // attach to existing buttons (called after includes and initializers)
-        const buttons = document.querySelectorAll('.add-to-cart');
-        buttons.forEach(btn => {
-            // avoid attaching twice
-            if (btn.dataset.cartBound) return;
-            btn.dataset.cartBound = '1';
-            btn.addEventListener('click', (e) => {
-                const info = findProductInfoFromButton(btn);
-                if (!info) return;
-                addToCart(info, 1);
-            });
+        amdinList.forEach(admin => {
+            let elt = EQuery.elemt('div', [
+                EQuery.elemt('div', [
+                    EQuery.elemt('img', null, 'avatar-img members-staff-av e-round-medium', {src: page.imageSource}),
+                    EQuery.elemt('div', [
+                        EQuery.elemt('span', [
+                            page.name,
+                            ...badges
+                        ], 'username', null, `color: ${page.assentColor}`),
+                        EQuery.elemt('div', [EQuery.elemt('span', page.playerDetails, 'ui e-opacity e-small')], 'description')
+                    ], 'flex-grow-1')
+                ], 'e-flex list-header'),
+                EQuery.elemt('div', [
+                    EQuery.elemt('div', page.messageContent, 'admin-message'),
+                    EQuery.elemt('div', page.timeDiff, 'message-details e-small e-opacity')
+                ], 'list-content')
+            ], 'e-marin-bottom list-container');
+            list.append(elt);
         });
     }
 
-    // Render cart page (cart.html) when loaded
-    function initCartPage() {
-        // load cart from storage (if logged) or keep in-memory
-        const container = document.getElementById('cart-items');
-        const emptyEl = document.getElementById('empty-cart');
-        const summaryEl = document.getElementById('cart-summary');
-        const subtotalEl = document.getElementById('cart-subtotal');
-        const itemTemplate = document.getElementById('cart-item-template');
-
-        // If this page was opened via navigation from same tab (guest cart in memory), cart variable may reflect it.
-        // For logged users, reload from localStorage to ensure persistence.
-        const key = getCartStorageKey();
-        if (key) {
-            loadCart();
-        }
-
-        function render() {
-            if (!container) return;
-            container.innerHTML = '';
-            if (!cart || cart.length === 0) {
-                if (emptyEl) emptyEl.style.display = '';
-                if (summaryEl) summaryEl.style.display = 'none';
-                return;
-            }
-            if (emptyEl) emptyEl.style.display = 'none';
-            if (summaryEl) summaryEl.style.display = '';
-
-            let subtotal = 0;
-            cart.forEach(item => {
-                const cartItem = itemTemplate.content.cloneNode(true);
-                const itemEl = cartItem.querySelector('.cart-item');
-                
-                // Set data attributes and content
-                itemEl.dataset.productId = item.id;
-                const img = itemEl.querySelector('.cart-item-image');
-                img.src = item.image || './assets/pumkin.png'; // fallback to pumpkin if no image
-                img.alt = item.name;
-                
-                itemEl.querySelector('.cart-item-title').textContent = item.name;
-                itemEl.querySelector('.cart-item-description').textContent = item.description || `${item.name} - Halloween Store Item`; // fallback description
-                itemEl.querySelector('.cart-item-price').textContent = `$${(item.price * (item.qty || 1)).toFixed(2)}`;
-                itemEl.querySelector('.quantity-display').textContent = item.qty || 1;
-
-                // Wire up quantity buttons
-                const qtyDisplay = itemEl.querySelector('.quantity-display');
-                itemEl.querySelector('.decrease-quantity').addEventListener('click', () => {
-                    let qty = parseInt(qtyDisplay.textContent) - 1;
-                    if (qty < 1) qty = 1;
-                    qtyDisplay.textContent = qty;
-                    item.qty = qty;
-                    saveCart();
-                    render();
-                    renderCartCount();
-                });
-
-                itemEl.querySelector('.increase-quantity').addEventListener('click', () => {
-                    let qty = parseInt(qtyDisplay.textContent) + 1;
-                    qtyDisplay.textContent = qty;
-                    item.qty = qty;
-                    saveCart();
-                    render();
-                    renderCartCount();
-                });
-
-                // Wire up remove button
-                itemEl.querySelector('.remove-btn').addEventListener('click', () => {
-                    cart = cart.filter(p => p.id !== item.id);
-                    saveCart();
-                    render();
-                    renderCartCount();
-                    showMessage(`${item.name} removed from cart`, 'info');
-                });
-
-                container.appendChild(cartItem);
-                subtotal += (item.price * (item.qty || 1));
-            });
-
-            if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-        }
-
-        render();
-
-        const checkoutBtn = document.querySelector('.checkout-btn');
-        if (checkoutBtn) {
-            checkoutBtn.addEventListener('click', () => {
-                if (!cart || cart.length === 0) {
-                    showMessage('Your cart is empty', 'error');
-                    return;
-                }
-                showMessage('Thank you for your purchase! Processing order...', 'success');
-                // Here you would typically redirect to checkout/payment
-                setTimeout(() => {
-                    cart = [];
-                    saveCart();
-                    render();
-                    renderCartCount();
-                }, 2000);
-            });
-        }
-    }
-
-    function escapeHtml(str) {
-        return String(str).replace(/[&<>\"]+/g, function(s){
-            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[s];
-        });
-    }
-
-    function initAdminMessages() {
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+    async function initAdminMessages() {
+        const list = EQuery('#member_list_staff_members');
+        const prevBtn = EQuery('#admin-message-list .pagination a:first-child');
+        const indexCount = EQuery('#admin-message-list .pagination a:nth-child(2)');
+        const nextBtn = EQuery('#admin-message-list .pagination a:last-child');
+        const itemsCount = 5;
+        let index = 0;
+        let messages = {
+            page: [],
+            pageCount: 0
         };
+        
+        try {
+            const response = await fetchWithTimeout(`/admin/get-messages`);
+            if (response.detail !== undefined) {
+                showMessage(`Failed to fetch admin messages: ${response.detail}`, 'error');
+            } else {
+                messages = response;
+            }
+        } catch (e) {
+            showMessage(`Failed to fetch admin messages: ${e}`, 'error');
+        }
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationPlayState = 'running';
+        const pageCount = messages.pageCount;
+        const pages = messages.page;
+        const chunk = setChunk(0, pageCount > itemsCount ? itemsCount : 1, pages);
+
+        updateAdminMessages(index, chunk);
+
+        function updateAdminMessages(i, chunk) {
+            const max = chunk.length;
+            if (pageCount === 0) return;
+            let pages = chunk[i];
+            list.removeChildren();
+
+            pages.forEach(page => {
+                let badges = [];
+
+                for (let j = 0;j < page.badges.length;j++) {
+                    badges.push(EQuery.elemt('span', page.badges[j].content, `badge ${page.badges[j].badgeType}`));
                 }
-            });
-        }, observerOptions);
 
-        // Observe admin message cards
-        const adminCards = EQuery('.admin-message-card');
-        adminCards.each((i, card) => {
-            EQuery(card).css('animation-play-style: paused');
-            observer.observe(card);
+                let elt = EQuery.elemt('div', [
+                    EQuery.elemt('div', [
+                        EQuery.elemt('img', null, 'avatar-img members-staff-av e-round-medium', {src: page.imageSource}),
+                        EQuery.elemt('div', [
+                            EQuery.elemt('span', [
+                                page.name,
+                                ...badges
+                            ], 'username', null, `color: ${page.assentColor}`),
+                            EQuery.elemt('div', [EQuery.elemt('span', page.playerDetails, 'ui e-opacity e-small')], 'description')
+                        ], 'flex-grow-1')
+                    ], 'e-flex list-header'),
+                    EQuery.elemt('div', [
+                        EQuery.elemt('div', page.messageContent, 'admin-message'),
+                        EQuery.elemt('div', page.timeDiff, 'message-details e-small e-opacity')
+                    ], 'list-content')
+                ], 'e-marin-bottom list-container');
+                list.append(elt);
+            });
+
+            indexCount.text(i + 1);
+            prevBtn.removeClass('disabled');
+            nextBtn.removeClass('disabled');
+            if (i === 0) prevBtn.addClass('disabled');
+            else if (i === max - 1) nextBtn.addClass('disabled');
+        }
+
+        prevBtn.click(function () {
+            index -= index !== 0 ? 1 : 0;
+            updateAdminMessages(index, chunk);
         });
 
-        // Add click effect to Steve faces
-        const steveFaces = EQuery('.steve-face');
-        steveFaces.click(function() {
-            EQuery(this).css('animation: none');
-            setTimeout(() => {
-                EQuery(this).css('animation: steveBounce 2s ease-in-out infinite');
-            }, 100);
-            
-            // Show fun message
-            showMessage('Steve says: "Thanks for clicking!" 🎮', 'success');
+        nextBtn.click(function () {
+            index += index !== chunk.length - 1 ? 1 : 0;
+            updateAdminMessages(index, chunk);
         });
     }
 
@@ -1144,10 +980,11 @@ function initLoadingScreen() {
     function createBlockBreakEffect(event) {
         const centerX = event.x;
         const centerY = event.y;
+        const color = EQuery(event.target).getStyleValue('background-color')
 
         for (let i = 0; i < 8; i++) {
             const particle = EQuery.elemt('div')
-                .css(`position: fixed;left: ${centerX}px;top: ${centerY}px;width:4px;height: 4px;background: var(--minecraft-green);border: 1px solid var(--minecraft-black);border-radius:0;pointer-events: none;z-index: 1000`);
+                .css(`position: fixed;left: ${centerX}px;top: ${centerY}px;width:4px;height: 4px;background: ${color};border: .5px solid var(--minecraft-black);border-radius:0;pointer-events: none;z-index: 1000`);
 
             const angle = (i / 8) * Math.PI * 2;
             const velocity = 50 + Math.random() * 50;
@@ -1189,73 +1026,43 @@ function initLoadingScreen() {
         }
     }
 
-    // Show message function
-    function showMessage(text, type = 'info') {
-        // Remove existing messages
-        const existingMessages = EQuery('.message');
-        existingMessages.each((i, msg) => msg.remove());
-
-        const message = EQuery.elemt('div', text, `message ${type}`, null, 'position: fixed;top: 40px;left: 12px;z-index: 99999999');
-
-        // Add to top of page
-        EQuery('body').prepend(message);
-
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            message.remove();
-        }, 5000);
-    }
-
     // Add CSS for fadeOut animation
     const style = EQuery.elemt('style', `
-    @keyframes fadeOut {
-        0% { opacity: 1; transform: scale(1); }
-        100% { opacity: 0; transform: scale(0.8); }
-    }
-`);
+@keyframes fadeOut {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.8); }
+}
+    `);
     EQuery('head').append(style);
 
     // Easter egg: Konami code
-    const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
-
-    let konamiCode = [];
+    let konamiCode = {};
     const easterEggs = {
-        '38,38,40,40,37,39,37,39,66,65': function () {
-            EQuery('body').css('animation: rainbow 2s ease-in-out infinite');
+        'ArrowUp,ArrowUp,ArrowDown,ArrowDown,ArrowLeft,ArrowRight,ArrowLeft,ArrowRight,b,a': function () {
+            EQuery('body>* *').css('animation: rainbow 2s ease-in-out infinite');
+            showMessage('🎉 Party easter egg 🎉', 'success');
             setTimeout(() => {
-                document.body.style.animation = '';
+                EQuery('body>* *').css('animation: none');
             }, 6000);
-        }
+        },
+    }
+
+    for (let codes in easterEggs) {
+        konamiCode[codes] = [];
     }
 
     EQuery(document).keydown(function (e) {
-        konamiCode.push(e.keyCode);
-
-        if (konamiCode.length > konamiSequence.length) {
-            konamiCode.shift();
-        }
-
         for (let codes in easterEggs) {
-            if (konamiCode.join(',') === codes) {
-                showMessage('🎉 Easter egg found! You\'re awesome! 🎉', 'success');
+            konamiCode[codes].push(e.key);
+            if (konamiCode[codes].length > codes.split(',').length) {
+                konamiCode[codes].shift();
+            }
+            if (konamiCode[codes].join(',') === codes) {
                 easterEggs[codes]();
-                konamiCode = []
+                konamiCode[codes] = []
                 break;
             }
         }
-/*
-        if (konamiCode.join(',') === konamiSequence.join(',')) {
-            // Easter egg activated!
-            showMessage('🎉 Easter egg found! You\'re awesome! 🎉', 'success');
-
-            // Add some fun effects
-            EQuery('body').css('animation: rainbow 2s ease-in-out infinite');
-            setTimeout(() => {
-                document.body.style.animation = '';
-            }, 6000);
-
-            konamiCode = [];
-        }*/
     });
 
     // Add rainbow animation for easter egg
@@ -1271,10 +1078,9 @@ function initLoadingScreen() {
     EQuery('head').append(rainbowStyle);
 
     // Add some human-like touches
-    setTimeout(() => {
+    setInterval(() => {
         // Random helpful tips
         const tips = [
-            "💡 Tip: Use the music player to set the perfect gaming mood!",
             "🎮 Pro tip: Join our Discord for exclusive events and giveaways!",
             "⭐ Don't forget to rate us 5 stars if you enjoy the server!",
             "🎁 Check out our daily rewards for free items!",
@@ -1295,9 +1101,6 @@ function initLoadingScreen() {
         // Show a welcome message with server info
         const welcomeMessages = [
             "Welcome to SurfNetwork! 🏄‍♂️",
-            "Ready for an epic Minecraft adventure? ⚔️",
-            "Join thousands of players worldwide! 🌍",
-            "Your Minecraft journey starts here! 🚀"
         ];
 
         const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];

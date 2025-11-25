@@ -1,0 +1,56 @@
+        <div class="nav-container">
+            <div class="e-flex justify-between item-center">
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+                <div class="nav-logo">
+                    <div class="logo-block">
+                        <img src="./assets/icon128x128.png" alt="Logo">
+                    </div>
+                </div>
+                <div class="site-menu">
+                    <div class="menueffect navbar-collapse">
+                        <ul class="nav-menu">
+                            <li class="nav-item"><a href="./" class="nav-link"><span>Home</span></a></li>
+                            <li class="nav-item"><a href="./store.html" class="nav-link"><span>Store</span></a></li>
+                            <li class="nav-item"><a href="./features.html" class="nav-link"><span>Features</span></a></li>
+                            <li class="nav-item"><a href="./forums.html" class="nav-link"><span>Forum</span></a></li>
+                            <li class="nav-item"><a href="./events.html" class="nav-link"><span>Events</span></a></li>
+                            <li class="nav-item"><a href="#contact" class="nav-link"><span>Contact</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <button id="theme-toggle" class="minecraft-btn theme-toggle">
+                    <div class="theme-icon">
+                        <span class="material-symbols-outlined">clear_day</span>
+                    </div>
+                </button>
+                <div style="position: relative;">
+                    <button id="account-btn" class="minecraft-btn account-btn dropdown"><span class="e-hide-small">Account</span> <span class="material-symbols-outlined e-hide-large">person</span> <span class="material-symbols-outlined arrow">keyboard_arrow_down</span></button>
+                    <div id="secondary-dropmenu" class="nav-bar-dropdown secondary-menu dropdown">
+                        <ul>
+                            <li data-visibility="loggedin">
+                                <a href="./profile.html" class="secondary-menu-link profile">Profile</a>
+                            </li>
+                            <li data-visibility="loggedout">
+                                <a href="./login.html" class="secondary-menu-link login">Sign in</a>
+                            </li>
+                            <li data-visibility="loggedout">
+                                <a href="./signup.html" class="secondary-menu-link register">Create account</a>
+                            </li>
+                            <li data-visibility="invalidemail">
+                                <a href="./confirm_email.html" class="secondary-menu-link confirm_email">Verify your email</a>
+                            </li>
+                            <li data-visibility="loggedin">
+                                <a href="javascript:void(0);" class="secondary-menu-link logout">Log out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="scroll-to-top" class="scroll-to-top-btn">
+            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"></path></svg>
+        </button>

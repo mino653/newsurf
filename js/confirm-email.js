@@ -1,10 +1,11 @@
-import './equery.js';
+import { fetchWithTimeout, showMessage } from './util';
+import '/js/equery.js';
 import {
     getState,
     getDB,
     setState,
     redirect
-} from './util.js';
+} from '/js/util.js';
 
 EQuery(function () {
     let verifyForm = EQuery('#verifyCard');
@@ -15,8 +16,8 @@ EQuery(function () {
     let prompt = verifyForm.find('.input-prompt');
 
     getDB(state => {
-        if (state.userdata == undefined) redirect('./login.html');
-        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('./index.html');
+        if (state.userdata == undefined) redirect('/login.html');
+        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('/index.html');
     });
 
     startCountdown();
@@ -43,23 +44,24 @@ EQuery(function () {
             body: raw,
             redirect: 'follow'
         };
-        let response = await (await fetch(`https://surfnetwork-api.onrender.com/register/request_confirm_email?user_id=${getState().userdata.id}`, requestOptions)).json().catch(e => {
+        let response = await fetchWithTimeout(`/register/request_confirm_email?user_id=${getState().userdata.id}`, requestOptions);
+
+        if (response.detail === undefined) {
+            spinner.find('e-spinner').remove();
+            submitBtn.removeAttr('disabled');
+
+            prompt.show()
+                .addClass('info')
+                .text('Email has been sent');
+
+            startCountdown();   
+        } else {
+            spinner.find('e-spinner').remove();
+            submitBtn.removeAttr('disabled');
             prompt.show()
                 .addClass('error')
-                .text('An error occured while processing your request');
-            spinner.remove();
-            submitBtn.removeAttr('disabled');
-            throw new Error(e)
-        });
-
-        spinner.find('e-spinner').remove();
-        submitBtn.removeAttr('disabled');
-
-        prompt.show()
-            .addClass('info')
-            .text('Email has been sent');
-
-        startCountdown();
+                .text(response.detail.error || "An error occured while processing your request");
+        }
     }
 
     function startCountdown() {
@@ -109,7 +111,7 @@ EQuery(function () {
                 body: raw,
                 redirect: 'follow'
             };
-            let response = await (await fetch(`https://surfnetwork-api.onrender.com/register/confirm_email?user_id=${getState().userdata.id}&email_code=${codeField.val()}`, requestOptions)).json().catch(e => {
+            let response = await (await fetch(`${apiURL}/register/confirm_email?user_id=${getState().userdata.id}&email_code=${codeField.val()}`, requestOptions)).json().catch(e => {
                 spinner.find('.e-spinner').remove();
                 _this.disabled = false;
                 throw new Error(e)
@@ -125,7 +127,7 @@ EQuery(function () {
                     prompt.hide()
                         .removeClass('error')
                         .text('');
-                    redirect('./index.html');
+                    redirect('/index.html');
                 });
             } else {
                 prompt.show()
