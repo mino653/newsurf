@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,44 +15,24 @@
 
 <body>
     <div class="preloader">
-        <figure> <img src="./assets/pumkin.png" alt="Pumkin"> </figure>
+        <figure> <img src="./assets/icon128x128.png" alt="Icon"> </figure>
     </div>
     <script src='https://www.noupe.com/embed/019a110c65f87ab89c4a3on17a0f495e780add.js'></script>
-    <!-- Music Player -->
-    <div id="music-player" class="music-player">
-        <div class="music-controls">
-            <button id="play-pause" class="minecraft-btn music-btn">
-                <span class="music-icon"><span class="material-symbols-outlined">play_arrow</span></span>
-            </button>
-            <button id="next-song" class="minecraft-btn music-btn">
-                <span class="music-icon"><span class="material-symbols-outlined">skip_next</span></span>
-            </button>
-            <button id="volume-toggle" class="minecraft-btn music-btn">
-                <span class="music-icon"><span class="material-symbols-outlined">volume_up</span></span>
-            </button>
-        </div>
-        <div class="music-info">
-            <span id="current-song">SurfNetwork Theme</span>
-        </div>
-        <button id="close-music" class="minecraft-btn close-btn">
-            <span class="music-icon">✕</span>
-        </button>
-    </div>
-    <!-- Now Playing Popup -->
-    <div id="now-playing-popup" class="now-playing-popup">
-        <div class="popup-content">
-            <div class="note-icon">♪</div>
-            <div class="popup-text">
-                <span class="now-playing">Now Playing:</span>
-                <span id="popup-song-name">SurfNetwork Theme</span>
-            </div>
-        </div>
-    </div>
+    <div include-html="./music-player.html"></div>
     <!-- Navigation -->
     <nav class="navbar" include-html="./nav.html"></nav>
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-background">
+            <div class="minecraft-sky"></div>
+            <div class="floating-blocks">
+                <div class="floating-block grass"></div>
+                <div class="floating-block stone"></div>
+                <div class="floating-block diamond"></div>
+                <div class="floating-block emerald"></div>
+                <div class="floating-block gold"></div>
+                <div class="floating-block iron"></div>
+            </div>
             <div class="particles">
                 <div class="particle"></div>
                 <div class="particle"></div>
@@ -60,51 +40,57 @@
                 <div class="particle"></div>
                 <div class="particle"></div>
                 <div class="particle"></div>
-            </div>
+            <div class="particle" style="left: 78.3368%; animation-delay: 0.562251s; animation-duration: 4.64529s;"></div><div class="particle" style="left: 22.4259%; animation-delay: 4.2398s; animation-duration: 7.61598s;"></div><div class="particle" style="left: 98.1497%; animation-delay: 3.3277s; animation-duration: 7.32362s;"></div><div class="particle" style="left: 10.1646%; animation-delay: 7.57448s; animation-duration: 7.43193s;"></div><div class="particle" style="left: 39.6278%; animation-delay: 6.36015s; animation-duration: 5.59015s;"></div><div class="particle" style="left: 83.6087%; animation-delay: 4.4212s; animation-duration: 5.07619s;"></div><div class="particle" style="left: 35.1265%; animation-delay: 0.962222s; animation-duration: 4.46201s;"></div><div class="particle" style="left: 13.8968%; animation-delay: 7.24621s; animation-duration: 4.10336s;"></div><div class="particle" style="left: 3.40449%; animation-delay: 4.39847s; animation-duration: 4.1134s;"></div><div class="particle" style="left: 71.1364%; animation-delay: 6.55279s; animation-duration: 7.72282s;"></div><div class="particle" style="left: 38.7654%; animation-delay: 6.82481s; animation-duration: 4.66248s;"></div><div class="particle" style="left: 71.5915%; animation-delay: 7.46526s; animation-duration: 4.14469s;"></div><div class="particle" style="left: 83.8098%; animation-delay: 0.30983s; animation-duration: 5.19165s;"></div><div class="particle" style="left: 26.3676%; animation-delay: 5.65307s; animation-duration: 4.44443s;"></div><div class="particle" style="left: 0.637146%; animation-delay: 0.930059s; animation-duration: 4.13642s;"></div><div class="particle" style="left: 85.2238%; animation-delay: 7.41599s; animation-duration: 7.18326s;"></div><div class="particle" style="left: 26.6244%; animation-delay: 1.80914s; animation-duration: 4.04211s;"></div><div class="particle" style="left: 61.0126%; animation-delay: 3.37394s; animation-duration: 4.39098s;"></div><div class="particle" style="left: 35.4675%; animation-delay: 3.1056s; animation-duration: 6.74258s;"></div><div class="particle" style="left: 92.4623%; animation-delay: 5.94967s; animation-duration: 6.90359s;"></div></div>
         </div>
         <div class="hero-content">
-            <div class="swiper-wrapper" style="transition-duration: 0ms;">
-                <div class="swiper-slide swiper-slide-active">
-                    <div class="slide-image" style="background: url(&quot;./assets/samhain-slider-2.jpg&quot;);"></div>
-                        <div class="container">
-                        <h1>Have Fun With <br>Us On Halloween </h1>
-                        <p>Join our party at the end of this summer. </p>
-                        <div class="bosluk1112"></div>
-                        <a href="/events/halloween-event-2025.html">Learn More →</a>
+            <div class="hero-title-container">
+                <h1 class="hero-title">
+                    <span class="title-word" style="opacity: 1; animation: 0.8s ease 0s 1 normal forwards running wordSlideIn;">Welcome</span>
+                    <span class="title-word" style="opacity: 1; animation: 0.8s ease 0s 1 normal forwards running wordSlideIn;">to</span>
+                    <span class="title-word surf-text" style="opacity: 1; animation: 0.8s ease 0s 1 normal forwards running wordSlideIn;">SurfNetwork</span>
+                </h1>
+                <div class="title-subtitle">
+                    <span class="subtitle-text">One of the best cracked servers!</span>
+                </div>
+            </div>
+            <div class="hero-buttons" style="animation: 1s ease 0s 1 normal forwards running fadeIn;">
+                <button class="minecraft-btn btn-primary" id="copy-ip-btn">
+                    <div class="btn-icon"><span class="material-symbols-outlined">language</span></div>
+                    <div class="btn-text">
+                        <span class="btn-main">Copy IP</span>
+                        <span class="btn-sub">play.surfnetwork.xyz</span>
                     </div>
-                </div>            
-                <div class="swiper-slide">
-                    <div class="slide-image" style="background: url(&quot;./assets/samhain-slider-3.jpg&quot;);"></div>
-                        <div class="container">
-                        <h1>31th Octobar 2022 <br>Halloween Party </h1>
-                        <p>Scary fun party on halloween. </p>
-                        <div class="bosluk1112"></div>
-                        <a href="./events/halloween-event-2025.html">Learn More →</a>
+                </button>
+                <button class="minecraft-btn btn-secondary" id="shopping-cart-btn">
+                    <div class="btn-icon"><span class="material-symbols-outlined">shopping_cart</span></div>
+                    <div class="btn-text">
+                        <span class="btn-main">Visit Store</span>
+                        <span class="btn-sub">Get Premium</span>
+                    </div>
+                </button>
+            </div>
+            <div class="server-stats" style="animation: 1s ease 0s 1 normal forwards running fadeIn;">
+                <div class="stat-card fade-in" style="transform: translateY(50px);">
+                    <div class="stat-icon"><span class="material-symbols-outlined">group</span></div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="online-players">0</div>
+                        <div class="stat-label">Online Players</div>
                     </div>
                 </div>
-                <!-- User added slides (place the two images into ./assets/ with these filenames) -->
-                <div class="swiper-slide">
-                    <div class="slide-image" style="background: url(&quot;./assets/halloween-attach-1.png&quot;);"></div>
-                    <div class="container">
-                        <h1>Pumpkin Overlord<br>Haunted Heights</h1>
-                        <p>Explore the floating pumpkin fortress in our spooky map.</p>
-                        <div class="bosluk1112"></div>
-                        <a href="./events/halloween-event-2025.html">Explore Map →</a>
+                <div class="stat-card fade-in" style="transform: translateY(50px);">
+                    <div class="stat-icon"><span class="material-symbols-outlined">bolt</span></div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="uptime">0</div>
+                        <div class="stat-label">Uptime</div>
                     </div>
                 </div>
-
-                <div class="swiper-slide">
-                    <div class="slide-image" style="background: url(&quot;./assets/halloween-attach-2.png&quot;);"></div>
-                    <div class="container">
-                        <h1>Jack's Courtyard<br>Pumpkin Patch</h1>
-                        <p>Gather friends and complete seasonal challenges together.</p>
-                        <div class="bosluk1112"></div>
-                        <a href="./events/halloween-event-2025.html">Join Event →</a>
+                <div class="stat-card fade-in" style="transform: translateY(50px);">
+                    <div class="stat-icon"><span class="material-symbols-outlined">star</span></div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="rating">0</div>
+                        <div class="stat-label">Rating</div>
                     </div>
                 </div>
-                <!-- (Duplicate slides removed) -->
-                <div class="button-prev">❮</div>
-                <div class="button-next">❯</div>
             </div>
         </div>
         <div class="scroll-indicator">
@@ -112,94 +98,97 @@
             <span class="scroll-text">Scroll Down</span>
         </div>
     </section>
-    <section id="about" class="hakkimizda-bolumu-anasayfa">
-        <div class="tablo">
-            <div class="tablo-1-ve-2">
-                <div class="galeri1 zoomIn">
-                    <img class="imagerotate" src="./assets/circle-samhain.png" alt="Red moon">
-                </div>
-                <div class="galeri slideInUp">
-                    <img src="./assets/about-samhain1.png" alt="Webone about">
-                </div>
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About SurfNetwork</h2>
+                <div class="section-subtitle">Know what shows that we are different from the others!</div>
             </div>
-            <div class="tablo-1-ve-3">
-                <h2 class="h2-baslik  e-margin-bottom">Have an awesome scary experience with out Halloween Features.</h2>
-                <p>You will enjoy the 31st of October with special features with our special party for Halloween. You can make your loved ones, colleagues and employees have an unforgettable day at this magnificent festival.</p>
-                <img class="divider e-margin-bottom" height="15" width="120" alt="Divider" src="./assets/divider.jpg">
-                <div class="e-row about-item ">
-                    <div class="e-col s2 e-padding">
-                        <div class="iconLeft">
-                            <i class="floaticon-medal"></i>
+
+            <div class="about-content">
+                <div class="about-text">
+                    <div class="about-description">
+                        <p>Since 2025, SurfNetwork has been trying to&nbsp;offer its best&nbsp;&nbsp;Minecraft experience. Custom-made maps, fun&nbsp;game modes, and a strong&nbsp;player base are every advantage of our server.</p>
+                        <p>Join thousands of players who have made SurfNetwork Their second home.</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-item fade-in visible" style="transform: translateY(0px);">
+                            <div class="feature-icon"><span class="material-symbols-outlined">map</span></div>
+                            <div class="feature-content">
+                                <h3>Custom Maps</h3>
+                                <p>Fun pvp maps to play with your noob friends!</p>
+                            </div>
+                        </div>
+                        <div class="feature-item fade-in visible" style="transform: translateY(0px);">
+                            <div class="feature-icon"><span class="material-symbols-outlined">shield</span></div>
+                            <div class="feature-content">
+                                <h3>Anti-Cheat</h3>
+                                <p>Advanced protection against hackers and bots</p>
+                            </div>
+                        </div>
+                        <div class="feature-item fade-in visible" style="transform: translateY(0px);">
+                            <div class="feature-icon"><span class="material-symbols-outlined">group</span></div>
+                            <div class="feature-content">
+                                <h3>Community</h3>
+                                <p>Active and friendly player community</p>
+                            </div>
+                        </div>
+                        <div class="feature-item fade-in visible" style="transform: translateY(0px);">
+                            <div class="feature-icon"><span class="material-symbols-outlined">settings</span></div>
+                            <div class="feature-content">
+                                <h3>Custom Plugins</h3>
+                                <p>Hand scripted plugins written by our head devs!</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="e-col s10 e-padding">
-                        <h3 class="baslik-3s">In-game cosmetics</h3>
-                        <p>Enjoy this season wit custom in-game cosmetics and items for Halloween.</p>
+                </div>
+
+                <div class="about-visual">
+                    <div class="minecraft-scene">
+                        <div class="scene-block grass-block"></div>
+                        <div class="scene-block stone-block"></div>
+                        <div class="scene-block diamond-block"></div>
+                        <div class="scene-character">🧙‍♂️</div>
                     </div>
                 </div>
-                <div class="e-row about-item ">
-                    <div class="e-col s2 e-padding">
-                        <div class="iconLeft">
-                            <i class="floaticon-medal"></i>
-                        </div>
-                    </div>
-                    <div class="e-col s10 e-padding">
-                        <h3 class="baslik-3s">Custom Maps</h3>
-                        <p>Fun themed maps to play with your friends!</p>
-                    </div>
-                </div>
-                <div class="e-row e-margin-bottom about-item ">
-                    <div class="e-col s2 e-padding">
-                        <div class="iconLeft">
-                            <i class="floaticon-medal"></i>
-                        </div>
-                    </div>
-                    <div class="e-col s10 e-padding">
-                        <h3 class="baslik-3s">Community</h3>
-                        <p>Active and friendly player community</p>
-                    </div>
-                </div>
-                <a href="./about-us.html" class="custom-button wow ">Get to know us →</a>
             </div>
         </div>
-    </section>
-
+    </div></section>
     <!-- Features Section -->
     <section id="features" class="features">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Server Features</h2>
-                <div class="section-subtitle">31 October 2025</div>
+                <div class="section-subtitle">3Everything you need for the perfect Minecraft experience</div>
             </div>
             <div class="features-container">
-                <div class="e-row">
-                    <div class="e-col l-12">
-                        <div class="swiper-container-horizontal">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide swiper-dulicate">
-                                    <div class="component-tabs">
-                                        <div class="tab-content current">
-                                            <div class="cards">
-                                                <div class="card">
-                                                    <img src="./assets/features-h.jpg" alt="Features">
-                                                    <div class="card-content">
-                                                        <h2>Feature name</h2>
-                                                        <button>View</button>
-                                                    </div>
-                                                </div>
+                <div class="swiper-container-horizontal">
+                    <div class="swiper-wrapper">
+                        <!-- TODO: add features here -->
+                        <div class="swiper-slide swiper-dulicate">
+                            <div class="component-tabs">
+                                <div class="tab-content current">
+                                    <div class="cards">
+                                        <div class="card">
+                                            <img src="./assets/features-h.jpg" alt="Features">
+                                            <div class="card-content">
+                                                <h2>Feature name</h2>
+                                                <button>View</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="button-prev1">❮</div>
-                            <div class="button-next1">❯</div>
                         </div>
+
                     </div>
+                    <div class="button-prev1">❮</div>
+                    <div class="button-next1">❯</div>
                 </div>
             </div>
         </div>
     </section>
+    
     <section id="admin-messages" class="admin-messages">
         <div class="container">
             <div class="section-header">
@@ -230,57 +219,11 @@
     <section id="events" class="events">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Halloween Events</h2>
-                <div class="section-subtitle">Join our spooky celebrations!</div>
+                <h2 class="section-title">Events</h2>
+                <div class="section-subtitle">Join our events to win special rewards and badges</div>
             </div>
             <div class="events-grid">
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="./assets/pumpkin-hunt.jpg" alt="Pumpkin Hunt">
-                        <div class="event-date">
-                            <span class="day">31</span>
-                            <span class="month">OCT</span>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <h3>Great Pumpkin Hunt</h3>
-                        <p class="event-time"><span class="material-symbols-outlined">schedule</span> 8:00 PM EST</p>
-                        <p>Search for magical pumpkins across our Halloween-themed maps and win exclusive rewards!</p>
-                        <button class="minecraft-btn">Join Event</button>
-                    </div>
-                </div>
-
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="./assets/haunted-maze.jpg" alt="Haunted Maze">
-                        <div class="event-date">
-                            <span class="day">30</span>
-                            <span class="month">OCT</span>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <h3>Haunted Maze Challenge</h3>
-                        <p class="event-time"><span class="material-symbols-outlined">schedule</span> 9:00 PM EST</p>
-                        <p>Navigate through our terrifying maze filled with monsters and puzzles!</p>
-                        <button class="minecraft-btn">Join Event</button>
-                    </div>
-                </div>
-
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="./assets/costume-contest.jpg" alt="Costume Contest">
-                        <div class="event-date">
-                            <span class="day">31</span>
-                            <span class="month">OCT</span>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <h3>Costume Contest</h3>
-                        <p class="event-time"><span class="material-symbols-outlined">schedule</span> 10:00 PM EST</p>
-                        <p>Show off your best Halloween skin and win amazing prizes!</p>
-                        <button class="minecraft-btn">Join Event</button>
-                    </div>
-                </div>
+                <p>No events, maybe next time.</p>
             </div>
         </div>
     </section>
@@ -294,10 +237,10 @@
             </div>
 
             <div class="forum-actions">
-                <button id="new-topic-btn" class="minecraft-btn">
-                    <span class="material-symbols-outlined">add</span>
-                    New Topic
-                </button>
+                <a id="new-topic-btn" class="minecraft-btn" href="./forums.html">
+                    <span class="material-symbols-outlined">arrow_forward_ios</span>
+                    View more
+                </a>
             </div>
 
             <div class="forum-categories e-row e-row-padding">
@@ -367,7 +310,7 @@
                 </button>
             </div>
 
-            <div class="store-grid" id="store-grid">
+            <div class="store-grid" id="store-grid" data-item-count="8">
                 <!-- Ranks -->
                 <div class="product-card" data-category="ranks">
                     <div class="product-badge popular">Popular</div>

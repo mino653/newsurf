@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +15,7 @@
 
 <body>
     <div class="preloader">
-        <figure> <img src="./assets/pumkin.png" alt="Pumkin"> </figure>
+        <figure> <img src="./assets/icon128x128.png" alt="Icon"> </figure>
     </div>
     <!-- Music Player -->
     <div id="music-player" class="music-player">
@@ -52,56 +52,9 @@
     <!-- About Section -->
     <section id="about-us" class="about-us"></section>
 
+    
     <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Get In Touch</h2>
-                <div class="section-subtitle">We'd love to hear from you</div>
-            </div>
-
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon"><span class="material-symbols-outlined">language</span></div>
-                        <div class="contact-content">
-                            <h4>Server IP</h4>
-                            <p>play.surfnetwork.xyz</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon"><span class="material-symbols-outlined">chat</span></div>
-                        <div class="contact-content">
-                            <h4>Discord</h4>
-                            <p>Join our Discord community</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon"><span class="material-symbols-outlined">mail</span></div>
-                        <div class="contact-content">
-                            <h4>Email</h4>
-                            <p>admin@surfnetwork.xyz</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="contact-form">
-                    <form id="contact-form">
-                        <div class="form-group">
-                            <input type="text" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <textarea placeholder="Your Message" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="minecraft-btn submit-btn">Send Message</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+    <section id="contact" class="contact" include-html="./contact.html"></section>
 
     <!-- Footer -->
     <footer class="footer" include-html="./footer.html"></footer>
