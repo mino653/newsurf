@@ -1,5 +1,5 @@
 /* Event Popup */
-.event-popup {
+.popup {
     position: fixed;
     top: 0;
     left: 0;
@@ -15,12 +15,12 @@
     transition: all 0.3s ease;
 }
 
-.event-popup.show {
+.popup.show {
     opacity: 1;
     visibility: visible;
 }
 
-.event-popup-content {
+.popup-content {
     background: #000;
     border: 2px solid var(--halloween-orange-2);
     border-radius: 8px;
@@ -32,18 +32,18 @@
     transition: all 0.3s ease;
 }
 
-.event-popup.show .event-popup-content {
+.popup.show .popup-content {
     transform: translateY(0);
 }
 
-.event-popup-header {
+.popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.event-popup-header h3 {
+.popup-header h3 {
     font-family: 'Minecraft', monospace;
     font-size: 1.5rem;
     color: var(--halloween-orange-1);
@@ -60,7 +60,7 @@
     line-height: 1;
 }
 
-.event-popup-body {
+.popup-body {
     color: #fff;
 }
 
@@ -96,8 +96,9 @@
 }
 
 .forum-category {
-    background: #000;
-    border: 2px solid var(--halloween-orange-2);
+    background-color: var(--bg-secondary);
+    border: 2px solid transparent;
+    color: var(--text-secondary);
     border-radius: 8px;
     padding: 25px;
     transition: all 0.3s ease;
@@ -105,7 +106,7 @@
 
 .forum-category:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(255, 102, 0, 0.2);
+    box-shadow: 0 5px 20px rgb(0 255 231 / 20%);
 }
 
 .category-header {
@@ -118,7 +119,7 @@
 .category-icon {
     width: 40px;
     height: 40px;
-    background: var(--halloween-orange-2);
+    background: var(--minecraft-green);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -203,7 +204,7 @@
 .forums-page {
     padding-top: 150px;
     min-height: 100vh;
-    background: #000;
+    background: var(--bg-primary);
 }
 
 .forum-actions {
@@ -252,7 +253,7 @@
 
 .topic-preview {
     word-wrap: break-word;
-    color: #fff;
+    color: var(--text-secondary);
     margin-bottom: 15px;
     line-height: 1.6;
 }

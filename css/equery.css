@@ -789,6 +789,7 @@ span.qsw {float: left;padding-top: 16px;}
   .e-collapse {display: block !important;width: initial;}
   .e-collapse-width {width: initial;}
   .e-hide-large {display: none !important;}
+  .e-show-large {display: block !important}
 }
 @media (min-width: 768px) {
   .e-col.m1 {width: 8.33333%}
@@ -803,6 +804,8 @@ span.qsw {float: left;padding-top: 16px;}
   .e-col.m10 {width: 83.33333%}
   .e-col.m11 {width: 91.66666%}
   .e-col.m12 {width: 99.99999%}
+  .e-hide-medium {display: none !important}
+  .e-show-medium {display: block !important}
   #main.e-main .item-content .e-item.banner a .description {top: 20px;}
   #main.e-main .item-content .e-item.post a .description {font-size: 3.05981vw;}
 }
@@ -819,14 +822,8 @@ span.qsw {float: left;padding-top: 16px;}
   .e-col.sm10 {width: 83.33333%}
   .e-col.sm11 {width: 91.66666%}
   .e-col.sm12 {width: 99.99999%}
-}
-
-@media (max-width: 576px) {
   .e-hide-small {display: none !important}
-}
-
-@media (max-width:786px) {
-  .e-hide-medium {display:none!important;}
+  .e-show-small {display: block !important}
 }
 
 @media (max-width: 993px) {
