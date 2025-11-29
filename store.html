@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SurfNetwork Store </title>
+    <title>SurfNetwork Store</title>
     <meta name="description" content="Join SurfNetwork - The ultimate Minecraft server experience with custom maps, ranks, and amazing community!">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,35 +28,276 @@
                 <div class="section-subtitle">Support the server and unlock exclusive perks!</div>
             </div>
 
-            <div class="store-categories">
-                <button class="category-btn active" data-category="ranks">
-                    <span class="btn-icon"><span class="material-symbols-outlined">ranks</span></span>
+            <div class="store-categories" role="tablist" aria-label="Store categories">
+                <button class="category-btn active" data-category="ranks" role="tab" aria-selected="true" aria-controls="store-grid">
+                    <span class="btn-icon" aria-hidden="true">
+                        <!-- Crown SVG -->
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 11l2.5-5L12 10l4.5-4L19 11l-7 9-7-9z"/></svg>
+                    </span>
                     <span class="btn-text">Ranks</span>
                 </button>
-                <button class="category-btn" data-category="coins">
-                    <span class="btn-icon"><span class="material-symbols-outlined">cash</span></span>
+                <button class="category-btn" data-category="coins" role="tab" aria-selected="false" aria-controls="store-grid">
+                    <span class="btn-icon" aria-hidden="true">
+                        <!-- Coin SVG -->
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M9 9h6v6H9z" fill="#fff"></path></svg>
+                    </span>
                     <span class="btn-text">Coins</span>
                 </button>
-                <button class="category-btn" data-category="cosmetics">
-                    <span class="btn-icon"><span class="material-symbols-outlined">cosmetics</span></span>
+                <button class="category-btn" data-category="cosmetics" role="tab" aria-selected="false" aria-controls="store-grid">
+                    <span class="btn-icon" aria-hidden="true">
+                        <!-- Palette SVG -->
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10c0-5.523-4.477-10-10-10zm-1 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm4 4a1 1 0 1 1 .001 1.999A1 1 0 0 1 15 12zM8 11a1 1 0 1 1 .001 1.999A1 1 0 0 1 8 11z"/></svg>
+                    </span>
                     <span class="btn-text">Cosmetics</span>
                 </button>
-                <button class="category-btn" data-category="boosters">
-                    <span class="btn-icon"><span class="material-symbols-outlined">bolt</span></span>
+                <button class="category-btn" data-category="boosters" role="tab" aria-selected="false" aria-controls="store-grid">
+                    <span class="btn-icon" aria-hidden="true">
+                        <!-- Bolt SVG -->
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L3 14h7l-1 8L21 10h-7l-1-8z"/></svg>
+                    </span>
                     <span class="btn-text">Boosters</span>
                 </button>
             </div>
 
-            <div class="store-grid" id="store-grid" data-item-count="100">
+            <div class="store-grid" id="store-grid" data-item-count="0" role="region" aria-live="polite">
+                <!-- Items will be injected here -->
             </div>
         </div>
     </section>
     
+    <!-- Checkout Modal (hidden by default; uses your site's CSS if available) -->
+    <div id="checkout-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+        <div class="modal-backdrop" data-modal-backdrop></div>
+        <div class="modal-dialog" role="document">
+            <header class="modal-header">
+                <h3 id="checkout-title">Checkout</h3>
+                <button class="modal-close" data-modal-close aria-label="Close">×</button>
+            </header>
+            <div class="modal-body" id="checkout-body">
+                <!-- Populated by JS -->
+                <div class="checkout-item">
+                    <img id="checkout-image" src="" alt="" style="max-width:120px;">
+                    <div>
+                        <h4 id="checkout-name"></h4>
+                        <p id="checkout-desc" class="small-meta"></p>
+                        <p id="checkout-duration" class="small-meta"></p>
+                    </div>
+                </div>
+                <div class="checkout-summary" style="margin-top:12px;">
+                    <p>Total: <strong id="checkout-price"></strong></p>
+                </div>
+                <div class="checkout-steps" style="margin-top:12px;">
+                    <label for="checkout-ign">Minecraft IGN:</label>
+                    <input id="checkout-ign" name="ign" type="text" placeholder="Your in-game name" />
+                </div>
+            </div>
+            <footer class="modal-footer">
+                <button class="btn btn-secondary" data-modal-cancel>Cancel</button>
+                <button class="btn btn-primary" id="checkout-confirm">Confirm Purchase</button>
+            </footer>
+        </div>
+    </div>
+
     <!-- Contact Section -->
     <section id="contact" class="contact" include-html="./contact.html"></section>
 
     <footer class="footer" include-html="./footer.html"></footer>
 
     <script type="module" src="./js/script.js"></script>
+
+    <script>
+    // Client-side store renderer, category filtering and checkout modal
+    (function () {
+        const storeGrid = document.getElementById('store-grid');
+        const categoryButtons = Array.from(document.querySelectorAll('.category-btn'));
+
+        // Example items - replace/add your real store items here or fetch from an API
+        const items = [
+            // Ranks
+            { id: 'rank-vip', category: 'ranks', title: 'VIP', price: '5.00', currency: 'USD', duration: 'Permanent', description: 'VIP rank with access to exclusive servers and commands.', image: 'https://via.placeholder.com/640x360.png?text=VIP+Rank' },
+            { id: 'rank-pro', category: 'ranks', title: 'Pro', price: '12.00', currency: 'USD', duration: 'Permanent', description: 'Pro rank - all VIP perks + special prefix.', image: 'https://via.placeholder.com/640x360.png?text=Pro+Rank' },
+            { id: 'rank-legend', category: 'ranks', title: 'Legend', price: '25.00', currency: 'USD', duration: 'Permanent', description: 'Legend rank with custom titles, particles and more.', image: 'https://via.placeholder.com/640x360.png?text=Legend+Rank' },
+
+            // Coins
+            { id: 'coins-500', category: 'coins', title: '500 Coins', price: '1.99', currency: 'USD', description: 'In-game currency pack.', image: 'https://via.placeholder.com/640x360.png?text=500+Coins' },
+            { id: 'coins-2500', category: 'coins', title: '2,500 Coins', price: '7.49', currency: 'USD', description: 'Best value coin pack.', image: 'https://via.placeholder.com/640x360.png?text=2500+Coins' },
+
+            // Cosmetics
+            { id: 'cosmetic-trail', category: 'cosmetics', title: 'Sparkle Trail', price: '2.99', currency: 'USD', description: 'A sparkling trail behind your player.', image: 'https://via.placeholder.com/640x360.png?text=Sparkle+Trail' },
+            { id: 'cosmetic-hat', category: 'cosmetics', title: 'Dragon Hat', price: '3.99', currency: 'USD', description: 'A fierce dragon-styled hat for your avatar.', image: 'https://via.placeholder.com/640x360.png?text=Dragon+Hat' },
+
+            // Boosters
+            { id: 'booster-xp-2h', category: 'boosters', title: 'XP Booster (2h)', price: '1.49', currency: 'USD', description: 'Double XP for 2 hours.', image: 'https://via.placeholder.com/640x360.png?text=XP+Booster' },
+            { id: 'booster-coin-24h', category: 'boosters', title: 'Coin Booster (24h)', price: '4.99', currency: 'USD', description: 'Double coins for 24 hours.', image: 'https://via.placeholder.com/640x360.png?text=Coin+Booster' }
+        ];
+
+        // Favorites persisted in localStorage
+        const favKey = 'surf_store_favs_v1';
+        const favorites = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
+
+        function saveFavs() {
+            localStorage.setItem(favKey, JSON.stringify([...favorites]));
+        }
+
+        // Modal elements
+        const modal = document.getElementById('checkout-modal');
+        const modalBackdrop = modal.querySelector('[data-modal-backdrop]');
+        const modalClose = modal.querySelector('[data-modal-close]');
+        const modalCancel = modal.querySelector('[data-modal-cancel]');
+        const checkoutConfirm = document.getElementById('checkout-confirm');
+        const checkoutImage = document.getElementById('checkout-image');
+        const checkoutName = document.getElementById('checkout-name');
+        const checkoutDesc = document.getElementById('checkout-desc');
+        const checkoutDuration = document.getElementById('checkout-duration');
+        const checkoutPrice = document.getElementById('checkout-price');
+        const checkoutIGN = document.getElementById('checkout-ign');
+
+        let currentItem = null;
+
+        function openModalForItem(item) {
+            currentItem = item;
+            checkoutImage.src = item.image || '';
+            checkoutImage.alt = item.title || 'Item';
+            checkoutName.textContent = item.title || '';
+            checkoutDesc.textContent = item.description || '';
+            checkoutDuration.textContent = item.duration ? ('Duration: ' + item.duration) : '';
+            checkoutPrice.textContent = (item.currency ? item.currency + ' ' : '') + (item.price || '');
+            checkoutIGN.value = '';
+            showModal();
+        }
+
+        function showModal() {
+            modal.setAttribute('aria-hidden', 'false');
+            modal.classList.add('open');
+            // focus the IGN input for quick purchase
+            setTimeout(() => checkoutIGN.focus(), 50);
+            // trap focus (simple)
+            document.addEventListener('focus', enforceFocus, true);
+            document.addEventListener('keydown', handleKeydown);
+        }
+
+        function hideModal() {
+            modal.setAttribute('aria-hidden', 'true');
+            modal.classList.remove('open');
+            currentItem = null;
+            document.removeEventListener('focus', enforceFocus, true);
+            document.removeEventListener('keydown', handleKeydown);
+        }
+
+        function enforceFocus(e) {
+            if (!modal.contains(e.target)) {
+                e.stopPropagation();
+                checkoutIGN.focus();
+            }
+        }
+
+        function handleKeydown(e) {
+            if (e.key === 'Escape') hideModal();
+        }
+
+        modalBackdrop.addEventListener('click', hideModal);
+        modalClose.addEventListener('click', hideModal);
+        modalCancel.addEventListener('click', (ev) => { ev.preventDefault(); hideModal(); });
+
+        checkoutConfirm.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            if (!currentItem) return;
+            const ign = checkoutIGN.value && checkoutIGN.value.trim();
+            // Basic validation
+            if (!ign) {
+                alert('Please enter your Minecraft IGN before confirming the purchase.');
+                checkoutIGN.focus();
+                return;
+            }
+            // Placeholder: integrate with your payment/checkout provider
+            // Example flows:
+            // 1) Redirect to your checkout endpoint with item id and IGN:
+            //    window.location.href = `/checkout?item=${encodeURIComponent(currentItem.id)}&ign=${encodeURIComponent(ign)}`;
+            // 2) Open payment modal from third-party (Stripe/Tebex) with required metadata
+            // For now show a confirmation and close modal
+            alert('Purchase request submitted for ' + currentItem.title + ' (IGN: ' + ign + '). Integrate your checkout flow here.');
+            hideModal();
+        });
+
+        function renderItems(filterCategory = 'ranks') {
+            storeGrid.innerHTML = '';
+            const filtered = items.filter(it => it.category === filterCategory);
+            storeGrid.setAttribute('data-item-count', filtered.length);
+            if (filtered.length === 0) {
+                storeGrid.innerHTML = '<p class="small-meta">No items found in this category.</p>';
+                return;
+            }
+
+            filtered.forEach(it => {
+                const card = document.createElement('article');
+                card.className = 'store-card';
+                card.setAttribute('data-id', it.id);
+                card.innerHTML = `
+                    <img src="${it.image}" alt="${escapeHtml(it.title)}">
+                    <div class="card-body">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <h3>${escapeHtml(it.title)} <span class="price-badge">${escapeHtml(it.currency)} ${escapeHtml(it.price)}</span></h3>
+                        </div>
+                        <p class="small-meta">${it.duration ? escapeHtml(it.duration) : ''}</p>
+                        <p class="card-desc">${escapeHtml(it.description)}</p>
+                        <div class="card-actions">
+                            <button class="fav-btn" title="Favorite" aria-pressed="${favorites.has(it.id) ? 'true' : 'false'}">${favorites.has(it.id) ? '♥' : '♡'}</button>
+                            <a class="buy-btn" href="#" data-item-id="${it.id}">Buy</a>
+                        </div>
+                    </div>
+                `;
+                // favorite toggle
+                const favBtn = card.querySelector('.fav-btn');
+                favBtn.addEventListener('click', () => {
+                    if (favorites.has(it.id)) {
+                        favorites.delete(it.id);
+                        favBtn.textContent = '♡';
+                        favBtn.setAttribute('aria-pressed', 'false');
+                    } else {
+                        favorites.add(it.id);
+                        favBtn.textContent = '♥';
+                        favBtn.setAttribute('aria-pressed', 'true');
+                    }
+                    saveFavs();
+                });
+
+                // Buy handler opens modal
+                const buyBtn = card.querySelector('.buy-btn');
+                buyBtn.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    openModalForItem(it);
+                });
+
+                storeGrid.appendChild(card);
+            });
+        }
+
+        // Escape helper
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // Category button events
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryButtons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected','true');
+                renderItems(btn.dataset.category);
+            });
+        });
+
+        // initial render - use active or fallback
+        const active = document.querySelector('.category-btn.active');
+        const startCategory = active ? active.dataset.category : 'ranks';
+        renderItems(startCategory);
+    })();
+    </script>
 </body>
 </html>
