@@ -11,6 +11,64 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
     <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        /* Animations and layout improvements only inside this file (no external CSS changed) */
+        :root {
+            --card-bg: #071025;
+            --card-radius: 12px;
+            --card-ease: cubic-bezier(.2,.9,.25,1);
+        }
+
+        /* Categories */
+        .store-categories { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; align-items:center; }
+        .category-btn { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:transparent; border:1px solid rgba(255,255,255,0.06); color:inherit; transition:transform .18s var(--card-ease), box-shadow .18s var(--card-ease), background .18s var(--card-ease); cursor:pointer; }
+        .category-btn:hover { transform:translateY(-3px) scale(1.01); box-shadow:0 8px 20px rgba(2,6,23,.45); }
+        .category-btn.active { background:linear-gradient(90deg,#6dd3ff33,#9b7bff33); box-shadow: 0 10px 30px rgba(124,58,237,0.12); }
+        .category-btn .btn-icon { display:inline-flex; width:20px; height:20px; align-items:center; justify-content:center; }
+
+        /* Grid and cards */
+        .store-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; align-items:stretch; }
+        .store-card { background:var(--card-bg); border-radius:var(--card-radius); overflow:hidden; color:#e6eef8; display:flex; flex-direction:column; min-height:320px; box-shadow: 0 6px 18px rgba(2,6,23,.6); transform-origin:center; transition: transform .25s var(--card-ease), box-shadow .25s var(--card-ease); will-change:transform; opacity:0; animation:cardIn .46s var(--card-ease) both; animation-delay: calc(var(--i) * 80ms); }
+        .store-card:hover { transform:translateY(-8px) scale(1.02); box-shadow: 0 18px 42px rgba(2,6,23,.7); }
+
+        .store-card img { width:100%; height:140px; object-fit:cover; display:block; transition:transform .45s var(--card-ease); }
+        .store-card:hover img { transform: scale(1.06); }
+
+        .card-body { padding:12px 14px; display:flex; flex-direction:column; gap:8px; flex:1 1 auto; }
+        .card-body h3 { margin:0; font-size:1.05rem; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+        .price-badge { background:rgba(255,255,255,0.06); padding:6px 8px; border-radius:8px; font-weight:700; font-size:.95rem; color:#fff; }
+        .card-desc { margin:0; color:#b8c6d8; font-size:.92rem; line-height:1.25; min-height:2.6em; }
+        .card-actions { display:flex; gap:8px; margin-top:auto; align-items:center; }
+        .buy-btn { margin-left:auto; background:linear-gradient(90deg,#10b981,#06b6d4); color:#fff; padding:8px 12px; border-radius:10px; text-decoration:none; font-weight:700; transition:transform .15s var(--card-ease); }
+        .buy-btn:hover { transform:translateY(-3px) scale(1.02); }
+        .fav-btn { background:transparent; border:0; color:#ff7aa2; cursor:pointer; font-size:18px; transition:transform .12s var(--card-ease); }
+        .fav-btn:active { transform:scale(.9); }
+        .small-meta { font-size:.85rem; color:#9fb0c8; }
+
+        /* Modal animations & layout */
+        #checkout-modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:1200; pointer-events:none; }
+        #checkout-modal .modal-backdrop { position:absolute; inset:0; background:rgba(2,6,23,.6); opacity:0; transition:opacity .28s var(--card-ease); pointer-events:none; }
+        #checkout-modal .modal-dialog { width:100%; max-width:720px; margin:20px; background:linear-gradient(180deg,#071225,#0b1b2b); border-radius:12px; transform:translateY(8px) scale(.98); opacity:0; transition:transform .28s var(--card-ease), opacity .28s var(--card-ease); box-shadow:0 18px 60px rgba(2,6,23,.7); position:relative; pointer-events:auto; overflow:hidden; }
+        #checkout-modal.open .modal-backdrop { opacity:1; pointer-events:auto; }
+        #checkout-modal.open .modal-dialog { transform:translateY(0) scale(1); opacity:1; }
+        .modal-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,0.03); }
+        .modal-body { padding:14px 16px; display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+        .checkout-item img { border-radius:8px; width:120px; height:80px; object-fit:cover; flex-shrink:0; }
+        .modal-footer { display:flex; gap:10px; padding:12px 16px; border-top:1px solid rgba(255,255,255,0.03); justify-content:flex-end; }
+
+        /* small screens tweak */
+        @media (max-width:520px) {
+            .store-card { min-height:300px; }
+            .card-body h3 { font-size:1rem; }
+            .checkout-item img { width:110px; height:70px; }
+            .modal-dialog { margin:12px; }
+        }
+
+        @keyframes cardIn {
+            from { transform:translateY(10px) scale(.995); opacity:0; }
+            to   { transform:translateY(0) scale(1); opacity:1; }
+        }
+    </style>
 </head>
 
 <body>
@@ -31,28 +89,24 @@
             <div class="store-categories" role="tablist" aria-label="Store categories">
                 <button class="category-btn active" data-category="ranks" role="tab" aria-selected="true" aria-controls="store-grid">
                     <span class="btn-icon" aria-hidden="true">
-                        <!-- Crown SVG -->
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 11l2.5-5L12 10l4.5-4L19 11l-7 9-7-9z"/></svg>
                     </span>
                     <span class="btn-text">Ranks</span>
                 </button>
                 <button class="category-btn" data-category="coins" role="tab" aria-selected="false" aria-controls="store-grid">
                     <span class="btn-icon" aria-hidden="true">
-                        <!-- Coin SVG -->
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M9 9h6v6H9z" fill="#fff"></path></svg>
                     </span>
                     <span class="btn-text">Coins</span>
                 </button>
                 <button class="category-btn" data-category="cosmetics" role="tab" aria-selected="false" aria-controls="store-grid">
                     <span class="btn-icon" aria-hidden="true">
-                        <!-- Palette SVG -->
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10c0-5.523-4.477-10-10-10zm-1 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm4 4a1 1 0 1 1 .001 1.999A1 1 0 0 1 15 12zM8 11a1 1 0 1 1 .001 1.999A1 1 0 0 1 8 11z"/></svg>
                     </span>
                     <span class="btn-text">Cosmetics</span>
                 </button>
                 <button class="category-btn" data-category="boosters" role="tab" aria-selected="false" aria-controls="store-grid">
                     <span class="btn-icon" aria-hidden="true">
-                        <!-- Bolt SVG -->
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L3 14h7l-1 8L21 10h-7l-1-8z"/></svg>
                     </span>
                     <span class="btn-text">Boosters</span>
@@ -74,21 +128,31 @@
                 <button class="modal-close" data-modal-close aria-label="Close">×</button>
             </header>
             <div class="modal-body" id="checkout-body">
-                <!-- Populated by JS -->
-                <div class="checkout-item">
-                    <img id="checkout-image" src="" alt="" style="max-width:120px;">
-                    <div>
-                        <h4 id="checkout-name"></h4>
-                        <p id="checkout-desc" class="small-meta"></p>
-                        <p id="checkout-duration" class="small-meta"></p>
+                <div class="checkout-item" style="display:flex;gap:12px;align-items:flex-start;">
+                    <img id="checkout-image" src="" alt="" style="max-width:120px;border-radius:8px;">
+                    <div style="min-width:0;">
+                        <h4 id="checkout-name" style="margin:0 0 6px 0;"></h4>
+                        <p id="checkout-desc" class="small-meta" style="margin:0 0 6px 0;"></p>
+                        <p id="checkout-duration" class="small-meta" style="margin:0;"></p>
                     </div>
                 </div>
+
+                <!-- Payment provider selection (Tebex enabled by default) -->
+                <div style="margin-top:12px;">
+                    <label style="display:block;margin-bottom:6px;">Payment provider</label>
+                    <select id="payment-provider" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;">
+                        <option value="tebex" selected>Tebex (recommended)</option>
+                        <option value="stripe" disabled>Stripe (disabled in this build)</option>
+                    </select>
+                    <small class="small-meta" style="display:block;margin-top:8px;">You will be redirected to the Tebex checkout to complete payment.</small>
+                </div>
+
                 <div class="checkout-summary" style="margin-top:12px;">
                     <p>Total: <strong id="checkout-price"></strong></p>
                 </div>
                 <div class="checkout-steps" style="margin-top:12px;">
                     <label for="checkout-ign">Minecraft IGN:</label>
-                    <input id="checkout-ign" name="ign" type="text" placeholder="Your in-game name" />
+                    <input id="checkout-ign" name="ign" type="text" placeholder="Your in-game name" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;margin-top:6px;" />
                 </div>
             </div>
             <footer class="modal-footer">
@@ -106,10 +170,34 @@
     <script type="module" src="./js/script.js"></script>
 
     <script>
-    // Client-side store renderer, category filtering and checkout modal
+    // Tebex configuration
+    // TODO: Replace with your actual Tebex store domain (the domain of your Tebex store)
+    // Example: const TEBEX_STORE_URL = 'https://yourstore.tebex.io';
+    const TEBEX_STORE_URL = 'https://yourstore.tebex.io';
+
+    // Map itemId (as used in the frontend items list) to Tebex package identifier (slug or numeric ID).
+    // Replace the right-hand values with the package IDs or slugs from your Tebex store.
+    const ITEM_TO_TEBEX = {
+        'rank-vip': '12345',        // replace with your Tebex package id or slug
+        'rank-pro': '12346',
+        'rank-legend': '12347',
+        'coins-500': 'coins-500',
+        'coins-2500': 'coins-2500',
+        'cosmetic-trail': 'sparkle-trail',
+        'cosmetic-hat': 'dragon-hat',
+        'booster-xp-2h': 'xp-2h',
+        'booster-coin-24h': 'coin-24h'
+    };
+    </script>
+
+    <script>
+    // Client-side store renderer, category filtering and Tebex checkout redirect
     (function () {
         const storeGrid = document.getElementById('store-grid');
         const categoryButtons = Array.from(document.querySelectorAll('.category-btn'));
+        const paymentProviderSelect = document.getElementById('payment-provider');
+        const checkoutConfirm = document.getElementById('checkout-confirm');
+        const checkoutIGN = document.getElementById('checkout-ign');
 
         // Example items - replace/add your real store items here or fetch from an API
         const items = [
@@ -144,24 +232,20 @@
         const modalBackdrop = modal.querySelector('[data-modal-backdrop]');
         const modalClose = modal.querySelector('[data-modal-close]');
         const modalCancel = modal.querySelector('[data-modal-cancel]');
-        const checkoutConfirm = document.getElementById('checkout-confirm');
-        const checkoutImage = document.getElementById('checkout-image');
-        const checkoutName = document.getElementById('checkout-name');
-        const checkoutDesc = document.getElementById('checkout-desc');
-        const checkoutDuration = document.getElementById('checkout-duration');
-        const checkoutPrice = document.getElementById('checkout-price');
-        const checkoutIGN = document.getElementById('checkout-ign');
 
         let currentItem = null;
+        // Expose currentItem for optional server flows / stripe compatibility
+        window.currentItem = null;
 
         function openModalForItem(item) {
             currentItem = item;
-            checkoutImage.src = item.image || '';
-            checkoutImage.alt = item.title || 'Item';
-            checkoutName.textContent = item.title || '';
-            checkoutDesc.textContent = item.description || '';
-            checkoutDuration.textContent = item.duration ? ('Duration: ' + item.duration) : '';
-            checkoutPrice.textContent = (item.currency ? item.currency + ' ' : '') + (item.price || '');
+            window.currentItem = item; // expose globally (used by other integrations)
+            document.getElementById('checkout-image').src = item.image || '';
+            document.getElementById('checkout-image').alt = item.title || 'Item';
+            document.getElementById('checkout-name').textContent = item.title || '';
+            document.getElementById('checkout-desc').textContent = item.description || '';
+            document.getElementById('checkout-duration').textContent = item.duration ? ('Duration: ' + item.duration) : '';
+            document.getElementById('checkout-price').textContent = (item.currency ? item.currency + ' ' : '') + (item.price || '');
             checkoutIGN.value = '';
             showModal();
         }
@@ -169,9 +253,7 @@
         function showModal() {
             modal.setAttribute('aria-hidden', 'false');
             modal.classList.add('open');
-            // focus the IGN input for quick purchase
             setTimeout(() => checkoutIGN.focus(), 50);
-            // trap focus (simple)
             document.addEventListener('focus', enforceFocus, true);
             document.addEventListener('keydown', handleKeydown);
         }
@@ -180,6 +262,7 @@
             modal.setAttribute('aria-hidden', 'true');
             modal.classList.remove('open');
             currentItem = null;
+            window.currentItem = null;
             document.removeEventListener('focus', enforceFocus, true);
             document.removeEventListener('keydown', handleKeydown);
         }
@@ -199,24 +282,47 @@
         modalClose.addEventListener('click', hideModal);
         modalCancel.addEventListener('click', (ev) => { ev.preventDefault(); hideModal(); });
 
+        // Tebex redirect flow on confirm
         checkoutConfirm.addEventListener('click', (ev) => {
             ev.preventDefault();
-            if (!currentItem) return;
+            if (!currentItem && !window.currentItem) {
+                alert('No item selected.');
+                return;
+            }
+            const selectedItem = currentItem || window.currentItem;
             const ign = checkoutIGN.value && checkoutIGN.value.trim();
-            // Basic validation
             if (!ign) {
                 alert('Please enter your Minecraft IGN before confirming the purchase.');
                 checkoutIGN.focus();
                 return;
             }
-            // Placeholder: integrate with your payment/checkout provider
-            // Example flows:
-            // 1) Redirect to your checkout endpoint with item id and IGN:
-            //    window.location.href = `/checkout?item=${encodeURIComponent(currentItem.id)}&ign=${encodeURIComponent(ign)}`;
-            // 2) Open payment modal from third-party (Stripe/Tebex) with required metadata
-            // For now show a confirmation and close modal
-            alert('Purchase request submitted for ' + currentItem.title + ' (IGN: ' + ign + '). Integrate your checkout flow here.');
-            hideModal();
+
+            const provider = paymentProviderSelect.value || 'tebex';
+            if (provider === 'tebex') {
+                // find mapping
+                const tebexPkg = ITEM_TO_TEBEX[selectedItem.id];
+                if (!TEBEX_STORE_URL || TEBEX_STORE_URL === 'https://yourstore.tebex.io') {
+                    // developer reminder to set store domain
+                    const ok = confirm('TEBEX_STORE_URL is not configured in the page. Do you want to continue (you will be redirected to a placeholder)? Press Cancel to configure the store domain.');
+                    if (!ok) return;
+                }
+                if (!tebexPkg) {
+                    alert('This item is not mapped to a Tebex package yet. Please contact the server admin.');
+                    return;
+                }
+                // Build Tebex package URL
+                // Tebex package URLs are typically yourstore.tebex.io/package/<package-id-or-slug>
+                // We'll add a 'player' query param as many Tebex stores accept this to prefill the player name.
+                const base = TEBEX_STORE_URL.replace(/\/$/, '');
+                const url = `${base}/package/${encodeURIComponent(tebexPkg)}?player=${encodeURIComponent(ign)}`;
+
+                // redirect the user to Tebex hosted checkout
+                window.location.href = url;
+                return;
+            }
+
+            // other providers (Stripe path) are disabled in this build
+            alert('Selected payment provider is not available.');
         });
 
         function renderItems(filterCategory = 'ranks') {
@@ -228,9 +334,10 @@
                 return;
             }
 
-            filtered.forEach(it => {
+            filtered.forEach((it, index) => {
                 const card = document.createElement('article');
                 card.className = 'store-card';
+                card.style.setProperty('--i', index); // used for staggered animation-delay
                 card.setAttribute('data-id', it.id);
                 card.innerHTML = `
                     <img src="${it.image}" alt="${escapeHtml(it.title)}">
