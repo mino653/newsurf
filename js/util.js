@@ -1,7 +1,7 @@
 import './equery.js';
 import './music-generator.js';
 
-const apiURL = 'http://surfnetwork-api.onrender.com';
+const apiURL = 'http://localhost:5729';
 let localDB = new EQuery.Storage('surfnetwork-localdb');
 let state, dbReady = false, onDBReady = [];
 localDB.init(() => {
@@ -116,7 +116,7 @@ async function fetchWithTimeout(url, options = {}, timeout = 5000) {
     clearTimeout(id);
 
     if (!response.ok) {
-        showMessage(`HTTP error! status: ${response.status}`, 'error');
+        showMessage(`HTTP error! status: ${response.status}, ${apiURL}${url}`, 'error');
     }
     return response.json();
 }

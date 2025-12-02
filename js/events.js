@@ -17,6 +17,7 @@ async function initEvents() {
         if (response.detail !== undefined) {
             showMessage(`Failed to fetch events: ${response.detail}`, 'error');
         } else {
+            if (response.length == 0) return;
             events = response;
         }
     } catch (e) {
@@ -32,7 +33,7 @@ async function initEvents() {
         const datetime = new Date(event.datetime);
         const btn = hasJoined ? EQuery.elemt('button', 'Joined', 'minecraft-btn joined', {disabled: true}) : EQuery.elemt('button', 'Join Event', 'minecraft-btn')
         const image = EQuery.elemt('div', [
-            EQuery.elemt('img').attr({src: event.imgSrc, alt: event.imgSlt}),
+            EQuery.elemt('img').attr({src: event.imgSrc, alt: event.imgAlt}),
             EQuery.elemt('div', [EQuery.elemt('span', datetime.getDay(), 'day'), EQuery.elemt('span', months[datetime.getMonth()], 'month')], 'event-date')
         ], 'event-imaeg');
         const content = EQuery.elemt('div', [

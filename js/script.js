@@ -13,7 +13,7 @@ import { initForum, updateForumList } from './forums.js';
 import { initCartPage, appendShopProducts } from './cart.js';
 
 EQuery(async function () {
-    EQuery.includeHTML();
+    EQuery.includeHTML(initThemeToggle);
     initLoadingScreen();
     initContactForm();
 
@@ -58,7 +58,6 @@ EQuery(async function () {
     function initThemeToggle() {
         const themeToggle = EQuery('#theme-toggle');
         const themeIcon = themeToggle.find('.theme-icon');
-        console.log(themeToggle)
 
         // Load saved theme
         const savedTheme = localStorage.getItem('theme') || 'light';
@@ -109,7 +108,6 @@ EQuery(async function () {
                 initStore();
                 initScrollAnimations();
                 initNavigation();
-                initThemeToggle();
                 initAdminList();
                 initAdminMessages();
                 initServerStats();
@@ -853,21 +851,22 @@ EQuery(async function () {
             showMessage(`Failed to fetch admin list: ${e}`, 'error');
         }
         amdinList.forEach(admin => {
+            let badges = [];
+
+            for (let j = 0;j < admin.badges.length;j++) {
+                badges.push(EQuery.elemt('span', admin.badges[j].content, `badge ${admin.badges[j].badgeType}`));
+            }
             let elt = EQuery.elemt('div', [
                 EQuery.elemt('div', [
-                    EQuery.elemt('img', null, 'avatar-img members-staff-av e-round-medium', {src: page.imageSource}),
+                    EQuery.elemt('img', null, 'avatar-img members-staff-av e-round-medium', {src: admin.imageSource}),
                     EQuery.elemt('div', [
                         EQuery.elemt('span', [
-                            page.name,
+                            admin.name,
                             ...badges
-                        ], 'username', null, `color: ${page.assentColor}`),
-                        EQuery.elemt('div', [EQuery.elemt('span', page.playerDetails, 'ui e-opacity e-small')], 'description')
+                        ], 'username', null, `color: ${admin.assentColor}`),
+                        EQuery.elemt('div', [EQuery.elemt('span', admin.playerDetails, 'ui e-opacity e-small')], 'description')
                     ], 'flex-grow-1')
-                ], 'e-flex list-header'),
-                EQuery.elemt('div', [
-                    EQuery.elemt('div', page.messageContent, 'admin-message'),
-                    EQuery.elemt('div', page.timeDiff, 'message-details e-small e-opacity')
-                ], 'list-content')
+                ], 'e-flex list-header')
             ], 'e-marin-bottom list-container');
             list.append(elt);
         });

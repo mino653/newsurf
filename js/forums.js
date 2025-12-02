@@ -214,7 +214,7 @@ async function loadForum(query) {
 function createTopicElement(id, category, title, content, timeString, author, replies) {
     const topic = EQuery.elemt('div', null, 'forum-topic');
     topic.html(`<div class="topic-header"><h4>${title}</h4><span class="topic-time">${timeString}</span></div><div class="topic-preview">${content.substring(0, 100)}${content.length > 100 ? '...' : ''}</div><div class="topic-footer"><span class="topic-author">Posted by ${author}</span><span class="topic-stats">${replies} ${replies === 1 ? 'reply' : 'replies'}</span></div>`)
-    topic.click(() => redirect(`?forum_id=${id}&category=${category}`));
+    topic.click(() => { if (window.location.pathname.indexOf('forums.html') !== -1) redirect(`?forum_id=${id}&category=${category}`) });
 
     return topic;
 }
@@ -223,7 +223,6 @@ async function updateForumList() {
     try {
         let response = await fetchWithTimeout(`/fetch-forum`);
         if (response.detail === undefined) {
-            console.log(response)
             appendForumList(response);
         } else {
             showMessage('Failed to fetch forum list: ' + response.detail.error, 'error');
@@ -243,8 +242,9 @@ function appendForumList(response, index = 3) {
     }
 
     for (let category in forums) {
+        const categoryList = EQuery(`.forum-category[data-category="${category}"] .topics-list`);
+        categoryList.removeChildren();
         forums[category].forEach(q => {
-            const categoryList = EQuery(`.forum-category[data-category="${category}"] .topics-list`);
             categoryList.prepend(createTopicElement(q.id, category, q.topic, q.content, q.time, q.author, q.replies));
         });
     }

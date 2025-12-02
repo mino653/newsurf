@@ -184,8 +184,8 @@ EQuery(function () {
         }
 
         if (validpsw && equalpsw) {
+            const spinner = signupForm.find('.spinner-outer').spinner();
             try {
-                const spinner = signupForm.find('.spinner-outer').spinner();
                 this.disabled = true;
 
                 const requestJSON = {

@@ -218,8 +218,12 @@
 }
 
 .forum-topic {
-    background: #000;
-    border: 1px solid var(--halloween-orange-2);
+    border-image: linear-gradient(to right, #ffffff, #ffffff);
+    background: linear-gradient(var(--bg-primary), var(--bg-primary)), linear-gradient(to left, var(--minecraft-blue), var(--minecraft-green));
+    background-origin: padding-box, border-box;
+    background-repeat: no-repeat;
+    border: 2px solid transparent;
+    color: var(--text-secondary);
     border-radius: 4px;
     padding: 20px;
     margin-bottom: 15px;
@@ -229,7 +233,6 @@
 
 .forum-topic:hover {
     transform: translateX(5px);
-    border-color: var(--halloween-orange-1);
 }
 
 .topic-header {

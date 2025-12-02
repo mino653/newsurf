@@ -198,7 +198,6 @@ async function initCartPage() {
 async function appendShopProducts(size = 20, badge = 'default') {
     let shop = [];
 
-    EQuery('#store-grid').removeChildren();
     EQuery('#store-grid-loading').show().spinner();
 
     try {
@@ -211,9 +210,11 @@ async function appendShopProducts(size = 20, badge = 'default') {
     }
 
     EQuery('#store-grid-loading').hide().find('.e-spinner').remove();
-
+    if (shop.length == 0) return;
+    EQuery('#store-grid').removeChildren();
     for (let i = 0; i < shop.length; i++) {
         const product = shop[i];
+        console.log(product)
         if (i >= size) return;
         if (!product.id || !product.name || !product.price) return;
         if (badge !== 'default' && product.badge.toLowerCase() !== badge) return;
@@ -236,6 +237,7 @@ async function appendShopProducts(size = 20, badge = 'default') {
         button.click(() => {
             addToCart(product, 1);
         });
+        console.log(card)
 
         EQuery('#store-grid').append(card);
     }
