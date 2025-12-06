@@ -4,6 +4,7 @@ import {
     getDB,
     getState,
     clear,
+    redirect,
     showMessage,
     fetchWithTimeout,
     setChunk
@@ -14,13 +15,15 @@ import { initCartPage, appendShopProducts } from './cart.js';
 
 EQuery(async function () {
     EQuery.includeHTML(initThemeToggle);
+    loadTheme();
     initLoadingScreen();
     initContactForm();
 
     let userdata;
     getDB(state => {
-        if (state !== undefined && state.userdata !== undefined) {
+        if (state.userdata !== undefined) {
             userdata = state.userdata;
+            if (!state.userdata.confirm_email && window.location.pathname.indexOf('confirm-email') == -1) redirect('./confirm-email.html');
         }
     });
 
@@ -59,11 +62,6 @@ EQuery(async function () {
         const themeToggle = EQuery('#theme-toggle');
         const themeIcon = themeToggle.find('.theme-icon');
 
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        EQuery(document.documentElement).attr('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-
         // Theme toggle functionality
         themeToggle.click(function () {
             console.log('q')
@@ -80,6 +78,13 @@ EQuery(async function () {
                 EQuery('body').css('transistion: ');
             }, 300);
         });
+    }
+    
+    function loadTheme() {
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        EQuery(document.documentElement).attr('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
     }
 
     function updateThemeIcon(theme) {

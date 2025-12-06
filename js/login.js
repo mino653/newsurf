@@ -18,7 +18,8 @@ EQuery(function () {
     let canShowPsw = false;
 
     getDB(state => {
-        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('/index.html');
+        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('./index.html');
+        else if (!state.userdata.confirm_email) redirect('./confirm-email.html');
     });
 
     showPsw.click(function () {
@@ -106,7 +107,7 @@ EQuery(function () {
             setState(state, function () {
                 info.show().css('animation: slideInDown 0.3s ease').text('Login successful!');
                 error.hide().text('');
-                if (!state.userdata.confirm_email) redirect('/confirm-email.html');
+                if (!state.userdata.confirm_email) redirect('./confirm-email.html');
                 else redirect('./');
             });
         } else {

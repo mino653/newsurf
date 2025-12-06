@@ -1,71 +1,63 @@
-import { fetchWithTimeout, showMessage } from './util';
-import '/js/equery.js';
 import {
     getState,
     getDB,
     setState,
-    redirect
-} from '/js/util.js';
+    redirect,
+    fetchWithTimeout,
+    showMessage
+} from './util.js';
+import './script.js'
 
 EQuery(function () {
-    let verifyForm = EQuery('#verifyCard');
-    let codeField = verifyForm.find('#codeInput');
-    let resendCountdown = verifyForm.find('#resendCountdown');
-    let resendEmail = verifyForm.find('#resendEmail');
-    let submitBtn = verifyForm.find('button[type=submit]');
-    let prompt = verifyForm.find('.input-prompt');
+    const verifyForm = EQuery('#verify-form');
+    const codeField = verifyForm.find('#codeInput');
+    const resendCountdown = verifyForm.find('#resendCountdown');
+    const resendEmail = verifyForm.find('#resendEmail');
+    const submitBtn = verifyForm.find('button[type=submit]');
+    const error = verifyForm.find('#error-message');
+    const info = verifyForm.find('#success-message');
 
     getDB(state => {
-        if (state.userdata == undefined) redirect('/login.html');
-        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('/index.html');
+        if (state.userdata == undefined) redirect('./login.html');
+        if (state.userdata !== undefined && state.userdata.confirm_email) redirect('./index.html');
+        send_email();
     });
-
-    startCountdown();
 
     async function send_email() {
         let spinner = verifyForm.find('.spinner-outer').spinner();
         submitBtn.attr({ disabled: 0 });
 
-        prompt.hide()
-            .removeClass('error')
-            .removeClass('info')
-            .text('');
+        error.hide();
+        info.hide();
+        try {
+            const headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+            
+            const requestOptions = {
+                method: 'POST',
+                headers: headers,
+                redirect: 'follow'
+            };
+            const response = await fetchWithTimeout(`/register/request_confirm_email?user_id=${getState().userdata.id}`, requestOptions) || {};
 
-        let requestJSON = {
-            "user_id": getState().userdata.id
-        };
+            if (response.detail === undefined) {
+                submitBtn.removeAttr('disabled');
 
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        let raw = JSON.stringify(requestJSON);
-        let requestOptions = {
-            method: 'POST',
-            headers: headers,
-            body: raw,
-            redirect: 'follow'
-        };
-        let response = await fetchWithTimeout(`/register/request_confirm_email?user_id=${getState().userdata.id}`, requestOptions);
+                info.show().text('Email has been sent');
 
-        if (response.detail === undefined) {
-            spinner.find('e-spinner').remove();
-            submitBtn.removeAttr('disabled');
-
-            prompt.show()
-                .addClass('info')
-                .text('Email has been sent');
-
-            startCountdown();   
-        } else {
-            spinner.find('e-spinner').remove();
-            submitBtn.removeAttr('disabled');
-            prompt.show()
-                .addClass('error')
-                .text(response.detail.error || "An error occured while processing your request");
+                startCountdown();   
+            } else {
+                submitBtn.removeAttr('disabled');
+                error.show().text(response.detail.error || "An error occured while processing your request");
+            }
+        } catch (e) {
+            showMessage(`Failed to send email: ${e}.`, 'error');
         }
+        spinner.find('.e-spinner').remove();
     }
 
     function startCountdown() {
-        let countdown = 3;
+        let countdown = 30;
 
         resendCountdown.show();
         resendEmail.hide();
@@ -87,53 +79,42 @@ EQuery(function () {
     submitBtn.click(async function (e) {
         e.preventDefault();
 
-        prompt.hide()
-            .removeClass('error')
-            .removeClass('info')
-            .text('');
+        error.hide();
+        info.hide();
 
         if (codeField.val() !== '') {
             let spinner = verifyForm.find('.spinner-outer').spinner();
             let _this = this;
             this.disabled = true;
+            try {
 
-            let requestJSON = {
-                "user_id": getState().userdata.id,
-                "email_code": codeField.val()
-            };
+                const headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+                const requestOptions = {
+                    method: 'POST',
+                    headers: headers,
+                    redirect: 'follow'
+                };
+                const response = await fetchWithTimeout(`/register/confirm_email?user_id=${getState().userdata.id}&email_code=${codeField.val()}`, requestOptions);
 
-            let headers = new Headers();
-            headers.append('Content-Type', 'application/json');
-            let raw = JSON.stringify(requestJSON);
-            let requestOptions = {
-                method: 'POST',
-                headers: headers,
-                body: raw,
-                redirect: 'follow'
-            };
-            let response = await (await fetch(`${apiURL}/register/confirm_email?user_id=${getState().userdata.id}&email_code=${codeField.val()}`, requestOptions)).json().catch(e => {
-                spinner.find('.e-spinner').remove();
-                _this.disabled = false;
-                throw new Error(e)
-            });
-
+                if (response.detail === undefined && response.status == 'success') {
+                    let state = getState();
+                    state.userdata = response.userdata;
+                    setState(state, function () {
+                        error.hide();
+                        info.hide();
+                        redirect('./index.html');
+                    });
+                } else {
+                    info.hide();
+                    error.show().text(response.detail.error);
+                }
+            } catch (e) {
+                showMessage(`Failed verify code: ${e}.`, 'error');
+            }
+            
             spinner.find('.e-spinner').remove();
             this.disabled = false;
-
-            if (response.error === undefined && response.detail === undefined && response.status == 'success') {
-                let state = getState();
-                state.userdata = response.userdata;
-                setState(state, function () {
-                    prompt.hide()
-                        .removeClass('error')
-                        .text('');
-                    redirect('/index.html');
-                });
-            } else {
-                prompt.show()
-                    .addClass('error')
-                    .text(response.error);
-            }
 
         } else {
             codeField.addClass('shake');

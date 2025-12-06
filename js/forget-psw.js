@@ -65,22 +65,17 @@ EQuery(function () {
         }
         
         EQuery(this).css('cursor: not-allowed').attr({disbled: true});
-
-        const requestJSON = {
-            "email": emailField.val(),
-        };
+        
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        const raw = JSON.stringify(requestJSON);
         const requestOptions = {
             method: 'POST',
             headers: headers,
-            body: raw,
             redirect: 'follow'
         };
 
         try {
-            const response = await fetchWithTimeout(`/login/req-psw-reset-email`, requestOptions);
+            const response = await fetchWithTimeout(`/login/req-psw-reset?email=${emailField.val()}`, requestOptions);
             spinner.find('.e-spinner').remove();
 
             if (response.detail === undefined) {

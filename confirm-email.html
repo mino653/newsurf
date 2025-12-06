@@ -1,137 +1,71 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Confirm Email</title>
-
-  <!-- Reuse the repo's stylesheet (includes the 'Minecraft' font-face) -->
-  <link rel="stylesheet" href="styles.css">
-
-  <style>
-    /* Small, focused overrides for this page while relying on the repo's variables & font */
-    :root { --page-card-width: 360px; }
-
-    html,body {
-      height: 100%;
-      margin: 0;
-      font-family: 'Minecraft', monospace;
-      background: var(--bg-hero, #f0f8ff);
-      color: var(--text-primary, #000);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-
-    .center {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .card {
-      width: var(--page-card-width);
-      background: var(--card-bg, #fff);
-      border: 3px solid var(--minecraft-green, #7CB342);
-      box-shadow: 6px 6px 0 var(--minecraft-shadow, rgba(0,0,0,0.25));
-      border-radius: 12px;
-      padding: 22px;
-      text-align: center;
-    }
-
-    .hint {
-      font-size: 12px;
-      letter-spacing: 1px;
-      color: var(--text-secondary, #333);
-      margin-bottom: 12px;
-      display:block;
-    }
-
-    /* Code entry box: square feel, curved edges, ghost placeholder "XXXXXX" */
-    .code-box {
-      width: 100%;
-      height: 64px;
-      border-radius: 10px;
-      border: 2px solid rgba(0,0,0,0.12);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-primary, #fff);
-      margin: 8px 0 18px;
-      box-shadow: 0 2px 0 rgba(0,0,0,0.04) inset;
-    }
-
-    .code-input {
-      width: 100%;
-      height: 100%;
-      padding: 0 18px;
-      border: none;
-      outline: none;
-      background: transparent;
-      text-align: center;
-      font-family: 'Minecraft', monospace;
-      font-size: 22px;
-      letter-spacing: 8px;
-      color: var(--text-primary, #000);
-    }
-
-    /* ghost placeholder style */
-    .code-input::placeholder {
-      color: #cfcfcf;
-      opacity: 1;
-      letter-spacing: 8px;
-    }
-
-    /* Green enter button using repo variables and font */
-    .enter-btn {
-      width: 100%;
-      display: inline-block;
-      padding: 12px 14px;
-      font-family: 'Minecraft', monospace;
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: 1px;
-      background: var(--minecraft-green, #7CB342);
-      color: var(--minecraft-white, #fff);
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 4px 4px 0 var(--minecraft-shadow, rgba(0,0,0,0.25));
-      transition: transform .08s ease, background .12s ease;
-    }
-
-    .enter-btn:active { transform: translateY(2px); box-shadow: 2px 2px 0 var(--minecraft-shadow, rgba(0,0,0,0.25)); }
-    .enter-btn:hover { background: var(--minecraft-dark-green, #558B2F); }
-
-    /* Small note text */
-    .note { font-size: 11px; color: var(--minecraft-gray, #9E9E9E); margin-top:10px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify your Email address - SurfNetwork</title>
+    <meta name="description" content="Login to SurfNetwork - The ultimate Minecraft server experience">
+    <link rel="icon" type="image/x-icon" href="./assets/icon32x32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-  <div class="center">
-    <div class="card" role="main" aria-labelledby="confirm-heading">
-      <span id="confirm-heading" class="hint">Enter code</span>
-
-      <div class="code-box" aria-hidden="false">
-        <!-- single input with ghost placeholder "XXXXXX" to match common site UIs -->
-        <input
-          class="code-input"
-          type="text"
-          inputmode="numeric"
-          maxlength="6"
-          placeholder="XXXXXX"
-          aria-label="Confirmation code"
-          autocomplete="one-time-code"
-          pattern="[0-9]*"
-        />
-      </div>
-
-      <button class="enter-btn" type="button">Enter Code</button>
-
-      <div class="note"> Check spam or request a new code.</div>
-      <div class="note">Didn't receive it?</div>
+    <div class="preloader">
+        <figure> <img src="./assets/icon128x128.png" alt="Icon"> </figure>
     </div>
-  </div>
+
+    <!-- Auth Background -->
+    <div class="auth-background">
+        <div class="minecraft-sky-auth"></div>
+        <div class="auth-particles">
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+            <div class="auth-particle"></div>
+        </div>
+    </div>
+
+    <!-- Back to Home Button -->
+    <a href="./" class="back-to-home"><i class="fi fi-sr-home"></i> Back to Home</a>
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Auth Header -->
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="./assets/icon64x64.png" alt="Logo">
+                    <span class="auth-logo-text">SurfNetwork</span>
+                </div>
+                <p class="auth-subtitle">Verify your email address to activate your account.</p>
+            </div>
+
+            <!-- Verify Form -->
+            <form id="verify-form" class="auth-form">
+                <!-- Error/Success Messages -->
+                <div id="error-message" class="error-message"></div>
+                <div id="success-message" class="success-message"></div>
+                <div class="form-group">
+                    <label class="form-label">Verify:</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input id="codeInput" type="number" class="form-control" name="code" type="text" inputmode="numeric" placeholder="XXXXXX" aria-label="Confirmation code" autocomplete="one-time-code" pattern="[0-9]*" required placeholder="Enter code:" minlength="6" maxlength="6">
+                    </div>
+                    <small class="form-text text-muted">A 6-digit code was sent to the email you provided.</small>
+                    <a id="resendEmail" style="text-decoration: none;color: #ff83657;font-size: 10px;display: none;cursor: pointer">Resend code</a>
+                    <div id="resendCountdown" style="font-family: monospace;color: #1a1a1a;font-size: 10px;display: none;">0s</div>
+                </div>
+                <button type="submit" class="minecraft-btn auth-btn"><div class="spinner-outer"></div> Verify</button>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="./js/confirm-email.js"></script>
 </body>
 </html>
