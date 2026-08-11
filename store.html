@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SurfNetwork Store</title>
     <meta name="description" content="Join SurfNetwork - The ultimate Minecraft server experience with custom maps, ranks, and amazing community!">
-    <link rel="icon" type="image/x-icon" href="./assets/icon32x32.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -17,6 +17,16 @@
             --card-bg: #071025;
             --card-radius: 12px;
             --card-ease: cubic-bezier(.2,.9,.25,1);
+        }
+
+        /* Hide preloader once loaded */
+        .preloader {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         /* Categories */
@@ -46,7 +56,8 @@
         .small-meta { font-size:.85rem; color:#9fb0c8; }
 
         /* Modal animations & layout */
-        #checkout-modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:1200; pointer-events:none; }
+        #checkout-modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1200; pointer-events:none; }
+        #checkout-modal.open { display:flex; }
         #checkout-modal .modal-backdrop { position:absolute; inset:0; background:rgba(2,6,23,.6); opacity:0; transition:opacity .28s var(--card-ease); pointer-events:none; }
         #checkout-modal .modal-dialog { width:100%; max-width:720px; margin:20px; background:linear-gradient(180deg,#071225,#0b1b2b); border-radius:12px; transform:translateY(8px) scale(.98); opacity:0; transition:transform .28s var(--card-ease), opacity .28s var(--card-ease); box-shadow:0 18px 60px rgba(2,6,23,.7); position:relative; pointer-events:auto; overflow:hidden; }
         #checkout-modal.open .modal-backdrop { opacity:1; pointer-events:auto; }
@@ -75,7 +86,10 @@
     <div class="preloader">
         <figure> <img src="./assets/icon128x128.png" alt="Icon"> </figure>
     </div>
-    <script src='https://www.noupe.com/embed/019a110c65f87ab89c4a3on17a0f495e780add.js'></script>
+
+    <!-- Disabled third-party embed script that was causing overlay tint -->
+    <!-- <script src='https://www.noupe.com/embed/019a110c65f87ab89c4a3on17a0f495e780add.js'></script> -->
+
     <nav class="navbar" include-html="./nav.html"></nav>
 
     <!-- Store Section -->
@@ -119,7 +133,7 @@
         </div>
     </section>
     
-    <!-- Checkout Modal (hidden by default; uses your site's CSS if available) -->
+    <!-- Checkout Modal (hidden by default) -->
     <div id="checkout-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
         <div class="modal-backdrop" data-modal-backdrop></div>
         <div class="modal-dialog" role="document">
@@ -170,15 +184,20 @@
     <script type="module" src="./js/script.js"></script>
 
     <script>
+    // Hide preloader when window finishes loading
+    window.addEventListener('load', () => {
+        const preloader = document.querySelector('.preloader');
+        if (preloader) {
+            preloader.classList.add('hidden');
+            setTimeout(() => preloader.style.display = 'none', 300);
+        }
+    });
+
     // Tebex configuration
-    // TODO: Replace with your actual Tebex store domain (the domain of your Tebex store)
-    // Example: const TEBEX_STORE_URL = 'https://yourstore.tebex.io';
     const TEBEX_STORE_URL = 'https://yourstore.tebex.io';
 
-    // Map itemId (as used in the frontend items list) to Tebex package identifier (slug or numeric ID).
-    // Replace the right-hand values with the package IDs or slugs from your Tebex store.
     const ITEM_TO_TEBEX = {
-        'rank-vip': '12345',        // replace with your Tebex package id or slug
+        'rank-vip': '12345',
         'rank-pro': '12346',
         'rank-legend': '12347',
         'coins-500': 'coins-500',
@@ -199,7 +218,6 @@
         const checkoutConfirm = document.getElementById('checkout-confirm');
         const checkoutIGN = document.getElementById('checkout-ign');
 
-        // Example items - replace/add your real store items here or fetch from an API
         const items = [
             // Ranks
             { id: 'rank-vip', category: 'ranks', title: 'VIP', price: '5.00', currency: 'USD', duration: 'Permanent', description: 'VIP rank with access to exclusive servers and commands.', image: 'https://via.placeholder.com/640x360.png?text=VIP+Rank' },
@@ -219,7 +237,6 @@
             { id: 'booster-coin-24h', category: 'boosters', title: 'Coin Booster (24h)', price: '4.99', currency: 'USD', description: 'Double coins for 24 hours.', image: 'https://via.placeholder.com/640x360.png?text=Coin+Booster' }
         ];
 
-        // Favorites persisted in localStorage
         const favKey = 'surf_store_favs_v1';
         const favorites = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
 
@@ -227,19 +244,17 @@
             localStorage.setItem(favKey, JSON.stringify([...favorites]));
         }
 
-        // Modal elements
         const modal = document.getElementById('checkout-modal');
         const modalBackdrop = modal.querySelector('[data-modal-backdrop]');
         const modalClose = modal.querySelector('[data-modal-close]');
         const modalCancel = modal.querySelector('[data-modal-cancel]');
 
         let currentItem = null;
-        // Expose currentItem for optional server flows / stripe compatibility
         window.currentItem = null;
 
         function openModalForItem(item) {
             currentItem = item;
-            window.currentItem = item; // expose globally (used by other integrations)
+            window.currentItem = item;
             document.getElementById('checkout-image').src = item.image || '';
             document.getElementById('checkout-image').alt = item.title || 'Item';
             document.getElementById('checkout-name').textContent = item.title || '';
@@ -282,7 +297,6 @@
         modalClose.addEventListener('click', hideModal);
         modalCancel.addEventListener('click', (ev) => { ev.preventDefault(); hideModal(); });
 
-        // Tebex redirect flow on confirm
         checkoutConfirm.addEventListener('click', (ev) => {
             ev.preventDefault();
             if (!currentItem && !window.currentItem) {
@@ -299,10 +313,8 @@
 
             const provider = paymentProviderSelect.value || 'tebex';
             if (provider === 'tebex') {
-                // find mapping
                 const tebexPkg = ITEM_TO_TEBEX[selectedItem.id];
                 if (!TEBEX_STORE_URL || TEBEX_STORE_URL === 'https://yourstore.tebex.io') {
-                    // developer reminder to set store domain
                     const ok = confirm('TEBEX_STORE_URL is not configured in the page. Do you want to continue (you will be redirected to a placeholder)? Press Cancel to configure the store domain.');
                     if (!ok) return;
                 }
@@ -310,18 +322,13 @@
                     alert('This item is not mapped to a Tebex package yet. Please contact the server admin.');
                     return;
                 }
-                // Build Tebex package URL
-                // Tebex package URLs are typically yourstore.tebex.io/package/<package-id-or-slug>
-                // We'll add a 'player' query param as many Tebex stores accept this to prefill the player name.
                 const base = TEBEX_STORE_URL.replace(/\/$/, '');
                 const url = `${base}/package/${encodeURIComponent(tebexPkg)}?player=${encodeURIComponent(ign)}`;
 
-                // redirect the user to Tebex hosted checkout
                 window.location.href = url;
                 return;
             }
 
-            // other providers (Stripe path) are disabled in this build
             alert('Selected payment provider is not available.');
         });
 
@@ -337,7 +344,7 @@
             filtered.forEach((it, index) => {
                 const card = document.createElement('article');
                 card.className = 'store-card';
-                card.style.setProperty('--i', index); // used for staggered animation-delay
+                card.style.setProperty('--i', index);
                 card.setAttribute('data-id', it.id);
                 card.innerHTML = `
                     <img src="${it.image}" alt="${escapeHtml(it.title)}">
@@ -353,7 +360,6 @@
                         </div>
                     </div>
                 `;
-                // favorite toggle
                 const favBtn = card.querySelector('.fav-btn');
                 favBtn.addEventListener('click', () => {
                     if (favorites.has(it.id)) {
@@ -368,7 +374,6 @@
                     saveFavs();
                 });
 
-                // Buy handler opens modal
                 const buyBtn = card.querySelector('.buy-btn');
                 buyBtn.addEventListener('click', (ev) => {
                     ev.preventDefault();
@@ -379,7 +384,6 @@
             });
         }
 
-        // Escape helper
         function escapeHtml(str) {
             if (!str) return '';
             return String(str)
@@ -390,7 +394,6 @@
                 .replace(/'/g, '&#39;');
         }
 
-        // Category button events
         categoryButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 categoryButtons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
@@ -400,7 +403,6 @@
             });
         });
 
-        // initial render - use active or fallback
         const active = document.querySelector('.category-btn.active');
         const startCategory = active ? active.dataset.category : 'ranks';
         renderItems(startCategory);
