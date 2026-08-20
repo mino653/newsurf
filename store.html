@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SurfNetwork Store</title>
-    <meta name="description" content="Join SurfNetwork - The ultimate Minecraft server experience with custom maps, ranks, and amazing community!">
+    <title>Getting Started - SurfNetwork</title>
+    <meta name="description" content="Getting started guide for SurfNetwork: how to play, controls, building, health, and settings.">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,169 +12,93 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
     <link rel="stylesheet" href="./css/styles.css">
     <style>
-        /* Animations and layout improvements only inside this file (no external CSS changed) */
-        :root {
-            --card-bg: #071025;
-            --card-radius: 12px;
-            --card-ease: cubic-bezier(.2,.9,.25,1);
-        }
-
-        /* Hide preloader once loaded */
-        .preloader {
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        /* Categories */
-        .store-categories { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; align-items:center; }
-        .category-btn { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:transparent; border:1px solid rgba(255,255,255,0.06); color:inherit; transition:transform .18s var(--card-ease), box-shadow .18s var(--card-ease), background .18s var(--card-ease); cursor:pointer; }
-        .category-btn:hover { transform:translateY(-3px) scale(1.01); box-shadow:0 8px 20px rgba(2,6,23,.45); }
-        .category-btn.active { background:linear-gradient(90deg,#6dd3ff33,#9b7bff33); box-shadow: 0 10px 30px rgba(124,58,237,0.12); }
-        .category-btn .btn-icon { display:inline-flex; width:20px; height:20px; align-items:center; justify-content:center; }
-
-        /* Grid and cards */
-        .store-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; align-items:stretch; }
-        .store-card { background:var(--card-bg); border-radius:var(--card-radius); overflow:hidden; color:#e6eef8; display:flex; flex-direction:column; min-height:320px; box-shadow: 0 6px 18px rgba(2,6,23,.6); transform-origin:center; transition: transform .25s var(--card-ease), box-shadow .25s var(--card-ease); will-change:transform; opacity:0; animation:cardIn .46s var(--card-ease) both; animation-delay: calc(var(--i) * 80ms); }
-        .store-card:hover { transform:translateY(-8px) scale(1.02); box-shadow: 0 18px 42px rgba(2,6,23,.7); }
-
-        .store-card img { width:100%; height:140px; object-fit:cover; display:block; transition:transform .45s var(--card-ease); }
-        .store-card:hover img { transform: scale(1.06); }
-
-        .card-body { padding:12px 14px; display:flex; flex-direction:column; gap:8px; flex:1 1 auto; }
-        .card-body h3 { margin:0; font-size:1.05rem; display:flex; justify-content:space-between; align-items:center; gap:12px; }
-        .price-badge { background:rgba(255,255,255,0.06); padding:6px 8px; border-radius:8px; font-weight:700; font-size:.95rem; color:#fff; }
-        .card-desc { margin:0; color:#b8c6d8; font-size:.92rem; line-height:1.25; min-height:2.6em; }
-        .card-actions { display:flex; gap:8px; margin-top:auto; align-items:center; }
-        .buy-btn { margin-left:auto; background:linear-gradient(90deg,#10b981,#06b6d4); color:#fff; padding:8px 12px; border-radius:10px; text-decoration:none; font-weight:700; transition:transform .15s var(--card-ease); }
-        .buy-btn:hover { transform:translateY(-3px) scale(1.02); }
-        .fav-btn { background:transparent; border:0; color:#ff7aa2; cursor:pointer; font-size:18px; transition:transform .12s var(--card-ease); }
-        .fav-btn:active { transform:scale(.9); }
-        .small-meta { font-size:.85rem; color:#9fb0c8; }
-
-        /* Modal animations & layout */
-        #checkout-modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1200; pointer-events:none; }
-        #checkout-modal.open { display:flex; }
-        #checkout-modal .modal-backdrop { position:absolute; inset:0; background:rgba(2,6,23,.6); opacity:0; transition:opacity .28s var(--card-ease); pointer-events:none; }
-        #checkout-modal .modal-dialog { width:100%; max-width:720px; margin:20px; background:linear-gradient(180deg,#071225,#0b1b2b); border-radius:12px; transform:translateY(8px) scale(.98); opacity:0; transition:transform .28s var(--card-ease), opacity .28s var(--card-ease); box-shadow:0 18px 60px rgba(2,6,23,.7); position:relative; pointer-events:auto; overflow:hidden; }
-        #checkout-modal.open .modal-backdrop { opacity:1; pointer-events:auto; }
-        #checkout-modal.open .modal-dialog { transform:translateY(0) scale(1); opacity:1; }
-        .modal-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,0.03); }
-        .modal-body { padding:14px 16px; display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
-        .checkout-item img { border-radius:8px; width:120px; height:80px; object-fit:cover; flex-shrink:0; }
-        .modal-footer { display:flex; gap:10px; padding:12px 16px; border-top:1px solid rgba(255,255,255,0.03); justify-content:flex-end; }
-
-        /* small screens tweak */
-        @media (max-width:520px) {
-            .store-card { min-height:300px; }
-            .card-body h3 { font-size:1rem; }
-            .checkout-item img { width:110px; height:70px; }
-            .modal-dialog { margin:12px; }
-        }
-
-        @keyframes cardIn {
-            from { transform:translateY(10px) scale(.995); opacity:0; }
-            to   { transform:translateY(0) scale(1); opacity:1; }
-        }
+        /* Small local tweaks to make the Getting Started content match the site look */
+        .getting-started { padding: 42px 0; }
+        .getting-started .content { max-width: 920px; margin: 0 auto; color: #e6eef8; }
+        .gs-section { background: linear-gradient(180deg,#071225,#0b1b2b); border-radius: 12px; padding: 20px; margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.03); }
+        .gs-section h3 { margin-top: 0; color: #fff; }
+        .gs-list { margin: 8px 0 0 0; padding-left: 1.05rem; color: #b8c6d8; }
+        .gs-list li { margin-bottom: 8px; line-height: 1.35; }
+        .note { color: #9fb0c8; font-size: .95rem; margin-top: 8px; }
+        @media (max-width: 640px) { .getting-started { padding: 28px 14px; } }
     </style>
 </head>
-
 <body>
     <div class="preloader">
         <figure> <img src="./assets/icon128x128.png" alt="Icon"> </figure>
     </div>
 
-    <!-- Disabled third-party embed script that was causing overlay tint -->
-    <!-- <script src='https://www.noupe.com/embed/019a110c65f87ab89c4a3on17a0f495e780add.js'></script> -->
-
     <nav class="navbar" include-html="./nav.html"></nav>
 
-    <!-- Store Section -->
-    <section id="store" class="store">
-        <div class="container">
+    <!-- Getting Started Section -->
+    <section id="getting-started" class="getting-started">
+        <div class="container content">
             <div class="section-header">
-                <h2 class="section-title">Server Store</h2>
-                <div class="section-subtitle">Support the server and unlock exclusive perks!</div>
+                <h2 class="section-title">Getting Started</h2>
+                <div class="section-subtitle">Quick guide to start playing and understanding the basics</div>
             </div>
 
-            <div class="store-categories" role="tablist" aria-label="Store categories">
-                <button class="category-btn active" data-category="ranks" role="tab" aria-selected="true" aria-controls="store-grid">
-                    <span class="btn-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 11l2.5-5L12 10l4.5-4L19 11l-7 9-7-9z"/></svg>
-                    </span>
-                    <span class="btn-text">Ranks</span>
-                </button>
-                <button class="category-btn" data-category="coins" role="tab" aria-selected="false" aria-controls="store-grid">
-                    <span class="btn-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M9 9h6v6H9z" fill="#fff"></path></svg>
-                    </span>
-                    <span class="btn-text">Coins</span>
-                </button>
-                <button class="category-btn" data-category="cosmetics" role="tab" aria-selected="false" aria-controls="store-grid">
-                    <span class="btn-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10c0-5.523-4.477-10-10-10zm-1 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm4 4a1 1 0 1 1 .001 1.999A1 1 0 0 1 15 12zM8 11a1 1 0 1 1 .001 1.999A1 1 0 0 1 8 11z"/></svg>
-                    </span>
-                    <span class="btn-text">Cosmetics</span>
-                </button>
-                <button class="category-btn" data-category="boosters" role="tab" aria-selected="false" aria-controls="store-grid">
-                    <span class="btn-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L3 14h7l-1 8L21 10h-7l-1-8z"/></svg>
-                    </span>
-                    <span class="btn-text">Boosters</span>
-                </button>
+            <div class="gs-section" role="region" aria-labelledby="gs-start-playing">
+                <h3 id="gs-start-playing">Start Playing</h3>
+                <p class="note">When you load the page, click the "Back to Game" button or click anywhere on the screen. Your mouse cursor will disappear and lock into the game, giving you full first-person control.</p>
+                <ul class="gs-list">
+                    <li><strong>Pause / Unlock Mouse:</strong> Press the Escape (Esc) key at any time to open the menu, unlock your cursor, adjust settings, or take a break.</li>
+                </ul>
             </div>
 
-            <div class="store-grid" id="store-grid" data-item-count="0" role="region" aria-live="polite">
-                <!-- Items will be injected here -->
+            <div class="gs-section" role="region" aria-labelledby="gs-movement">
+                <h3 id="gs-movement">Movement & Looking Around</h3>
+                <ul class="gs-list">
+                    <li><strong>Mouse:</strong> Move your mouse around to look in any direction (up at the sky, down at the ground, or all around you).</li>
+                    <li><strong>W:</strong> Walk forward.</li>
+                    <li><strong>S:</strong> Walk backward.</li>
+                    <li><strong>A:</strong> Strafe (step) left.</li>
+                    <li><strong>D:</strong> Strafe (step) right.</li>
+                    <li><strong>Spacebar:</strong> Jump onto blocks or over obstacles.</li>
+                </ul>
             </div>
+
+            <div class="gs-section" role="region" aria-labelledby="gs-blocks">
+                <h3 id="gs-blocks">Building & Mining Blocks</h3>
+                <ul class="gs-list">
+                    <li><strong>Crosshair:</strong> Aim the white plus icon (+) in the center of your screen directly at the block face you want to interact with.</li>
+                    <li><strong>Left Click (Mine / Break):</strong> Destroys the block you are pointing at immediately.</li>
+                    <li><strong>Right Click (Place):</strong> Places your currently selected block onto whatever surface you are pointing at.</li>
+                </ul>
+            </div>
+
+            <div class="gs-section" role="region" aria-labelledby="gs-hotbar">
+                <h3 id="gs-hotbar">Selecting Blocks (Hotbar)</h3>
+                <p class="note">Press the number keys 1 through 6 on your keyboard to switch what material you are holding:</p>
+                <ul class="gs-list">
+                    <li><strong>Key 1:</strong> Grass Block (Vibrant green top, dirt sides)</li>
+                    <li><strong>Key 2:</strong> Dirt Block (Rich brown)</li>
+                    <li><strong>Key 3:</strong> Stone Block (Solid gray)</li>
+                    <li><strong>Key 4:</strong> Oak Wood Log (Tree trunk bark)</li>
+                    <li><strong>Key 5:</strong> Oak Leaves (Green foliage)</li>
+                    <li><strong>Key 6:</strong> Wooden Planks (Light building wood)</li>
+                </ul>
+            </div>
+
+            <div class="gs-section" role="region" aria-labelledby="gs-health">
+                <h3 id="gs-health">Health, Hunger & Hazards</h3>
+                <ul class="gs-list">
+                    <li><strong>Red Hearts (Health Bar):</strong> You start with 10 full hearts.</li>
+                    <li><strong>The Void:</strong> If you walk off the edge of the floating island and fall down into the deep blue sky, you will start taking void damage (losing 1 heart every second).</li>
+                    <li><strong>Dying & Respawning:</strong> If all 10 hearts run out, your health resets to full, and you automatically respawn right back in the center of the island.</li>
+                    <li><strong>Manual Respawn:</strong> If you ever get stuck or fall, press Esc to open the menu and click the gray "Respawn" button to teleport back onto solid ground.</li>
+                </ul>
+            </div>
+
+            <div class="gs-section" role="region" aria-labelledby="gs-settings">
+                <h3 id="gs-settings">Game Settings</h3>
+                <ul class="gs-list">
+                    <li><strong>Field of View (FOV):</strong> Press Esc to bring up the menu, then drag the FOV Slider to adjust how wide your camera view is (from standard 75° to wide-angle 110°).</li>
+                </ul>
+            </div>
+
         </div>
     </section>
-    
-    <!-- Checkout Modal (hidden by default) -->
-    <div id="checkout-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
-        <div class="modal-backdrop" data-modal-backdrop></div>
-        <div class="modal-dialog" role="document">
-            <header class="modal-header">
-                <h3 id="checkout-title">Checkout</h3>
-                <button class="modal-close" data-modal-close aria-label="Close">×</button>
-            </header>
-            <div class="modal-body" id="checkout-body">
-                <div class="checkout-item" style="display:flex;gap:12px;align-items:flex-start;">
-                    <img id="checkout-image" src="" alt="" style="max-width:120px;border-radius:8px;">
-                    <div style="min-width:0;">
-                        <h4 id="checkout-name" style="margin:0 0 6px 0;"></h4>
-                        <p id="checkout-desc" class="small-meta" style="margin:0 0 6px 0;"></p>
-                        <p id="checkout-duration" class="small-meta" style="margin:0;"></p>
-                    </div>
-                </div>
-
-                <!-- Payment provider selection (Tebex enabled by default) -->
-                <div style="margin-top:12px;">
-                    <label style="display:block;margin-bottom:6px;">Payment provider</label>
-                    <select id="payment-provider" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;">
-                        <option value="tebex" selected>Tebex (recommended)</option>
-                        <option value="stripe" disabled>Stripe (disabled in this build)</option>
-                    </select>
-                    <small class="small-meta" style="display:block;margin-top:8px;">You will be redirected to the Tebex checkout to complete payment.</small>
-                </div>
-
-                <div class="checkout-summary" style="margin-top:12px;">
-                    <p>Total: <strong id="checkout-price"></strong></p>
-                </div>
-                <div class="checkout-steps" style="margin-top:12px;">
-                    <label for="checkout-ign">Minecraft IGN:</label>
-                    <input id="checkout-ign" name="ign" type="text" placeholder="Your in-game name" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;margin-top:6px;" />
-                </div>
-            </div>
-            <footer class="modal-footer">
-                <button class="btn btn-secondary" data-modal-cancel>Cancel</button>
-                <button class="btn btn-primary" id="checkout-confirm">Confirm Purchase</button>
-            </footer>
-        </div>
-    </div>
 
     <!-- Contact Section -->
     <section id="contact" class="contact" include-html="./contact.html"></section>
@@ -182,7 +106,6 @@
     <footer class="footer" include-html="./footer.html"></footer>
 
     <script type="module" src="./js/script.js"></script>
-
     <script>
     // Hide preloader when window finishes loading
     window.addEventListener('load', () => {
@@ -192,221 +115,6 @@
             setTimeout(() => preloader.style.display = 'none', 300);
         }
     });
-
-    // Tebex configuration
-    const TEBEX_STORE_URL = 'https://yourstore.tebex.io';
-
-    const ITEM_TO_TEBEX = {
-        'rank-vip': '12345',
-        'rank-pro': '12346',
-        'rank-legend': '12347',
-        'coins-500': 'coins-500',
-        'coins-2500': 'coins-2500',
-        'cosmetic-trail': 'sparkle-trail',
-        'cosmetic-hat': 'dragon-hat',
-        'booster-xp-2h': 'xp-2h',
-        'booster-coin-24h': 'coin-24h'
-    };
-    </script>
-
-    <script>
-    // Client-side store renderer, category filtering and Tebex checkout redirect
-    (function () {
-        const storeGrid = document.getElementById('store-grid');
-        const categoryButtons = Array.from(document.querySelectorAll('.category-btn'));
-        const paymentProviderSelect = document.getElementById('payment-provider');
-        const checkoutConfirm = document.getElementById('checkout-confirm');
-        const checkoutIGN = document.getElementById('checkout-ign');
-
-        const items = [
-            // Ranks
-            { id: 'rank-vip', category: 'ranks', title: 'VIP', price: '5.00', currency: 'USD', duration: 'Permanent', description: 'VIP rank with access to exclusive servers and commands.', image: 'https://via.placeholder.com/640x360.png?text=VIP+Rank' },
-            { id: 'rank-pro', category: 'ranks', title: 'Pro', price: '12.00', currency: 'USD', duration: 'Permanent', description: 'Pro rank - all VIP perks + special prefix.', image: 'https://via.placeholder.com/640x360.png?text=Pro+Rank' },
-            { id: 'rank-legend', category: 'ranks', title: 'Legend', price: '25.00', currency: 'USD', duration: 'Permanent', description: 'Legend rank with custom titles, particles and more.', image: 'https://via.placeholder.com/640x360.png?text=Legend+Rank' },
-
-            // Coins
-            { id: 'coins-500', category: 'coins', title: '500 Coins', price: '1.99', currency: 'USD', description: 'In-game currency pack.', image: 'https://via.placeholder.com/640x360.png?text=500+Coins' },
-            { id: 'coins-2500', category: 'coins', title: '2,500 Coins', price: '7.49', currency: 'USD', description: 'Best value coin pack.', image: 'https://via.placeholder.com/640x360.png?text=2500+Coins' },
-
-            // Cosmetics
-            { id: 'cosmetic-trail', category: 'cosmetics', title: 'Sparkle Trail', price: '2.99', currency: 'USD', description: 'A sparkling trail behind your player.', image: 'https://via.placeholder.com/640x360.png?text=Sparkle+Trail' },
-            { id: 'cosmetic-hat', category: 'cosmetics', title: 'Dragon Hat', price: '3.99', currency: 'USD', description: 'A fierce dragon-styled hat for your avatar.', image: 'https://via.placeholder.com/640x360.png?text=Dragon+Hat' },
-
-            // Boosters
-            { id: 'booster-xp-2h', category: 'boosters', title: 'XP Booster (2h)', price: '1.49', currency: 'USD', description: 'Double XP for 2 hours.', image: 'https://via.placeholder.com/640x360.png?text=XP+Booster' },
-            { id: 'booster-coin-24h', category: 'boosters', title: 'Coin Booster (24h)', price: '4.99', currency: 'USD', description: 'Double coins for 24 hours.', image: 'https://via.placeholder.com/640x360.png?text=Coin+Booster' }
-        ];
-
-        const favKey = 'surf_store_favs_v1';
-        const favorites = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
-
-        function saveFavs() {
-            localStorage.setItem(favKey, JSON.stringify([...favorites]));
-        }
-
-        const modal = document.getElementById('checkout-modal');
-        const modalBackdrop = modal.querySelector('[data-modal-backdrop]');
-        const modalClose = modal.querySelector('[data-modal-close]');
-        const modalCancel = modal.querySelector('[data-modal-cancel]');
-
-        let currentItem = null;
-        window.currentItem = null;
-
-        function openModalForItem(item) {
-            currentItem = item;
-            window.currentItem = item;
-            document.getElementById('checkout-image').src = item.image || '';
-            document.getElementById('checkout-image').alt = item.title || 'Item';
-            document.getElementById('checkout-name').textContent = item.title || '';
-            document.getElementById('checkout-desc').textContent = item.description || '';
-            document.getElementById('checkout-duration').textContent = item.duration ? ('Duration: ' + item.duration) : '';
-            document.getElementById('checkout-price').textContent = (item.currency ? item.currency + ' ' : '') + (item.price || '');
-            checkoutIGN.value = '';
-            showModal();
-        }
-
-        function showModal() {
-            modal.setAttribute('aria-hidden', 'false');
-            modal.classList.add('open');
-            setTimeout(() => checkoutIGN.focus(), 50);
-            document.addEventListener('focus', enforceFocus, true);
-            document.addEventListener('keydown', handleKeydown);
-        }
-
-        function hideModal() {
-            modal.setAttribute('aria-hidden', 'true');
-            modal.classList.remove('open');
-            currentItem = null;
-            window.currentItem = null;
-            document.removeEventListener('focus', enforceFocus, true);
-            document.removeEventListener('keydown', handleKeydown);
-        }
-
-        function enforceFocus(e) {
-            if (!modal.contains(e.target)) {
-                e.stopPropagation();
-                checkoutIGN.focus();
-            }
-        }
-
-        function handleKeydown(e) {
-            if (e.key === 'Escape') hideModal();
-        }
-
-        modalBackdrop.addEventListener('click', hideModal);
-        modalClose.addEventListener('click', hideModal);
-        modalCancel.addEventListener('click', (ev) => { ev.preventDefault(); hideModal(); });
-
-        checkoutConfirm.addEventListener('click', (ev) => {
-            ev.preventDefault();
-            if (!currentItem && !window.currentItem) {
-                alert('No item selected.');
-                return;
-            }
-            const selectedItem = currentItem || window.currentItem;
-            const ign = checkoutIGN.value && checkoutIGN.value.trim();
-            if (!ign) {
-                alert('Please enter your Minecraft IGN before confirming the purchase.');
-                checkoutIGN.focus();
-                return;
-            }
-
-            const provider = paymentProviderSelect.value || 'tebex';
-            if (provider === 'tebex') {
-                const tebexPkg = ITEM_TO_TEBEX[selectedItem.id];
-                if (!TEBEX_STORE_URL || TEBEX_STORE_URL === 'https://yourstore.tebex.io') {
-                    const ok = confirm('TEBEX_STORE_URL is not configured in the page. Do you want to continue (you will be redirected to a placeholder)? Press Cancel to configure the store domain.');
-                    if (!ok) return;
-                }
-                if (!tebexPkg) {
-                    alert('This item is not mapped to a Tebex package yet. Please contact the server admin.');
-                    return;
-                }
-                const base = TEBEX_STORE_URL.replace(/\/$/, '');
-                const url = `${base}/package/${encodeURIComponent(tebexPkg)}?player=${encodeURIComponent(ign)}`;
-
-                window.location.href = url;
-                return;
-            }
-
-            alert('Selected payment provider is not available.');
-        });
-
-        function renderItems(filterCategory = 'ranks') {
-            storeGrid.innerHTML = '';
-            const filtered = items.filter(it => it.category === filterCategory);
-            storeGrid.setAttribute('data-item-count', filtered.length);
-            if (filtered.length === 0) {
-                storeGrid.innerHTML = '<p class="small-meta">No items found in this category.</p>';
-                return;
-            }
-
-            filtered.forEach((it, index) => {
-                const card = document.createElement('article');
-                card.className = 'store-card';
-                card.style.setProperty('--i', index);
-                card.setAttribute('data-id', it.id);
-                card.innerHTML = `
-                    <img src="${it.image}" alt="${escapeHtml(it.title)}">
-                    <div class="card-body">
-                        <div style="display:flex;align-items:center;gap:12px;">
-                            <h3>${escapeHtml(it.title)} <span class="price-badge">${escapeHtml(it.currency)} ${escapeHtml(it.price)}</span></h3>
-                        </div>
-                        <p class="small-meta">${it.duration ? escapeHtml(it.duration) : ''}</p>
-                        <p class="card-desc">${escapeHtml(it.description)}</p>
-                        <div class="card-actions">
-                            <button class="fav-btn" title="Favorite" aria-pressed="${favorites.has(it.id) ? 'true' : 'false'}">${favorites.has(it.id) ? '♥' : '♡'}</button>
-                            <a class="buy-btn" href="#" data-item-id="${it.id}">Buy</a>
-                        </div>
-                    </div>
-                `;
-                const favBtn = card.querySelector('.fav-btn');
-                favBtn.addEventListener('click', () => {
-                    if (favorites.has(it.id)) {
-                        favorites.delete(it.id);
-                        favBtn.textContent = '♡';
-                        favBtn.setAttribute('aria-pressed', 'false');
-                    } else {
-                        favorites.add(it.id);
-                        favBtn.textContent = '♥';
-                        favBtn.setAttribute('aria-pressed', 'true');
-                    }
-                    saveFavs();
-                });
-
-                const buyBtn = card.querySelector('.buy-btn');
-                buyBtn.addEventListener('click', (ev) => {
-                    ev.preventDefault();
-                    openModalForItem(it);
-                });
-
-                storeGrid.appendChild(card);
-            });
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        categoryButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryButtons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-                btn.classList.add('active');
-                btn.setAttribute('aria-selected','true');
-                renderItems(btn.dataset.category);
-            });
-        });
-
-        const active = document.querySelector('.category-btn.active');
-        const startCategory = active ? active.dataset.category : 'ranks';
-        renderItems(startCategory);
-    })();
     </script>
 </body>
 </html>
