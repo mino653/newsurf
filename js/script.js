@@ -1,4 +1,4 @@
-,// SurfNetwork Minecraft Website - Enhanced JavaScript
+// SurfNetwork Minecraft Website - Enhanced JavaScript
 
 import {
     getDB,
