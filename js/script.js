@@ -1,4 +1,4 @@
-// SurfNetwork Minecraft Website - Enhanced JavaScript
+,// SurfNetwork Minecraft Website - Enhanced JavaScript
 
 import {
     getDB,
@@ -774,17 +774,17 @@ EQuery(async function () {
         const copyIPBtn = EQuery('#copy-ip-btn');
 
         copyIPBtn.click(function () {
-            const ip = 'play.surfnetwork.xyz';
+            const ip = 'mino653.github.io/mc-python';
 
             // Try to copy to clipboard
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(ip).then(() => {
                     showMessage('Server IP copied to clipboard!', 'success');
-                    this.innerHTML = '<div class="btn-icon">✓</div><div class="btn-text"><span class="btn-main">Copied!</span><span class="btn-sub">play.surfnetwork.com</span></div>';
+                    this.innerHTML = '<div class="btn-icon">✓</div><div class="btn-text"><span class="btn-main">Copied!</span><span class="btn-sub">mino653.github.io/mc-python</span></div>';
                     this.style.background = 'var(--minecraft-green)';
 
                     setTimeout(() => {
-                        this.innerHTML = '<div class="btn-icon">🌐</div><div class="btn-text"><span class="btn-main">Copy IP</span><span class="btn-sub">play.surfnetwork.com</span></div>';
+                        this.innerHTML = '<div class="btn-icon">🌐</div><div class="btn-text"><span class="btn-main">Copy IP</span><span class="btn-sub">mino653.github.io/mc-python</span></div>';
                         this.style.background = '';
                     }, 2000);
                 });
